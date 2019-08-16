@@ -1,0 +1,31 @@
+{
+  "name": "@naker/design",
+  "description": "List of inputs and layers used in naker engines",
+  "repository": "https://github.com/nakerwave/naker-design",
+  "homepage": "https://github.com/nakerwave/naker-design",
+  "license": "Apache-2.0",
+  "version": "1.0.0",
+  "typings": "index.d.ts",
+  "main": "index.js",
+  "module": "index.js",
+  "scripts": {},
+  "keywords": [
+    "Inputs",
+    "Layers"
+  ],
+  "author": "Pichou",
+  "peerDependencies": {
+    "lodash": "^4.17.11",
+    "redom": "^3.16.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "redom": "^3.16.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.6.5",
+    "debounce-promise": "^3.1.0",
+    "parcel-bundler": "^1.12.3",
+    "typescript": "^3.4.5"
+  }
+}
