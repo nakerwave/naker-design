@@ -18,8 +18,8 @@ export interface coloroption {
 }
 
 export interface duoColors {
-	main:Array<number>,
-	second:Array<number>,
+	main:string,
+	second:string,
 }
 
 export class ui_colorbutton extends ui_input {
@@ -75,14 +75,14 @@ export class ui_colorbutton extends ui_input {
 		if (rgba[3] == undefined || !this.opacity) stringRgba[3] = 1;
 		let color = 'rgba('+stringRgba[0]+', '+stringRgba[1]+', '+stringRgba[2]+', '+stringRgba[3]+')';
 		setStyle(this.colorel, {'background-color':color});
-		setStyle(this.coloricon, {'color':colormain});
+		setStyle(this.coloricon, {'color':this.duoColors.main});
 		if (this.events.change && frompicker) this.events.change(this.rgba);
 		return this;
 	}
 
 	erase (frompicker?:any) {
-		setStyle(this.colorel, {'background-color':colorgrey});
-		setStyle(this.coloricon, {'color':colorthirdgrey});
+		setStyle(this.colorel, {'background-color':'none'});
+		setStyle(this.coloricon, {'color':this.duoColors.second});
 		if (this.events.change && frompicker) this.events.change(undefined);
 		if (this.events.blur && frompicker) this.events.blur(undefined);
 	}
@@ -92,14 +92,14 @@ export class ui_colorbutton extends ui_input {
 
 	focus () {
 		this.startrgba = this.rgba;
-		setStyle(this.colorbutton, {'border-color':colormain})
+		setStyle(this.colorbutton, {'border-color':this.duoColors.main})
 		colorpicker.setCurrentInput(this);
 		if (this.events.focus) this.events.focus(this.rgba);
 	}
 
 	blurEvent (picker?:any) {
 		if (this.events.blur && picker && this.startrgba != this.rgba) this.events.blur(this.rgba);
-		setStyle(this.colorbutton, {'border-color':colorthirdgrey})
+		setStyle(this.colorbutton, {'border-color':this.duoColors.second})
 	}
 
 	on (event:string, funct:Function) {
@@ -198,10 +198,10 @@ export class ui_colorpicker extends ui {
 	}
 
 	setPickerPosition () {
-		let pos = this.currentInput.el.getBoundingClientRect();
+		let pos = this.currentInput.input.getBoundingClientRect();
 		let y = Math.min(pos.top - 80, window.innerHeight - 230);
 		y = Math.max(y, 0);
-		setStyle(this.el, {left: pos.x - 345 + 'px', top: y + 'px'});
+		setStyle(this.el, {left: pos.left - 345 + 'px', top: y + 'px'});
 	}
 }
 

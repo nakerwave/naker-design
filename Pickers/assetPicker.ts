@@ -1,11 +1,76 @@
 
-import { defaultwithinput, ui_input, ui_imagebutton, ui_button } from './input';
-import { asset } from '../../viewer/tools/loader';
-import { _system } from '../service/editintale';
+import { defaultwithinput, ui_input, ui_imagebutton, ui_button } from '../Inputs/input';
+import { ui } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import find from 'lodash/find';
 import remove from 'lodash/remove';
+
+export interface asset {
+  type:string,
+  url:string
+};
+
+export interface assetEvents {
+	change?:Function,
+	focus?:Function,
+  blur?:Function,
+};
+
+export class ui_assetinput extends ui_input {
+	url:string;
+	type:string;
+
+	constructor(assetoption:asset) {
+		super();
+		this.url = assetoption.url;
+		this.type = assetoption.type;
+	}
+
+	getThumbnail (url:string) {
+		let asset = find(assetpicker.assetImages[this.type], (o:asset) => { return o.url == url; });
+		if (asset) return asset.thumbnail;
+		else return url;
+	}
+
+	setValue (url:string, frompicker:boolean) {
+		this._setValue(url, frompicker);
+	}
+
+	_setValue (url:string, frompicker:boolean) {
+		this.url = url;
+		if (this.events.change && frompicker) this.events.change(url);
+		let thumbnail = this.getThumbnail(url);
+		return thumbnail;
+	}
+
+	events:assetEvents = {};
+	starturl:string;
+	focus () {
+		this.starturl = this.url;
+		if (this.events.focus) this.events.focus(this.url, this);
+		assetpicker.setCurrentInput(this);
+	}
+
+	blurEvent () {
+		if (this.events.blur && this.starturl != this.url) this.events.blur(this.url, this);
+		// In order to avoid waitedAsset changing last selected texture
+		assetpicker.currentInput = undefined;
+	}
+
+	on (event:'focus'|'blur'|'change', funct:Function) {
+		this.events[event] = funct;
+		return this;
+	}
+
+	checkErase (evt:Event) {
+		evt.stopPropagation();
+		evt.preventDefault();
+		if (this.url !== undefined) this.setValue(undefined, true);
+		else this.focus();
+	}
+
+}
 
 /*
   +------------------------------------------------------------------------+
@@ -13,21 +78,15 @@ import remove from 'lodash/remove';
   +------------------------------------------------------------------------+
 */
 
-export class ui_assetbutton extends ui_input {
+export class ui_assetbutton extends ui_assetinput {
 
-	label:HTMLElement;
-	url:string;
-	type:asset["type"];
-	callback:Function;
-	image:any;
-	text:any;
-	assetbutton:any;
-	asseticon:any;
+	image:HTMLElement;
+	text:HTMLElement;
+	assetbutton:HTMLElement;
+	asseticon:HTMLElement;
 
-	constructor(parent:any, assetoption:asset, className:string) {
-    super();
-		this.url = assetoption.url;
-		this.type = assetoption.type;
+	constructor(parent:HTMLElement, assetoption:asset, className:string) {
+    super(assetoption);
 		this.el = el('div', {class:' '+className},
 			[
 				this.assetbutton = el('div.picker-button', {onclick:()=>{this.focus()}},
@@ -36,29 +95,11 @@ export class ui_assetbutton extends ui_input {
 						this.text = el('div', { style: {width:'100%', height:'100%', display:'none', 'overflow': 'hidden'}})
 					]
 				),
-				this.asseticon = el('div.icon-texture.erase-icon', {onclick:()=>{this.checkErase()}, onmouseenter:()=>{this.mouseEnter()}, onmouseleave:()=>{this.mouseLeave()}}, [el('span.path1'),el('span.path2'),el('span.path3')])
+				this.asseticon = el('div.icon-texture.erase-icon', {onclick:(evt)=>{this.checkErase(evt)}, onmouseenter:()=>{this.mouseEnter()}, onmouseleave:()=>{this.mouseLeave()}}, [el('span.path1'),el('span.path2'),el('span.path3')])
 			]
 		);
 		mount(parent, this.el);
 		if (assetoption.url) this.setValue(assetoption.url);
-		else this.erase();
-	}
-
-	checkErase () {
-		if (this.url !== undefined) this.setValue(undefined, true);
-		else this.focus();
-	}
-
-	mouseEnter () {
-		if (this.url !== undefined) this.setIcon('delete');
-	}
-
-	mouseLeave () {
-		this.setIcon('texture');
-	}
-
-	setIcon (icon:string) {
-		setAttr(this.asseticon, {class:'icon-'+icon+' erase-icon'});
 	}
 
 	setValue (url:string, frompicker?:any) {
@@ -84,31 +125,24 @@ export class ui_assetbutton extends ui_input {
 		return this;
 	}
 
+	mouseEnter () {
+		if (this.url !== undefined) this.setIcon('delete');
+	}
+
+	mouseLeave () {
+		this.setIcon('texture');
+	}
+
+	setIcon (icon:string) {
+		setAttr(this.asseticon, {class:'icon-'+icon+' erase-icon'});
+	}
+
 	erase (frompicker?:any) {
 		setStyle(this.image, {display:'none'});
 		setStyle(this.text, {display:'none'});
 		setStyle(this.asseticon, {'color':colorthirdgrey});
 		if (this.events.change && frompicker) this.events.change(undefined);
 		if (frompicker) this.blurEvent();
-	}
-
-	events:any = {};
-	starturl:string;
-	focus () {
-		this.starturl = this.url;
-		if (this.events.focus) this.events.focus(this.url, this);
-		assetpicker.setCurrentInput(this);
-	}
-
-	blurEvent () {
-		if (this.events.blur && this.starturl != this.url) this.events.blur(this.url, this);
-		// In order to avoid waitedAsset changing last selected texture
-		assetpicker.currentInput = undefined;
-	}
-
-	on (event:string, funct:Function) {
-		this.events[event] = funct;
-		return this;
 	}
 }
 
@@ -118,20 +152,16 @@ export class ui_assetbutton extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_imageassetbutton extends ui_input {
+export class ui_imageassetbutton extends ui_assetinput {
 
-	url:string;
-	type:asset["type"];
-	callback:Function;
 	image:HTMLElement;
 	text:HTMLElement;
 	hover:HTMLElement;
 	label:HTMLElement;
+	container:HTMLElement;
 
-	constructor(parent:any, assetoption:asset, className:string) {
-    super();
-		this.url = assetoption.url;
-		this.type = assetoption.type;
+	constructor(parent:HTMLElement, assetoption:asset, className:string) {
+    	super(assetoption);
 		this.el = el('div', {class:'input-asset-image '+className, onclick:()=>{this.focus()}},
 			[
 				this.hover = el('div.image-hover', el('div.image-hover-text', 'Replace '+this.type)),
@@ -140,16 +170,17 @@ export class ui_imageassetbutton extends ui_input {
 			]
 		);
 		mount(parent, this.el);
-		this.setValue(assetoption.url);
+		if (assetoption.url) this.setValue(assetoption.url);
 	}
 
-	setValue (url:string, frompicker?:any, avoidloop?:boolean) {
+
+	setValue (url:string, frompicker?:any) {
+		let thumbnail = this._setValue(url, frompicker);
 		if (url !== undefined && url !== null) {
 			// Asset not loaded before or not currently loading
-			if (_system.loader.successes[this.type+url] == undefined && _system.loader[this.type][url] == undefined && !avoidloop) return this.loadAsset(url, frompicker);
-			let image = url.substr(url.lastIndexOf('/') + 1);
-			let asset = find(assetpicker.assetImages[this.type], (o) => { return o.url == url; });
-			if (asset) image = asset.thumbnail;
+			let image:string;
+			if (!thumbnail) image = url.substr(url.lastIndexOf('/') + 1);
+			else image = image.substr(image.lastIndexOf('/') + 1);
 			if (image.indexOf('http') != -1) {
 				setStyle(this.image, {display:'block'});
 				setStyle(this.text, {display:'none'});
@@ -165,33 +196,6 @@ export class ui_imageassetbutton extends ui_input {
 			this.text.textContent = 'No '+this.type;
 			this.hover.textContent = 'Add '+this.type;
 		}
-		this.url = url;
-		if (this.events.change && frompicker) this.events.change(url);
-		return this;
-	}
-
-	loadAsset (url:string, frompicker:any) {
-		_system.loader.getAsset(this.type, url, () => {
-			assetpicker.waitingAsset = this.type;
-			assetpicker.addWaitedAssetButton(url, url);
-			this.setValue(url, frompicker, true);
-		});
-	}
-
-	events:any = {};
-	starturl:string;
-	focus () {
-		this.starturl = this.url;
-		if (this.events.focus) this.events.focus(this.url, this);
-		assetpicker.setCurrentInput(this);
-	}
-
-	blurEvent () {
-		if (this.events.blur && this.starturl != this.url) this.events.blur(this.url, this);
-	}
-
-	on (event:string, funct:Function) {
-		this.events[event] = funct;
 		return this;
 	}
 }
@@ -203,20 +207,15 @@ export class ui_imageassetbutton extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_textassetbutton extends ui_input {
+export class ui_textassetbutton extends ui_assetinput {
 
-	url:string;
-	type:asset["type"];
-	callback:Function;
 	text:HTMLElement;
 	hover:HTMLElement;
 	label:HTMLElement;
 	asseticon:HTMLElement;
 
-	constructor(parent:any, assetoption:asset, className:string) {
-    super();
-		this.url = assetoption.url;
-		this.type = assetoption.type;
+	constructor(parent:HTMLElement, assetoption:asset, className:string) {
+    super(assetoption);
 		this.el = el('div', {class:'input-asset-text '+className, onclick:()=>{this.focus()}},
 			[
 				this.hover = el('div.text-hover', 'Replace'),
@@ -225,14 +224,7 @@ export class ui_textassetbutton extends ui_input {
 			this.asseticon = el('div.icon-'+this.type+'.text-erase-icon', {onclick:(evt)=>{this.checkErase(evt)}, onmouseenter:()=>{this.mouseEnter()}, onmouseleave:()=>{this.mouseLeave()}}, [el('span.path1'),el('span.path2'),el('span.path3')])
 		);
 		mount(parent, this.el);
-		this.setValue(assetoption.url);
-	}
-
-	checkErase (evt) {
-		evt.stopPropagation();
-		evt.preventDefault();
-		if (this.url !== undefined) this.setValue(undefined, true);
-		else this.focus();
+		if (assetoption.url) this.setValue(assetoption.url);
 	}
 
 	mouseEnter () {
@@ -247,13 +239,13 @@ export class ui_textassetbutton extends ui_input {
 		setAttr(this.asseticon, {class:'icon-'+icon+' text-erase-icon'});
 	}
 
-	setValue (url:string, frompicker?:any, avoidloop?:boolean) {
+	setValue (url:string, frompicker?:any) {
+		let thumbnail = this._setValue(url, frompicker);
 		if (url !== undefined && url !== null) {
+			let text:string;
 			// Asset not loaded before or not currently loading
-			if (_system.loader.successes[this.type+url] == undefined && _system.loader[this.type][url] == undefined && !avoidloop) return this.loadAsset(url, frompicker);
-			let text = url.substr(url.lastIndexOf('/') + 1);
-			let asset = find(assetpicker.assetImages[this.type], (o) => { return o.url == url; });
-			if (asset) text = asset.thumbnail;
+			if (!thumbnail) text = url.substr(url.lastIndexOf('/') + 1);
+			else text = thumbnail;
 			this.text.textContent = text;
 			this.hover.textContent = 'Replace';
 			setStyle(this.asseticon, {'color':colormain});
@@ -262,33 +254,6 @@ export class ui_textassetbutton extends ui_input {
 			this.hover.textContent = 'Add '+this.type;
 			setStyle(this.asseticon, {'color':colorthirdgrey});
 		}
-		this.url = url;
-		if (this.events.change && frompicker) this.events.change(url);
-		return this;
-	}
-
-	loadAsset (url:string, frompicker:any) {
-		_system.loader.getAsset(this.type, url, () => {
-			assetpicker.waitingAsset = this.type;
-			assetpicker.addWaitedAssetButton(url, url);
-			this.setValue(url, frompicker, true);
-		});
-	}
-
-	events:any = {};
-	starturl:string;
-	focus () {
-		this.starturl = this.url;
-		if (this.events.focus) this.events.focus(this.url, this);
-		assetpicker.setCurrentInput(this);
-	}
-
-	blurEvent () {
-		if (this.events.blur && this.starturl != this.url) this.events.blur(this.url, this);
-	}
-
-	on (event:string, funct:Function) {
-		this.events[event] = funct;
 		return this;
 	}
 }
@@ -300,10 +265,10 @@ export class ui_textassetbutton extends ui_input {
 */
 
 // Texture which are images
-export let overlayImages:Array<asset["type"]> = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
+export let overlayImages:Array<string> = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
 export let overlayAlpha = {'albedo':false, 'ambient':false, 'specular':false, 'emissive':false, 'bump':false, 'opacity':true, 'reflectivity':false, 'reflection':false, 'particle':false, 'image':true, 'heightmap':false};
 
-export class ui_assetpicker extends ui_input {
+export class ui_assetpicker extends ui {
 	back:HTMLElement;
 	title:HTMLElement;
 
@@ -316,61 +281,22 @@ export class ui_assetpicker extends ui_input {
 		return this;
 	}
 
-	currentInput:ui_assetbutton|ui_imageassetbutton|ui_textassetbutton;
-	setCurrentInput (input:ui_assetbutton|ui_imageassetbutton|ui_textassetbutton) {
+	currentInput:ui_assetinput;
+	setCurrentInput (input:ui_assetinput) {
 		this.currentInput = input;
 		this.setAssetList(input.type);
 		this.show();
 		this.addAssetMode = false;
-		pickerChannel.publish('focus', this);
 		this.waitingAsset = this.type;
 		this.waitingInput = this.currentInput;
 	}
 
 	assetButtons:any = {};
 	assetImages:any = {};
-	initAllAsset (assetimage:any) {
-		// Make sure we have correct type saved
-		for (let key in assetimage) {
-		   if (_system.loader.assetTypeList.indexOf(key) != -1) this.assetImages[key] = assetimage[key];
-		}
-		this.addDefaultCubeTexture();
-	}
-
-	addDefaultCubeTexture () {
-		let defaultList = [
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/blenderSpecularHDR.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/blender.jpg'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/ennisSpecularHDR.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/ennis.jpg'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/garageSpecularHDR.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/garage.jpg'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/graySpecularHDR.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/grey.jpg'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/indoorSpecularHDR.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/indoor.jpg'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/nightSpecularHDR.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/night.jpg'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/day.env', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Day.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/dusk.env', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Dusk.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/environment.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/City_1.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/night_bridge_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/City_2.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/shanghai_bund_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/City_3.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/environment.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Field_1.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/delta_2_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Field_2.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/matprev_env_Cover.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Park_1.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/tiergarten_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Park_2.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/sunny_vondelpark_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Park_3.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/kloofendal_48d_partly_cloudy_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Hills.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/misty_pines_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Misty_Pine.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/skate_park_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Skate_park.png'},
-			{url:'https://d2uret4ukwmuoe.cloudfront.net/hdr/fireplace_1k.dds', thumbnail:'https://d2uret4ukwmuoe.cloudfront.net/hdr/Fireplace.png'},
-		];
-		// Only create button so that it doesn't get saved in project
-		this.initAssetType('cubetexture');
-		for (let i = 0; i < defaultList.length; i++) {
-			let asset = defaultList[i];
-			this.assetButtons['cubetexture'].push(this.addButton('cubetexture', asset.url, asset.thumbnail));
-		}
-	}
 
 	assetperline = 2;
-	type:asset["type"];
-	setAssetList (type:asset["type"]) {
+	type:string;
+	setAssetList (type:string) {
 		this.type = type;
 		this.hideAsset();
 		this.checkTypeButton(type);
@@ -391,7 +317,7 @@ export class ui_assetpicker extends ui_input {
 		return this;
 	}
 
-	checkTypeButton (type:asset["type"]) {
+	checkTypeButton (type:string) {
 		if (overlayImages.indexOf(type) == -1) {
 			if (!this.assetButtons[type]) this.initAssetType(type);
 		} else {
@@ -401,7 +327,7 @@ export class ui_assetpicker extends ui_input {
 		}
 	}
 
-	initAssetType (type:asset["type"]) {
+	initAssetType (type:string) {
 		this.assetButtons[type] = [];
 		if (this.assetImages[type] == undefined) this.assetImages[type] = [];
 		for (let i = 0; i < this.assetImages[type].length; i++) {
@@ -418,17 +344,16 @@ export class ui_assetpicker extends ui_input {
 		}
 	}
 
-	setAddAssetMode (type:asset["type"], callback:Function) {
+	setAddAssetMode (type:string, callback:Function) {
 		this.addAssetFunction = callback;
 		this.addAssetMode = true;
 		this.type = type;
 		this.show();
-		pickerChannel.publish('focus', this);
 		this.setAssetList(type);
 	}
 
-	waitingAsset:asset["type"] = null;
-	waitingInput:ui_assetbutton|ui_imageassetbutton|ui_textassetbutton;
+	waitingAsset:string = null;
+	waitingInput:ui_assetinput;
 	addWaitedAssetButton (url:string, image:string) {
 		if (this.waitingAsset == null) return;
 		this.checkTypeButton(this.waitingAsset);
@@ -446,8 +371,8 @@ export class ui_assetpicker extends ui_input {
 
 	addAssetMode = false;
 	addAssetFunction:Function;
-	addButton (type:asset["type"], url:string, image:string) {
-		let button;
+	addButton (type:string, url:string, image:string) {
+		let button:ui_imagebutton|ui_button;
 		if (image.indexOf('http') != -1) {
 			// If opacity we add the opacity background
 			if (type == 'opacity') {
@@ -462,7 +387,6 @@ export class ui_assetpicker extends ui_input {
 		button.on('click', () => {
 			if (this.addAssetMode) this.addAssetFunction(url);
 			else this.currentInput.setValue(url, true);
-			pickerChannel.publish('blur', this);
 			this.hidePicker();
 			this.eraseCurrent();
 		});
@@ -474,20 +398,14 @@ export class ui_assetpicker extends ui_input {
 		return button;
 	}
 
-	deleteAsset (button:ui_imagebutton, type:asset["type"], key:string) {
+	onAssetDeleted:Function;
+	deleteAsset (button:ui_imagebutton|ui_button, type:string, key:string) {
 		let index = this.assetButtons[type].indexOf(button);
 		if (index != -1) this.assetButtons[type].splice(index, 1);
-		// As we load asset only if needed, success can be undefined
-		if (_system.loader.success[key]) {
-			for (let i = 0; i < _system.loader.success[key].length; i++) {
-				_system.loader.success[key][i](undefined);
-			}
-		}
+		if (this.onAssetDeleted) this.onAssetDeleted(key)
 		if (this.currentInput) {
-			if (key == this.currentInput.url) this.currentInput.setValue(undefined);
+			if (key == this.currentInput.url) this.currentInput.setValue(undefined, true);
 		}
-		delete _system.loader.success[key];
-		delete _system.loader[type][key];
 		remove(this.assetImages[type], (n) => {
 		  return n.url == key;
 		});
