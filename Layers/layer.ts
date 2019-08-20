@@ -37,6 +37,24 @@ export class ui_manager {
         mount(parent, this.el);
     }
 
+  addText(text: string, className: string) {
+    let textNode = el('div', { class: className }, text);
+    mount(this.el, textNode);
+    return textNode;
+  }
+
+  addLink(text: string, link: string, className: string) {
+    let linkNode = el('a', { class: className, 'href': link, 'target': '_blank' }, text);
+    mount(this.el, linkNode);
+    return linkNode;
+  }
+
+  addIcon(icon: string, className: string) {
+    let iconNode = el('div', { class: className + ' icon-' + icon }, [el('span.path1'), el('span.path2'), el('span.path3')]);
+    mount(this.el, iconNode);
+    return iconNode;
+  }
+
   addButton (textnode:textnode, callback:Function) {
       let button = new ui_button(this.el, textnode);
     button.on('click', (text) => {
@@ -122,10 +140,10 @@ export class ui_manager {
     // colorInput.on('blur', (rgba) => {
     //   undo.pushState();
     // });
-    let assetInput = inputContainer.addAssetButton(asset, 'input-parameter-second');
-    assetInput.on('change', (url) => {
-      callback('asset', url);
-    });
+    // let assetInput = inputContainer.addAssetButton(asset, 'input-parameter-second');
+    // assetInput.on('change', (url) => {
+    //   callback('asset', url);
+    // });
     // assetInput.on('blur', (url) => {
     //   undo.pushState();
     // });
@@ -205,25 +223,6 @@ export class ui_manager {
   }
 }
 
-
-/*
-  +------------------------------------------------------------------------+
-  | PARENT DESIGN MANAGER                                                  |
-  +------------------------------------------------------------------------+
-*/
-
-export let layerLeft = el('div.layer-left.presets-container.editor-scroll');
-mount(document.body, layerLeft);
-
-/*
-  +------------------------------------------------------------------------+
-  | PARENT PARAMETER MANAGER                                                  |
-  +------------------------------------------------------------------------+
-*/
-
-export let layerRight = el('div.layer-right.parameter-container.editor-scroll');
-mount(document.body, layerRight);
-
 /*
   +------------------------------------------------------------------------+
   | DESIGN MANAGER                                                         |
@@ -257,6 +256,11 @@ export class floatingManager extends ui_manager {
       mount(this.el, this.titleParent);
     }
 
+    addSubTitle(title: string) {
+      let textNode = el('div.parameter-subtitle', title);
+      mount(this.el, textNode);
+    }
+
     expanded = true;
     switch () {
         if (this.expanded) {
@@ -279,3 +283,23 @@ export class floatingManager extends ui_manager {
       }
     }
 }
+
+/*
+  +------------------------------------------------------------------------+
+  | PARENT DESIGN MANAGER                                                  |
+  +------------------------------------------------------------------------+
+*/
+export let layerLeft = el('div.layer-left.presets-container.editor-scroll');
+
+/*
+  +------------------------------------------------------------------------+
+  | PARENT PARAMETER MANAGER                                               |
+  +------------------------------------------------------------------------+
+*/
+
+export let layerRight = el('div.layer-right.parameter-container.editor-scroll');
+
+window.addEventListener('load', () => {
+  mount(document.body, layerLeft);
+  mount(document.body, layerRight);
+});

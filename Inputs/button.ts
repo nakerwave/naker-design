@@ -23,15 +23,15 @@ export class ui_button extends ui_input {
 		this.textnode = textnode;
 		if (textnode.ui == 'text') {
 			this.el = el('div', {class:className}, textnode.text);
-			mount(parent, this.el);
+			mount(this.parent, this.el);
 		}	else if (textnode.ui == 'icon') {
 			this.el = el('div', {class:className+' icon-'+textnode.text}, [el('span.path1'), el('span.path2'), el('span.path3')]);
-			mount(parent, this.el);
+			mount(this.parent, this.el);
 		} else if (textnode.ui == 'image') {
 			this.el = el('div', {class:className},
 				el('img', { src: textnode.text})
 			);
-			mount(parent, this.el);
+			mount(this.parent, this.el);
 		}
 	}
 
@@ -53,7 +53,7 @@ export class ui_imagebutton extends ui_input {
     super(parent)
 	if (!className) className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
 		this.el = el('div', {class:className});
-		mount(parent, this.el);
+		mount(this.parent, this.el);
 		this.setImage(imageurl);
 	}
 

@@ -17,7 +17,7 @@ export class ui_textinput extends ui_input {
 		super(parent, label)
 		if (!className) className = 'input-parameter input-text'
 		this.el = el('input', {class:'siimple-input '+className});
-		mount(parent, this.el);
+	  	mount(this.parent, this.el);
 		setAttr(this.el, { type: 'text', placeholder:text.toString(), onfocus:()=>{this.el.select()} });
 		this.value = text.toString();
 		this.setEvents();
@@ -29,8 +29,8 @@ export class ui_textinput extends ui_input {
 		if (value == this.el.value) return this;
 		this.value = value.toString();
 		setAttr(this.el, {value: value});
-		setStyle(this.el, {border: '2px', color: colorgrey});
-		setTimeout(()=>{setStyle(this.el, {border: '0px', color: colortext})}, 200);
+		setAttr(this.el, {changed:true});
+		setTimeout(()=>{setAttr(this.el, {changed:false})}, 200);
 		return this;
 	}
 
@@ -96,7 +96,7 @@ export class ui_paragraphinput extends ui_input {
 		setAttr(this.label, {class:'input-label input-label-paragraph'});
 		if (!className) className = 'input-paragraph editor-scroll';
 		this.el = el('textarea', {class:'siimple-input '+className, maxlength:this.max});
-		mount(parent, this.el);
+		mount(this.parent, this.el);
 		setAttr(this.el, { placeholder:text.toString() });
 		this.value = text.toString();
 		this.setEvents();
@@ -115,8 +115,8 @@ export class ui_paragraphinput extends ui_input {
 		if (value == this.el.value) return this;
 		this.value = value.toString();
 		setAttr(this.el, {value: value});
-		setStyle(this.el, {border: '2px', color: colorgrey});
-		setTimeout(()=>{setStyle(this.el, {border: '0px', color: colortext})}, 200);
+		setAttr(this.el, { changed: true });
+		setTimeout(() => { setAttr(this.el, { changed: false }) }, 200);
 		this.count.textContent = this.value.length + '/' + this.max;
 		return this;
 	}

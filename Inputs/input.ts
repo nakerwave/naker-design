@@ -3,7 +3,7 @@ import { elementEvents, ui } from '../Layers/common';
 
 import { el, mount } from 'redom';
 
-export let defaultwithinput = 105;
+export let defaultwithinput = 108;
 export let defaultleftinput = 204;
 
 export interface inputEvents extends elementEvents {

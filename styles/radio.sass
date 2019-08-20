@@ -1,0 +1,117 @@
+//
+// Siimple - minimal css framework for flat and clean websites
+// Under the MIT LICENSE.
+// License:    https://github.com/siimple/siimple/blob/master/LICENSE.md
+// Repository: https://github.com/siimple
+// Website:    https://www.siimple.xyz
+//
+@import "colors.sass"
+
+$defaultwithinput: 108px
+$defaultleftinput: 138px
+$defaultborderradius: 3px
+    
+.radio
+  height: 20px
+  width: $defaultwithinput
+  border-radius: $defaultborderradius
+  top: 1px
+  z-index: 2
+
+
+.radio-icon-button
+  display: inline-block
+  position: relative
+  font-size: 15px
+  height: 18px
+  padding-top: 4px
+  cursor: pointer
+  text-align: center
+  transition: all 200ms ease
+  background: $colorthirdgrey
+  color: rgba(red($colortext), green($colortext), blue($colortext), 0.5)
+  &:hover
+    color: rgba(red($colortext), green($colortext), blue($colortext), 1)
+
+.radio-selected
+  background: $colormain
+  color: $colortext
+
+.radio-label
+  width: 100px
+  position: relative
+  left: 22px
+  top: -15px
+  font-size: 12px
+
+//Radio variables
+$siimple-radio-width: 16px
+$siimple-radio-height: 16px
+$siimple-radio-margin: 4px
+
+//Outer circle radio border
+$siimple-radio-border: 3px
+
+//Inner circe radio width
+$siimple-radio-circle: 6px
+
+//Radio inactive variables
+$siimple-radio-inactive-border-color: $colorthirdgrey
+$siimple-radio-inactive-background-color: $colorthirdgrey
+
+//Radio active variables
+$siimple-radio-active-background-color: $colormain
+$siimple-radio-active-border-color: $colormain
+
+//Radio class
+.radio-option
+    width: $siimple-radio-width
+    height: $siimple-radio-height
+    position: relative
+    vertical-align: top
+    margin: $siimple-radio-margin
+    cursor: pointer
+    
+    //Radio outer circle
+    label
+        display: block
+        width: calc(#{$siimple-radio-width} - 2 * #{$siimple-radio-border})
+        height: calc(#{$siimple-radio-height} - 2 * #{$siimple-radio-border})
+        position: absolute
+        top: 0px
+        left: 0px
+        border-radius: 100px
+        border-width: $siimple-radio-border
+        border-style: solid
+        border-color: $siimple-radio-inactive-border-color
+        transition: border-color 0.3s ease
+        cursor: pointer
+
+    //Radio inner circle
+    label:after
+        position: absolute
+        display: block
+        content: ""
+        width: $siimple-radio-circle
+        height: $siimple-radio-circle
+        background-color: transparent
+        border-radius: 100px
+        top: calc(50% - #{$siimple-radio-circle} / 2)
+        left: calc(50% - #{$siimple-radio-circle} / 2)
+        transition: all 0.3s ease
+    
+    &:hover > label:after
+        background-color: $siimple-radio-inactive-background-color
+
+    
+    //Hide radio input
+    input[type=radio]
+        visibility: hidden
+    
+    //Checked -> change tick
+    input[type=radio]:checked + label:after
+        background-color: $siimple-radio-active-background-color
+    
+    //Checked -> change background
+    input[type=radio]:checked + label
+        border-color: $siimple-radio-active-border-color

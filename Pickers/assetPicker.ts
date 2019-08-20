@@ -99,7 +99,7 @@ export class ui_assetbutton extends ui_assetinput {
 				this.asseticon = el('div.icon-texture.erase-icon', {onclick:(evt)=>{this.checkErase(evt)}, onmouseenter:()=>{this.mouseEnter()}, onmouseleave:()=>{this.mouseLeave()}}, [el('span.path1'),el('span.path2'),el('span.path3')])
 			]
 		);
-		mount(parent, this.el);
+		mount(this.parent, this.el);
 		if (assetoption.url) this.setValue(assetoption.url);
 	}
 
@@ -170,7 +170,7 @@ export class ui_imageassetbutton extends ui_assetinput {
 				this.text = el('div.image-hover-text', '')
 			]
 		);
-		mount(parent, this.el);
+		mount(this.parent, this.el);
 		if (assetoption.url) this.setValue(assetoption.url);
 	}
 
@@ -180,16 +180,16 @@ export class ui_imageassetbutton extends ui_assetinput {
 		if (url !== undefined && url !== null) {
 			// Asset not loaded before or not currently loading
 			let image:string;
-			if (!thumbnail) image = url.substr(url.lastIndexOf('/') + 1);
-			else image = image.substr(image.lastIndexOf('/') + 1);
+			if (!thumbnail) image = url;
+			else image = thumbnail;
 			if (image.indexOf('http') != -1) {
 				setStyle(this.image, {display:'block'});
 				setStyle(this.text, {display:'none'});
-				setAttr(this.image, {src:image});
+				setAttr(this.image, { src: image });
 			} else {
 				setStyle(this.text, {display:'block'});
 				setStyle(this.image, {display:'none'});
-				this.text.textContent = image;
+				this.text.textContent = url.substr(url.lastIndexOf('/') + 1);
 			}
 			this.hover.textContent = 'Replace '+this.type;
 		} else {
@@ -224,7 +224,7 @@ export class ui_textassetbutton extends ui_assetinput {
 			],
 			this.asseticon = el('div.icon-'+this.type+'.text-erase-icon', {onclick:(evt)=>{this.checkErase(evt)}, onmouseenter:()=>{this.mouseEnter()}, onmouseleave:()=>{this.mouseLeave()}}, [el('span.path1'),el('span.path2'),el('span.path3')])
 		);
-		mount(parent, this.el);
+		mount(this.parent, this.el);
 		if (assetoption.url) this.setValue(assetoption.url);
 	}
 
@@ -275,11 +275,11 @@ export class ui_assetpicker extends ui {
 
 	constructor () {
 		super();
-		this.el = el('div', {id:'assetpicker', class:'picker asset-picker editor-scroll'});
-
-		mount(document.body, this.el);
-		this.hide();
-		return this;
+		window.addEventListener('load', () => {
+			this.el = el('div', {id:'assetpicker', class:'picker asset-picker editor-scroll'});
+			mount(document.body, this.el);
+			this.hide();
+		})
 	}
 
 	currentInput:ui_assetinput;

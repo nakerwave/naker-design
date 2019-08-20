@@ -37,7 +37,7 @@ export class ui_numberinput extends ui_input {
 		if (number.width !== undefined) this.width = number.width;
 		if (number.left !== undefined) this.left = number.left;
 		setStyle(this.el, {width:this.width+'px', left:this.left.toString()+'px'})
-		mount(parent, this.el);
+		mount(this.parent, this.el);
 		if (number.value) setAttr(this.el, {value: number.value});
 		let step = (number.step)? number.step : 0.1;
 		this.value = number.value;
@@ -46,7 +46,6 @@ export class ui_numberinput extends ui_input {
 		if (number.decimal !== undefined) this.decimal = number.decimal;
 		this.setUnit(number);
 		this.setEvents();
-		return this;
 	}
 
 	setMinMax (number:numberoption) {
@@ -162,14 +161,15 @@ export class ui_vectorinput extends ui_input {
 
     numberInputs:any = {};
     constructor (parent:HTMLElement, label:string, numberoption:numberoption) {
-        super(parent, label);
-        setAttr(this.parent, {class:'vector-container'});
+		super(parent, label);
+		let vectorContainer = el('div.vector-container')
+		mount(this.parent, vectorContainer);
         let i = 0;
         for (let key in {x:0, y:0, z:0}) {
             let vectoroption = merge(numberoption, {value:0, unit:key.toUpperCase(), width:50, left:i*54, decimal:2});
-            this.numberInputs[key] = new ui_numberinput(parent, '', vectoroption);
+			this.numberInputs[key] = new ui_numberinput(parent, '', vectoroption);
             unmount(parent, this.numberInputs[key].parent);
-            mount(this.parent, this.numberInputs[key].el);
+			mount(vectorContainer, this.numberInputs[key].el);
             setAttr(this.numberInputs[key].el, {class:'vector-input'});
           i++;
         }

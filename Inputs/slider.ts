@@ -31,7 +31,8 @@ export class ui_slider extends ui_input {
 	noUiSlider:noUiSlider;
 
   constructor(parent:HTMLElement, label:string, slideroption:slideroption) {
-		super(parent, label)
+		super(parent, label);
+	  	setAttr(this.parent, { class:'input-container input-container-big' });
 		this.el = parent;
 		this.defaultValue = slideroption.value;
 		this.min = slideroption.min;
@@ -40,9 +41,9 @@ export class ui_slider extends ui_input {
 		if (slideroption.curve) this.curve = slideroption.curve;
 		let value = this.checkAccuracy(slideroption.value);
 		this.formerValue = value;
-		this.createSlider(parent, value);
+		this.createSlider(this.parent, value);
 		this.number = el('input.rangenumber.input-parameter', { type: 'number', value:value, min:this.min, max:this.max, step:this.step })
-		mount(parent, this.number);
+		mount(this.parent, this.number);
 		return this;
 	}
 

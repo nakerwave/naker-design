@@ -22,7 +22,7 @@ export class ui_select extends ui_input {
   constructor(parent:HTMLElement, label:string, selectoption:selectoption) {
 		super(parent, label)
 		this.el = el('div.select.siimple-select.input-parameter');
-		mount(parent, this.el);
+	  	mount(this.parent, this.el);
 		this.el.textContent = selectoption.value;
 		this.setInput(selectoption);
 		this.setEvents();

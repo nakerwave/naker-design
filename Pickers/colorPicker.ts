@@ -14,12 +14,8 @@ import clone from 'lodash/clone';
 
 export interface coloroption {
 	opacity:boolean,
+	removable?: boolean,
 	color?:Array<number>,
-}
-
-export interface duoColors {
-	main:string,
-	second:string,
 }
 
 export class ui_colorbutton extends ui_input {
@@ -30,11 +26,9 @@ export class ui_colorbutton extends ui_input {
 	colorel:HTMLElement;
 	coloricon:HTMLElement;
 	colorbutton:HTMLElement;
-	duoColors:duoColors;
 
-	constructor(parent:HTMLElement, label:string, coloroption:coloroption, duoColors:duoColors) {
+	constructor(parent:HTMLElement, label:string, coloroption:coloroption) {
     	super(parent, label);
-		this.duoColors = duoColors;
 		this.opacity = coloroption.opacity;
 		this.el = el('div.input-parameter',
 			[
@@ -46,7 +40,8 @@ export class ui_colorbutton extends ui_input {
 				)
 			]
 		);
-		mount(parent, this.el);
+		mount(this.parent, this.el);
+		if (coloroption.removable === false) setStyle(this.coloricon, { display: 'none' });
 		if (coloroption.color) this.setValue(coloroption.color);
 	}
 
@@ -68,21 +63,21 @@ export class ui_colorbutton extends ui_input {
 	}
 
 	setValue (rgba:Array<number>, frompicker?:any) {
-		this.rgba = clone(rgba);
-		let stringRgba = clone(rgba);
 		if (rgba == undefined) return this.erase(frompicker);
 		if (rgba[0] == null) return this.erase(frompicker); // history change
+		this.rgba = clone(rgba);
+		let stringRgba = clone(rgba);
 		if (rgba[3] == undefined || !this.opacity) stringRgba[3] = 1;
 		let color = 'rgba('+stringRgba[0]+', '+stringRgba[1]+', '+stringRgba[2]+', '+stringRgba[3]+')';
 		setStyle(this.colorel, {'background-color':color});
-		setStyle(this.coloricon, {'color':this.duoColors.main});
+		setAttr(this.coloricon, {active:true});
 		if (this.events.change && frompicker) this.events.change(this.rgba);
 		return this;
 	}
 
 	erase (frompicker?:any) {
-		setStyle(this.colorel, {'background-color':'none'});
-		setStyle(this.coloricon, {'color':this.duoColors.second});
+		setStyle(this.colorel, { 'background-color':'rgba(0,0,0,0)'});
+		setAttr(this.coloricon, {active:false});
 		if (this.events.change && frompicker) this.events.change(undefined);
 		if (this.events.blur && frompicker) this.events.blur(undefined);
 	}
@@ -92,14 +87,14 @@ export class ui_colorbutton extends ui_input {
 
 	focus () {
 		this.startrgba = this.rgba;
-		setStyle(this.colorbutton, {'border-color':this.duoColors.main})
+		setAttr(this.colorbutton, { active: true });
 		colorpicker.setCurrentInput(this);
 		if (this.events.focus) this.events.focus(this.rgba);
 	}
 
 	blurEvent (picker?:any) {
 		if (this.events.blur && picker && this.startrgba != this.rgba) this.events.blur(this.rgba);
-		setStyle(this.colorbutton, {'border-color':this.duoColors.second})
+		setAttr(this.colorbutton, {active:false});
 	}
 
 	on (event:string, funct:Function) {
@@ -198,10 +193,10 @@ export class ui_colorpicker extends ui {
 	}
 
 	setPickerPosition () {
-		let pos = this.currentInput.input.getBoundingClientRect();
+		let pos = this.currentInput.el.getBoundingClientRect();
 		let y = Math.min(pos.top - 80, window.innerHeight - 230);
 		y = Math.max(y, 0);
-		setStyle(this.el, {left: pos.left - 345 + 'px', top: y + 'px'});
+		setStyle(this.el, {left: pos.left - 285 + 'px', top: y + 'px'});
 	}
 }
 

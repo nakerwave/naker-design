@@ -15,14 +15,14 @@ export class ui_checkbox extends ui_input {
 		super(parent, label)
 		let key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-		let div = el('div', {class:'siimple-checkbox input-parameter'},
+	  let div = el('div.main-checkbox.input-parameter',
 			[
-				this.el = el('input', {class:'checkbox', type: 'checkbox', checked:checked, id:'myCheckbox'+key}),
-				el('label', {class:'checkbox', for:'myCheckbox'+key})
+				this.el = el('input.checkbox', {type: 'checkbox', checked:checked, id:'myCheckbox'+key}),
+				el('label.checkbox', {for:'myCheckbox'+key})
 			]
 		);
 
-		mount(parent, div);
+		mount(this.parent, div);
 		return this;
 	}
 

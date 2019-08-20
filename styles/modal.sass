@@ -1,0 +1,116 @@
+
+@import 'colors'
+
+/***************************************** MODAL ****************************************
+.modal
+  position: absolute
+  width: 600px
+  height: auto
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  border-radius: 5px
+  background: $colorlight
+  z-index: 40
+
+.modal-background
+  position: absolute
+  display: none
+  top: 0px
+  left: 0px
+  width: 100%
+  height: 100%
+  background-color: $colordarkgrey
+  opacity: 0
+  z-index: 30
+  cursor: auto
+
+.modal-title
+  position: absolute
+  top: 5px
+  font-size: 20px
+  color: $colorlight
+  width: 100%
+  text-align: center
+  height: 15px
+
+.modal-title-background
+  position: relative
+  left: 0px
+  top: 0px
+  background-color: $colormain
+  width: 100%
+  height: 60px
+  opacity: 1
+  border-radius: 5px 5px 0px 0px
+
+.modal-description
+  position: absolute
+  top: 35px
+  font-size: 16px
+  color: $colorlight
+  width: 100%
+  height: 30px
+  text-align: center
+
+.modal-explanation
+  color: $colordarkgrey
+  font-size: 16px
+  margin: 5px 20px
+  padding: 10px
+
+.modal-icon
+  position: absolute
+  left: 15px
+  top: 15px
+  width: 40px
+  height: 40px
+  border: 0px
+  z-index: 100
+  color: $colordarkgrey
+  float: center
+  border-radius: 5px
+  font-size: 30px
+
+.modal-icon
+  .path1:before
+    color: $colordarkgrey
+  .path2:before
+    color: $colordarkgrey
+  .path3:before
+    color: $colordarkgrey
+
+.modal-code
+    position: relative
+    width: auto
+    height: auto
+    margin: 20px
+    padding: 10px
+    border-radius: 5px
+    background: $colorgrey
+    color: $colorlight
+    text-align: center
+    word-wrap: break-word
+    cursor: pointer
+
+.modal-copied
+    position: absolute
+    width: 100%
+    height: 100%
+    top: 0px
+    left: 0px
+    border-radius: 5px
+    line-height: 160px
+    background: rgba($colorsuccess, 0.9)
+
+.modal-close
+    position: absolute
+    top: 60px
+    right: 20px
+    font-size: 30px
+    cursor: pointer
+
+.modal-input
+    left: 50%
+    transform: translateX(-50%)
+    position: relative

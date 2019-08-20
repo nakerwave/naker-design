@@ -1,0 +1,89 @@
+
+@import 'colors'
+    
+body
+  font-family: 'Raleway'
+
+.layer-right
+  position: fixed
+  top: 0px
+  right: 0px
+  width: 250px
+  height: 100%
+  transition: all 100ms ease
+  background: $colorlightgrey
+
+.editor-scroll
+  overflow-y: auto
+  overflow-x: hidden
+  &::-webkit-scrollbar
+    width: 5px
+  &::-webkit-scrollbar-track
+    border-radius: 5px
+    background: $colorgrey
+  &::-webkit-scrollbar-thumb
+    border-radius: 5px
+    background: $colormain
+
+.parameter-container
+  z-index: 10
+  background: $colorgrey
+
+.parameter-list-container
+  position: relative
+  top: 0px
+  right: 0px
+  width: 250px
+  height: calc(100% - 42px)
+  z-index: 10
+
+.parameter-group
+  position: relative
+  width: 250px
+  height: auto
+  color: $colortext
+  padding-bottom: 5px
+  background: $colorgrey
+  border-bottom: 2px solid $colordarkgrey
+  overflow: hidden
+
+.parameter-title
+  position: relative
+  left: 3px
+  font-size: 16px
+  font-weight: 800
+  width: 100%
+  padding: 5px
+  margin-bottom: 5px
+  color: $colormain
+  height: 17px
+
+.title-text
+  position: absolute
+  left: 20px
+
+.title-expand
+    position: absolute
+    top: 9px
+    left: 5px
+    font-size: 10px
+    font-weight: 800
+    cursor: pointer
+    transition: all 200ms ease
+    transform: rotateZ(90deg)
+
+.parameter-subtitle
+  position: relative
+  font-size: 16px
+  font-weight: 800
+  width: 100%
+  padding: 5px
+  margin-bottom: 5px
+  margin-top: 5px
+  color: $colormain
+  height: 12px
+
+.font-style-container
+  position: relative
+  width: 200px
+  height: 100px
