@@ -10,13 +10,12 @@ import { el, mount, setAttr } from 'redom';
 */
 
 export class ui_checkbox extends ui_input {
-	label:HTMLElement;
 
-  constructor(parent:any, checked:boolean, className:string) {
-		super();
+  constructor(parent:HTMLElement, label:string, checked:boolean) {
+		super(parent, label)
 		let key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-		let div = el('div', {class:'siimple-checkbox '+className},
+		let div = el('div', {class:'siimple-checkbox input-parameter'},
 			[
 				this.el = el('input', {class:'checkbox', type: 'checkbox', checked:checked, id:'myCheckbox'+key}),
 				el('label', {class:'checkbox', for:'myCheckbox'+key})

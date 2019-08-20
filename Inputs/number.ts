@@ -1,7 +1,8 @@
 
 import { ui_input, inputEvents, defaultleftinput } from './input';
 
-import { el, mount, setAttr, setStyle } from 'redom';
+import { el, unmount, mount, setAttr, setStyle } from 'redom';
+import merge from 'lodash/merge';
 
 /*
   +------------------------------------------------------------------------+
@@ -22,7 +23,6 @@ export interface numberoption {
 
 export class ui_numberinput extends ui_input {
 
-	label:HTMLElement;
 	unit:any;
 	value:number;
 	width = 40;
@@ -31,9 +31,9 @@ export class ui_numberinput extends ui_input {
 	min:number;
 	decimal:number;
 
-	constructor (parent:any, number:numberoption, className:string) {
-		super();
-		this.el = el('input', {class:'siimple-input '+className});
+	constructor (parent:HTMLElement, label:string, number:numberoption) {
+		super(parent, label)
+		this.el = el('input.siimple-input.input-parameter');
 		if (number.width !== undefined) this.width = number.width;
 		if (number.left !== undefined) this.left = number.left;
 		setStyle(this.el, {width:this.width+'px', left:this.left.toString()+'px'})
@@ -150,4 +150,41 @@ export class ui_numberinput extends ui_input {
 		});
 		return this;
 	}
+}
+
+/*
+  +------------------------------------------------------------------------+
+  | VECTOR                                                                 |
+  +------------------------------------------------------------------------+
+*/
+
+export class ui_vectorinput extends ui_input {
+
+    numberInputs:any = {};
+    constructor (parent:HTMLElement, label:string, numberoption:numberoption) {
+        super(parent, label);
+        setAttr(this.parent, {class:'vector-container'});
+        let i = 0;
+        for (let key in {x:0, y:0, z:0}) {
+            let vectoroption = merge(numberoption, {value:0, unit:key.toUpperCase(), width:50, left:i*54, decimal:2});
+            this.numberInputs[key] = new ui_numberinput(parent, '', vectoroption);
+            unmount(parent, this.numberInputs[key].parent);
+            mount(this.parent, this.numberInputs[key].el);
+            setAttr(this.numberInputs[key].el, {class:'vector-input'});
+          i++;
+        }
+    }
+
+    on (event:string, funct:Function) {
+        for (let key in this.numberInputs) {
+            ((key)=>{
+                this.numberInputs[key].on(event, (number) => {
+                    let change = {};
+                    change[key] = number;
+                    funct(change);
+                });
+            })(key)
+        }
+        return this;
+    }
 }

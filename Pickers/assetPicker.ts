@@ -1,5 +1,6 @@
 
-import { defaultwithinput, ui_input, ui_imagebutton, ui_button } from '../Inputs/input';
+import { defaultwithinput, ui_input } from '../Inputs/input';
+import {  ui_imagebutton, ui_button } from '../Inputs/button';
 import { ui } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle } from 'redom';
@@ -21,8 +22,8 @@ export class ui_assetinput extends ui_input {
 	url:string;
 	type:string;
 
-	constructor(assetoption:asset) {
-		super();
+	constructor(parent:HTMLElement, label:string, assetoption:asset) {
+		super(parent, label);
 		this.url = assetoption.url;
 		this.type = assetoption.type;
 	}
@@ -85,9 +86,9 @@ export class ui_assetbutton extends ui_assetinput {
 	assetbutton:HTMLElement;
 	asseticon:HTMLElement;
 
-	constructor(parent:HTMLElement, assetoption:asset, className:string) {
-    super(assetoption);
-		this.el = el('div', {class:' '+className},
+	constructor(parent:HTMLElement, label:string, assetoption:asset) {
+        super(parent, label, assetoption);
+		this.el = el('div.input-parameter',
 			[
 				this.assetbutton = el('div.picker-button', {onclick:()=>{this.focus()}},
 					[
@@ -116,7 +117,7 @@ export class ui_assetbutton extends ui_assetinput {
 				setStyle(this.image, {display:'none'});
 				this.text.textContent = image;
 			}
-			setStyle(this.asseticon, {'color':colormain});
+			// setStyle(this.asseticon, {'color':colormain});
 		} else {
 			this.erase(frompicker);
 		}
@@ -140,7 +141,7 @@ export class ui_assetbutton extends ui_assetinput {
 	erase (frompicker?:any) {
 		setStyle(this.image, {display:'none'});
 		setStyle(this.text, {display:'none'});
-		setStyle(this.asseticon, {'color':colorthirdgrey});
+		// setStyle(this.asseticon, {'color':colorthirdgrey});
 		if (this.events.change && frompicker) this.events.change(undefined);
 		if (frompicker) this.blurEvent();
 	}
@@ -160,9 +161,9 @@ export class ui_imageassetbutton extends ui_assetinput {
 	label:HTMLElement;
 	container:HTMLElement;
 
-	constructor(parent:HTMLElement, assetoption:asset, className:string) {
-    	super(assetoption);
-		this.el = el('div', {class:'input-asset-image '+className, onclick:()=>{this.focus()}},
+	constructor(parent:HTMLElement, label:string, assetoption:asset) {
+        super(parent, label, assetoption);
+		this.el = el('div.input-asset-image.input-parameter', {class:'', onclick:()=>{this.focus()}},
 			[
 				this.hover = el('div.image-hover', el('div.image-hover-text', 'Replace '+this.type)),
 				this.image = el('img', { src: '', style: {width:defaultwithinput+'px', 'background-size': 'contain', display:'none'} }),
@@ -214,9 +215,9 @@ export class ui_textassetbutton extends ui_assetinput {
 	label:HTMLElement;
 	asseticon:HTMLElement;
 
-	constructor(parent:HTMLElement, assetoption:asset, className:string) {
-    super(assetoption);
-		this.el = el('div', {class:'input-asset-text '+className, onclick:()=>{this.focus()}},
+	constructor(parent:HTMLElement, label:string, assetoption:asset) {
+    super(parent, label, assetoption);
+		this.el = el('div.input-asset-text.input-parameter', {onclick:()=>{this.focus()}},
 			[
 				this.hover = el('div.text-hover', 'Replace'),
 				this.text = el('div.text-asset-name', '')
@@ -248,11 +249,11 @@ export class ui_textassetbutton extends ui_assetinput {
 			else text = thumbnail;
 			this.text.textContent = text;
 			this.hover.textContent = 'Replace';
-			setStyle(this.asseticon, {'color':colormain});
+			// setStyle(this.asseticon, {'color':colormain});
 		} else {
 			this.text.textContent = 'No '+this.type;
 			this.hover.textContent = 'Add '+this.type;
-			setStyle(this.asseticon, {'color':colorthirdgrey});
+			// setStyle(this.asseticon, {'color':colorthirdgrey});
 		}
 		return this;
 	}

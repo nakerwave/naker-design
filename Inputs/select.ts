@@ -19,9 +19,9 @@ export class ui_select extends ui_input {
 	options:Array<string>;
 	label:HTMLElement;
 
-  constructor(parent:any, selectoption:selectoption, className:string) {
-		super();
-		this.el = el('div', { class:'select siimple-select '+className })
+  constructor(parent:HTMLElement, label:string, selectoption:selectoption) {
+		super(parent, label)
+		this.el = el('div.select.siimple-select.input-parameter');
 		mount(parent, this.el);
 		this.el.textContent = selectoption.value;
 		this.setInput(selectoption);

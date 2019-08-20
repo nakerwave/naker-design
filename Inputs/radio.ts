@@ -1,13 +1,7 @@
 
 import { ui_input, inputEvents, defaultwithinput } from './input';
 
-import { el, mount, setAttr, setStyle, setChildren } from 'redom';
-
-/*
-  +------------------------------------------------------------------------+
-  | TEXT INPUT                                                             |
-  +------------------------------------------------------------------------+
-*/
+import { el, mount, setAttr, setStyle, setChildren, RedomElement } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
@@ -24,22 +18,22 @@ export class ui_radio extends ui_input {
 	option:Array<string>;
 	label:HTMLElement;
 
-  constructor(parent:any, radiooption:radiooption, className:string) {
-		super();
-		this.el = el('div', { class:'radio '+className })
+  constructor(parent:HTMLElement, label:string, radiooption:radiooption) {
+		super(parent, label)
+		this.el = el('div.radio.input-parameter');
 		mount(parent, this.el);
 		setStyle(parent, {height:22 * radiooption.list.length+'px'});
 		this.setInput(radiooption);
 		return this;
 	}
 
-	radiobuttons:Array<any> = [];
-	radionodes:Array<any> = [];
+	radiobuttons:Array<RedomElement> = [];
+	radionodes:Array<RedomElement> = [];
 	setInput (radiooption:radiooption) {
 		this.option = radiooption.list;
 		for (let i = 0; i < this.option.length; i++) {
 			let label = this.option[i]
-			let radiobutton;
+			let radiobutton:RedomElement;
 			let div = el('div', {class:'siimple-radio'},
 				[
 					radiobutton = el('input', {type: 'radio', id:label}),
@@ -53,7 +47,7 @@ export class ui_radio extends ui_input {
 			mount(div, radiolabel);
 			if (label == radiooption.value) setAttr(radiobutton, {checked:true});
 		}
-		setChildren(this.el, [this.radionodes]);
+		setChildren(this.el, this.radionodes);
 	}
 
 	setValue (value:string) {
@@ -101,26 +95,32 @@ export class ui_radioicon extends ui_input {
 	linenumber:number;
 	row:any;
 
-  constructor(parent:any, radiooption:radioiconoption, className:string) {
-		super();
+  constructor(parent:HTMLElement, label:string, radiooption:radioiconoption) {
+		super(parent, label)
 		this.option = radiooption.list;
 		this.iconperline = radiooption.iconperline;
 		this.linenumber = Math.ceil(radiooption.list.length/radiooption.iconperline);
-		this.el = el('div', { class:'radio '+className })
+		this.el = el('div.input-parameter')
 		mount(parent, this.el);
 		setStyle(parent, {height:(this.linenumber*22+2).toString()+'px'});
 		setStyle(this.el, {height:(this.linenumber*22).toString()+'px'});
 		setStyle(this.el, {'z-index':2, overflow: 'hidden'});
-		this.setInput(radiooption);
+		this.setInput(label, radiooption);
 		return this;
 	}
 
 	radiobuttons:Array<any> = [];
-	setInput (radiooption:radioiconoption) {
+	setInput (label:string, radiooption:radioiconoption) {
 		let width = defaultwithinput/this.iconperline;
 		for (let i = 0; i < this.option.length; i++) {
-			let label = this.option[i];
-			let radiobutton = el('div.radio-icon-button.icon-'+label, {id:label, style:{width:width+'px'}},
+			let value = this.option[i];
+			let radiobutton = el('div.radio-icon-button.icon-'+value,
+				{
+					id:value,
+					style:{width:width+'px'},
+					onmouseenter:(evt:Event) => {this.label.textContent = label+' '+value},
+					onmouseleave:(evt:Event) => {this.label.textContent = label},
+				},
 				[el('span.path1'), el('span.path2'), el('span.path3')]
 			);
 			this.radiobuttons.push(radiobutton);

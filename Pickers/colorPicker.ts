@@ -32,11 +32,11 @@ export class ui_colorbutton extends ui_input {
 	colorbutton:HTMLElement;
 	duoColors:duoColors;
 
-	constructor(parent:any, coloroption:coloroption, className:string, duoColors:duoColors) {
-    	super();
+	constructor(parent:HTMLElement, label:string, coloroption:coloroption, duoColors:duoColors) {
+    	super(parent, label);
 		this.duoColors = duoColors;
 		this.opacity = coloroption.opacity;
-		this.input = el('div', {class:' '+className},
+		this.el = el('div.input-parameter',
 			[
 				this.colorbutton = el('div.picker-button.color-default-background', {onclick:()=>{this.focus()}},
 					this.colorel = el('div.color-background')
@@ -46,7 +46,7 @@ export class ui_colorbutton extends ui_input {
 				)
 			]
 		);
-		mount(parent, this.input);
+		mount(parent, this.el);
 		if (coloroption.color) this.setValue(coloroption.color);
 	}
 

@@ -17,8 +17,9 @@ export interface textnode {
 export class ui_button extends ui_input {
 	textnode:textnode;
 
-	constructor(parent:any, textnode:textnode, className:string) {
-    super();
+	constructor(parent:HTMLElement, textnode:textnode, className?:string) {
+    super(parent)
+	if (!className) className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
 		this.textnode = textnode;
 		if (textnode.ui == 'text') {
 			this.el = el('div', {class:className}, textnode.text);
@@ -46,10 +47,11 @@ export class ui_button extends ui_input {
 */
 
 export class ui_imagebutton extends ui_input {
-	image:any;
+	image:HTMLElement;
 
-	constructor(parent:any, imageurl:string, className:string) {
-    super();
+	constructor(parent:HTMLElement, imageurl:string, className?:string) {
+    super(parent)
+	if (!className) className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
 		this.el = el('div', {class:className});
 		mount(parent, this.el);
 		this.setImage(imageurl);

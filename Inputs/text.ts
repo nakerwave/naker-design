@@ -13,8 +13,9 @@ export class ui_textinput extends ui_input {
 	label:HTMLElement;
 	value:string;
 
-  constructor(parent:any, text:string, className:string) {
-		super();
+  constructor(parent:HTMLElement, label:string, text:string, className?:string) {
+		super(parent, label)
+		if (!className) className = 'input-parameter input-text'
 		this.el = el('input', {class:'siimple-input '+className});
 		mount(parent, this.el);
 		setAttr(this.el, { type: 'text', placeholder:text.toString(), onfocus:()=>{this.el.select()} });
@@ -90,8 +91,10 @@ export class ui_paragraphinput extends ui_input {
 	value:string;
 	max = 300;
 
-  constructor(parent:any, text:string, className:string) {
-		super();
+  constructor(parent:HTMLElement, label:string, text:string, className?:string) {
+		super(parent, label);
+		setAttr(this.label, {class:'input-label input-label-paragraph'});
+		if (!className) className = 'input-paragraph editor-scroll';
 		this.el = el('textarea', {class:'siimple-input '+className, maxlength:this.max});
 		mount(parent, this.el);
 		setAttr(this.el, { placeholder:text.toString() });
