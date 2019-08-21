@@ -5,7 +5,7 @@ import { ui_checkbox } from '../Inputs/checkbox';
 import { ui_slider, slideroption } from '../Inputs/slider';
 import { ui_radio, radiooption, ui_radioicon, radioiconoption } from '../Inputs/radio';
 import { ui_select, selectoption } from '../Inputs/select';
-import { coloroption } from '../Pickers/colorPicker';
+import { ui_colorbutton, coloroption } from '../Pickers/colorPicker';
 import { ui_assetbutton, ui_imageassetbutton, ui_textassetbutton } from '../Pickers/assetPicker';
 import { asset } from '../Pickers/assetPicker';
 export interface manageroption {
@@ -27,14 +27,11 @@ export declare class ui_manager {
     addTextInput(label: string, text: string, callback: Function): ui_textinput;
     addParagraphInput(label: string, paragraph: string, callback: Function): ui_paragraphinput;
     currentCallback: any;
-    addColorInput(label: string, coloroption: coloroption, callback: Function): any;
+    addColorInput(label: string, coloroption: coloroption, callback: Function): ui_colorbutton;
     addAssetInput(label: string, asset: asset, callback: Function): ui_assetbutton;
     addImageAssetInput(label: string, asset: asset, callback: Function): ui_imageassetbutton;
     addTextAssetInput(label: string, asset: asset, callback: Function): ui_textassetbutton;
-    addColorAndAssetInput(label: string, coloroption: coloroption, asset: asset, callback: Function): {
-        color: any;
-        asset: any;
-    };
+    addColorAndAssetInput(label: string, coloroption: coloroption, asset: asset, callback: Function): void;
     addCheckBox(label: string, checked: boolean, callback: Function): ui_checkbox;
     addSlider(label: string, slideroption: slideroption, callback: Function): ui_slider;
     addRadio(label: string, radiooption: radiooption, callback: Function): ui_radio;

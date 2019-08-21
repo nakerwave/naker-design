@@ -88,7 +88,7 @@ export class ui_manager {
 
   currentCallback:any;
   addColorInput (label:string, coloroption:coloroption, callback:Function) {
-      let colorInput = new ui_colorbutton(this.el, label, coloroption, {});
+      let colorInput = new ui_colorbutton(this.el, label, coloroption);
     colorInput.on('change', (rgba) => {
       callback(rgba);
     });
@@ -132,7 +132,7 @@ export class ui_manager {
     }
 
   addColorAndAssetInput (label:string, coloroption:coloroption, asset:asset, callback:Function) {
-    let colorInput = new ui_colorbutton(this.el, label, coloroption, {});
+    let colorInput = new ui_colorbutton(this.el, label, coloroption);
     setAttr(colorInput, {class:'input-parameter-first'})
     colorInput.on('change', (rgba) => {
       callback('color', rgba);
@@ -147,7 +147,7 @@ export class ui_manager {
     // assetInput.on('blur', (url) => {
     //   undo.pushState();
     // });
-    return {color:colorInput, asset:assetInput};
+    // return {color:colorInput, asset:assetInput};
   }
 
   addCheckBox (label:string, checked:boolean, callback:Function) {

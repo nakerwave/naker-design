@@ -73,7 +73,7 @@ var ui_manager = /** @class */ (function () {
         return paragraphInput;
     };
     ui_manager.prototype.addColorInput = function (label, coloroption, callback) {
-        var colorInput = new ui_colorbutton(this.el, label, coloroption, {});
+        var colorInput = new ui_colorbutton(this.el, label, coloroption);
         colorInput.on('change', function (rgba) {
             callback(rgba);
         });
@@ -113,7 +113,7 @@ var ui_manager = /** @class */ (function () {
         return textAssetInput;
     };
     ui_manager.prototype.addColorAndAssetInput = function (label, coloroption, asset, callback) {
-        var colorInput = new ui_colorbutton(this.el, label, coloroption, {});
+        var colorInput = new ui_colorbutton(this.el, label, coloroption);
         setAttr(colorInput, { class: 'input-parameter-first' });
         colorInput.on('change', function (rgba) {
             callback('color', rgba);
@@ -128,7 +128,7 @@ var ui_manager = /** @class */ (function () {
         // assetInput.on('blur', (url) => {
         //   undo.pushState();
         // });
-        return { color: colorInput, asset: assetInput };
+        // return {color:colorInput, asset:assetInput};
     };
     ui_manager.prototype.addCheckBox = function (label, checked, callback) {
         var checkboxInput = new ui_checkbox(this.el, label, checked);

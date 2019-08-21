@@ -79,8 +79,8 @@ export class ui_numberinput extends ui_input {
 		this.value = value;
 		this.checkDecimal();
 		setAttr(this.el, {value: this.value});
-		setStyle(this.el, {border: '2px', color: colormain});
-		setTimeout(()=>{setStyle(this.el, {border: '0px', color: colortext})}, 200);
+		setAttr(this.el, { changed: true });
+		setTimeout(() => { setAttr(this.el, { changed: false }) }, 200);
 		return this;
 	}
 

@@ -75,8 +75,8 @@ var ui_numberinput = /** @class */ (function (_super) {
         this.value = value;
         this.checkDecimal();
         setAttr(this.el, { value: this.value });
-        setStyle(this.el, { border: '2px', color: colormain });
-        setTimeout(function () { setStyle(_this.el, { border: '0px', color: colortext }); }, 200);
+        setAttr(this.el, { changed: true });
+        setTimeout(function () { setAttr(_this.el, { changed: false }); }, 200);
         return this;
     };
     ui_numberinput.prototype.checkDecimal = function () {
