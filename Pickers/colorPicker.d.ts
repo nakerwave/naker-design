@@ -1,11 +1,11 @@
-import { ui_input } from '../Inputs/input';
-import { ui } from '../Layers/common';
+import { Input } from '../Inputs/input';
+import { UI } from '../Layers/common';
 export interface coloroption {
     opacity: boolean;
     removable?: boolean;
     color?: Array<number>;
 }
-export declare class ui_colorbutton extends ui_input {
+export declare class ColorButton extends Input {
     rgba: Array<number>;
     opacity: boolean;
     callback: Function;
@@ -25,7 +25,7 @@ export declare class ui_colorbutton extends ui_input {
     blurEvent(picker?: any): void;
     on(event: string, funct: Function): this;
 }
-export declare class ui_colorpicker extends ui {
+export declare class ColorPicker extends UI {
     back: HTMLElement;
     title: HTMLElement;
     picker: any;
@@ -36,8 +36,8 @@ export declare class ui_colorpicker extends ui {
     visible: boolean;
     hidePicker(): void;
     setEvent(): void;
-    currentInput: ui_colorbutton;
-    setCurrentInput(input: ui_colorbutton): void;
+    currentInput: ColorButton;
+    setCurrentInput(input: ColorButton): void;
     setPickerPosition(): void;
 }
-export declare let colorpicker: ui_colorpicker;
+export declare let colorPicker: ColorPicker;

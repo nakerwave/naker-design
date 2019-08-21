@@ -1,6 +1,6 @@
 
-import { ui_container } from './group';
-import { ui_textinput, ui_button } from './input';
+import { UI _container } from './group';
+import { TextInputinput, Button } from './input';
 import { threedJsonHelper } from '../../viewer/service/threedjsonhelper';
 import { projectInterface } from '../../viewer/service/projectInterface';
 import { animationOptions } from '../../viewer/contents/shared/animationContent';
@@ -27,7 +27,7 @@ export class inventoryClass extends ui_container {
   assetList:Array<materialOptions|animationOptions|pipelineOptions> = [];
 
   inventoryContainer:ui_container;
-  nameinput:ui_textinput;
+  nameinput:TextInputinput;
   currentname:string;
   placeholder:string;
 
@@ -90,7 +90,7 @@ export class inventoryClass extends ui_container {
     this.buttonList[name] = button;
   }
 
-  removeValue (button:ui_button, name:string) {
+  removeValue (button:Button, name:string) {
     let index = this.namelist.indexOf(name);
     if (index != -1) this.namelist.splice(index, 1);
     delete this.buttonList[name];

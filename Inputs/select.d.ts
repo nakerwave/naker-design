@@ -1,10 +1,10 @@
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 import Suggestions from 'suggestions';
 export interface selectoption {
     value: string;
     list: Array<string>;
 }
-export declare class ui_select extends ui_input {
+export declare class SelectInput extends Input {
     options: Array<string>;
     label: HTMLElement;
     constructor(parent: HTMLElement, label: string, selectoption: selectoption);

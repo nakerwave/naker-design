@@ -1,5 +1,5 @@
 
-import { ui_input } from './input';
+import { Input } from './input';
 
 import { el, mount, setChildren } from 'redom';
 
@@ -14,7 +14,7 @@ export interface textnode {
 	text:string;
 }
 
-export class ui_button extends ui_input {
+export class Button extends Input {
 	textnode:textnode;
 
 	constructor(parent:HTMLElement, textnode:textnode, className?:string) {
@@ -46,7 +46,7 @@ export class ui_button extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_imagebutton extends ui_input {
+export class ImageButton extends Input {
 	image:HTMLElement;
 
 	constructor(parent:HTMLElement, imageurl:string, className?:string) {

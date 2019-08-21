@@ -8,57 +8,57 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { defaultwithinput, ui_input } from '../Inputs/input';
-import { ui_imagebutton, ui_button } from '../Inputs/button';
-import { ui } from '../Layers/common';
+import { defaultwithinput, Input } from '../Inputs/input';
+import { ImageButton, Button } from '../Inputs/button';
+import { UI } from '../Layers/common';
 import { el, mount, setAttr, setStyle } from 'redom';
 import find from 'lodash/find';
 import remove from 'lodash/remove';
 ;
 ;
-var ui_assetinput = /** @class */ (function (_super) {
-    __extends(ui_assetinput, _super);
-    function ui_assetinput(parent, label, assetoption) {
+var BaseAssetButton = /** @class */ (function (_super) {
+    __extends(BaseAssetButton, _super);
+    function BaseAssetButton(parent, label, assetoption) {
         var _this = _super.call(this, parent, label) || this;
         _this.events = {};
         _this.url = assetoption.url;
         _this.type = assetoption.type;
         return _this;
     }
-    ui_assetinput.prototype.getThumbnail = function (url) {
+    BaseAssetButton.prototype.getThumbnail = function (url) {
         var asset = find(assetpicker.assetImages[this.type], function (o) { return o.url == url; });
         if (asset)
             return asset.thumbnail;
         else
             return url;
     };
-    ui_assetinput.prototype.setValue = function (url, frompicker) {
+    BaseAssetButton.prototype.setValue = function (url, frompicker) {
         this._setValue(url, frompicker);
     };
-    ui_assetinput.prototype._setValue = function (url, frompicker) {
+    BaseAssetButton.prototype._setValue = function (url, frompicker) {
         this.url = url;
         if (this.events.change && frompicker)
             this.events.change(url);
         var thumbnail = this.getThumbnail(url);
         return thumbnail;
     };
-    ui_assetinput.prototype.focus = function () {
+    BaseAssetButton.prototype.focus = function () {
         this.starturl = this.url;
         if (this.events.focus)
             this.events.focus(this.url, this);
         assetpicker.setCurrentInput(this);
     };
-    ui_assetinput.prototype.blurEvent = function () {
+    BaseAssetButton.prototype.blurEvent = function () {
         if (this.events.blur && this.starturl != this.url)
             this.events.blur(this.url, this);
         // In order to avoid waitedAsset changing last selected texture
         assetpicker.currentInput = undefined;
     };
-    ui_assetinput.prototype.on = function (event, funct) {
+    BaseAssetButton.prototype.on = function (event, funct) {
         this.events[event] = funct;
         return this;
     };
-    ui_assetinput.prototype.checkErase = function (evt) {
+    BaseAssetButton.prototype.checkErase = function (evt) {
         evt.stopPropagation();
         evt.preventDefault();
         if (this.url !== undefined)
@@ -66,17 +66,17 @@ var ui_assetinput = /** @class */ (function (_super) {
         else
             this.focus();
     };
-    return ui_assetinput;
-}(ui_input));
-export { ui_assetinput };
+    return BaseAssetButton;
+}(Input));
+export { BaseAssetButton };
 /*
   +------------------------------------------------------------------------+
   | ASSET BUTTON                                                           |
   +------------------------------------------------------------------------+
 */
-var ui_assetbutton = /** @class */ (function (_super) {
-    __extends(ui_assetbutton, _super);
-    function ui_assetbutton(parent, label, assetoption) {
+var AssetButton = /** @class */ (function (_super) {
+    __extends(AssetButton, _super);
+    function AssetButton(parent, label, assetoption) {
         var _this = _super.call(this, parent, label, assetoption) || this;
         _this.el = el('div.input-parameter', [
             _this.assetbutton = el('div.picker-button', { onclick: function () { _this.focus(); } }, [
@@ -90,7 +90,7 @@ var ui_assetbutton = /** @class */ (function (_super) {
             _this.setValue(assetoption.url);
         return _this;
     }
-    ui_assetbutton.prototype.setValue = function (url, frompicker) {
+    AssetButton.prototype.setValue = function (url, frompicker) {
         if (url !== undefined && url !== null) {
             var image = url;
             var asset = find(assetpicker.assetImages[this.type], function (o) { return o.url == url; });
@@ -116,17 +116,17 @@ var ui_assetbutton = /** @class */ (function (_super) {
             this.events.change(url);
         return this;
     };
-    ui_assetbutton.prototype.mouseEnter = function () {
+    AssetButton.prototype.mouseEnter = function () {
         if (this.url !== undefined)
             this.setIcon('delete');
     };
-    ui_assetbutton.prototype.mouseLeave = function () {
+    AssetButton.prototype.mouseLeave = function () {
         this.setIcon('texture');
     };
-    ui_assetbutton.prototype.setIcon = function (icon) {
+    AssetButton.prototype.setIcon = function (icon) {
         setAttr(this.asseticon, { class: 'icon-' + icon + ' erase-icon' });
     };
-    ui_assetbutton.prototype.erase = function (frompicker) {
+    AssetButton.prototype.erase = function (frompicker) {
         setStyle(this.image, { display: 'none' });
         setStyle(this.text, { display: 'none' });
         // setStyle(this.asseticon, {'color':colorthirdgrey});
@@ -135,17 +135,17 @@ var ui_assetbutton = /** @class */ (function (_super) {
         if (frompicker)
             this.blurEvent();
     };
-    return ui_assetbutton;
-}(ui_assetinput));
-export { ui_assetbutton };
+    return AssetButton;
+}(BaseAssetButton));
+export { AssetButton };
 /*
   +------------------------------------------------------------------------+
   | IMAGE ASSET BUTTON                                                           |
   +------------------------------------------------------------------------+
 */
-var ui_imageassetbutton = /** @class */ (function (_super) {
-    __extends(ui_imageassetbutton, _super);
-    function ui_imageassetbutton(parent, label, assetoption) {
+var ImageAssetButton = /** @class */ (function (_super) {
+    __extends(ImageAssetButton, _super);
+    function ImageAssetButton(parent, label, assetoption) {
         var _this = _super.call(this, parent, label, assetoption) || this;
         _this.el = el('div.input-asset-image.input-parameter', { class: '', onclick: function () { _this.focus(); } }, [
             _this.hover = el('div.image-hover', el('div.image-hover-text', 'Replace ' + _this.type)),
@@ -157,7 +157,7 @@ var ui_imageassetbutton = /** @class */ (function (_super) {
             _this.setValue(assetoption.url);
         return _this;
     }
-    ui_imageassetbutton.prototype.setValue = function (url, frompicker) {
+    ImageAssetButton.prototype.setValue = function (url, frompicker) {
         var thumbnail = this._setValue(url, frompicker);
         if (url !== undefined && url !== null) {
             // Asset not loaded before or not currently loading
@@ -185,17 +185,17 @@ var ui_imageassetbutton = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_imageassetbutton;
-}(ui_assetinput));
-export { ui_imageassetbutton };
+    return ImageAssetButton;
+}(BaseAssetButton));
+export { ImageAssetButton };
 /*
   +------------------------------------------------------------------------+
   | TEXT ASSET BUTTON                                                           |
   +------------------------------------------------------------------------+
 */
-var ui_textassetbutton = /** @class */ (function (_super) {
-    __extends(ui_textassetbutton, _super);
-    function ui_textassetbutton(parent, label, assetoption) {
+var TextAssetbutton = /** @class */ (function (_super) {
+    __extends(TextAssetbutton, _super);
+    function TextAssetbutton(parent, label, assetoption) {
         var _this = _super.call(this, parent, label, assetoption) || this;
         _this.el = el('div.input-asset-text.input-parameter', { onclick: function () { _this.focus(); } }, [
             _this.hover = el('div.text-hover', 'Replace'),
@@ -206,17 +206,17 @@ var ui_textassetbutton = /** @class */ (function (_super) {
             _this.setValue(assetoption.url);
         return _this;
     }
-    ui_textassetbutton.prototype.mouseEnter = function () {
+    TextAssetbutton.prototype.mouseEnter = function () {
         if (this.url !== undefined)
             this.setIcon('delete');
     };
-    ui_textassetbutton.prototype.mouseLeave = function () {
+    TextAssetbutton.prototype.mouseLeave = function () {
         this.setIcon(this.type);
     };
-    ui_textassetbutton.prototype.setIcon = function (icon) {
+    TextAssetbutton.prototype.setIcon = function (icon) {
         setAttr(this.asseticon, { class: 'icon-' + icon + ' text-erase-icon' });
     };
-    ui_textassetbutton.prototype.setValue = function (url, frompicker) {
+    TextAssetbutton.prototype.setValue = function (url, frompicker) {
         var thumbnail = this._setValue(url, frompicker);
         if (url !== undefined && url !== null) {
             var text = void 0;
@@ -236,9 +236,9 @@ var ui_textassetbutton = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_textassetbutton;
-}(ui_assetinput));
-export { ui_textassetbutton };
+    return TextAssetbutton;
+}(BaseAssetButton));
+export { TextAssetbutton };
 /*
   +------------------------------------------------------------------------+
   | ASSET PICKER                                                           |
@@ -247,9 +247,9 @@ export { ui_textassetbutton };
 // Texture which are images
 export var overlayImages = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
 export var overlayAlpha = { 'albedo': false, 'ambient': false, 'specular': false, 'emissive': false, 'bump': false, 'opacity': true, 'reflectivity': false, 'reflection': false, 'particle': false, 'image': true, 'heightmap': false };
-var ui_assetpicker = /** @class */ (function (_super) {
-    __extends(ui_assetpicker, _super);
-    function ui_assetpicker() {
+var AssetPicker = /** @class */ (function (_super) {
+    __extends(AssetPicker, _super);
+    function AssetPicker() {
         var _this = _super.call(this) || this;
         _this.assetButtons = {};
         _this.assetImages = {};
@@ -263,7 +263,7 @@ var ui_assetpicker = /** @class */ (function (_super) {
         });
         return _this;
     }
-    ui_assetpicker.prototype.setCurrentInput = function (input) {
+    AssetPicker.prototype.setCurrentInput = function (input) {
         this.currentInput = input;
         this.setAssetList(input.type);
         this.show();
@@ -271,7 +271,7 @@ var ui_assetpicker = /** @class */ (function (_super) {
         this.waitingAsset = this.type;
         this.waitingInput = this.currentInput;
     };
-    ui_assetpicker.prototype.setAssetList = function (type) {
+    AssetPicker.prototype.setAssetList = function (type) {
         this.type = type;
         this.hideAsset();
         this.checkTypeButton(type);
@@ -292,7 +292,7 @@ var ui_assetpicker = /** @class */ (function (_super) {
         }
         return this;
     };
-    ui_assetpicker.prototype.checkTypeButton = function (type) {
+    AssetPicker.prototype.checkTypeButton = function (type) {
         if (overlayImages.indexOf(type) == -1) {
             if (!this.assetButtons[type])
                 this.initAssetType(type);
@@ -304,7 +304,7 @@ var ui_assetpicker = /** @class */ (function (_super) {
             }
         }
     };
-    ui_assetpicker.prototype.initAssetType = function (type) {
+    AssetPicker.prototype.initAssetType = function (type) {
         this.assetButtons[type] = [];
         if (this.assetImages[type] == undefined)
             this.assetImages[type] = [];
@@ -313,21 +313,21 @@ var ui_assetpicker = /** @class */ (function (_super) {
             this.assetButtons[type].push(this.addButton(type, asset.url, asset.thumbnail));
         }
     };
-    ui_assetpicker.prototype.hideAsset = function () {
+    AssetPicker.prototype.hideAsset = function () {
         for (var key in this.assetButtons) {
             for (var i = 0; i < this.assetButtons[key].length; i++) {
                 this.assetButtons[key][i].hide();
             }
         }
     };
-    ui_assetpicker.prototype.setAddAssetMode = function (type, callback) {
+    AssetPicker.prototype.setAddAssetMode = function (type, callback) {
         this.addAssetFunction = callback;
         this.addAssetMode = true;
         this.type = type;
         this.show();
         this.setAssetList(type);
     };
-    ui_assetpicker.prototype.addWaitedAssetButton = function (url, image) {
+    AssetPicker.prototype.addWaitedAssetButton = function (url, image) {
         if (this.waitingAsset == null)
             return;
         this.checkTypeButton(this.waitingAsset);
@@ -342,20 +342,20 @@ var ui_assetpicker = /** @class */ (function (_super) {
         }
         this.eraseCurrent();
     };
-    ui_assetpicker.prototype.addButton = function (type, url, image) {
+    AssetPicker.prototype.addButton = function (type, url, image) {
         var _this = this;
         var button;
         if (image.indexOf('http') != -1) {
             // If opacity we add the opacity background
             if (type == 'opacity') {
-                button = new ui_imagebutton(this.el, image, 'asset-button color-default-background');
+                button = new ImageButton(this.el, image, 'asset-button color-default-background');
             }
             else {
-                button = new ui_imagebutton(this.el, image, 'asset-button');
+                button = new ImageButton(this.el, image, 'asset-button');
             }
         }
         else {
-            button = new ui_button(this.el, { ui: 'text', text: image }, 'asset-button');
+            button = new Button(this.el, { ui: 'text', text: image }, 'asset-button');
         }
         button.on('click', function () {
             if (_this.addAssetMode)
@@ -365,14 +365,14 @@ var ui_assetpicker = /** @class */ (function (_super) {
             _this.hidePicker();
             _this.eraseCurrent();
         });
-        var deletebutton = new ui_button(button.el, { ui: 'icon', text: 'delete' }, 'delete-asset-button');
+        var deletebutton = new Button(button.el, { ui: 'icon', text: 'delete' }, 'delete-asset-button');
         deletebutton.on('click', function (e) {
             e.stopPropagation();
             _this.deleteAsset(button, type, image);
         });
         return button;
     };
-    ui_assetpicker.prototype.deleteAsset = function (button, type, key) {
+    AssetPicker.prototype.deleteAsset = function (button, type, key) {
         var index = this.assetButtons[type].indexOf(button);
         if (index != -1)
             this.assetButtons[type].splice(index, 1);
@@ -388,17 +388,17 @@ var ui_assetpicker = /** @class */ (function (_super) {
         button.destroy();
         this.setAssetList(type);
     };
-    ui_assetpicker.prototype.eraseCurrent = function () {
+    AssetPicker.prototype.eraseCurrent = function () {
         this.currentInput = undefined;
         this.waitingInput = null;
         this.waitingAsset = null;
     };
-    ui_assetpicker.prototype.hidePicker = function () {
+    AssetPicker.prototype.hidePicker = function () {
         this.hide();
         this.currentInput = undefined;
     };
-    return ui_assetpicker;
-}(ui));
-export { ui_assetpicker };
-export var assetpicker = new ui_assetpicker();
+    return AssetPicker;
+}(UI));
+export { AssetPicker };
+export var assetPicker = new AssetPicker();
 //# sourceMappingURL=assetPicker.js.map

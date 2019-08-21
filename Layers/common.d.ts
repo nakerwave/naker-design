@@ -12,7 +12,7 @@ export interface elementEvents {
     move?: string;
     dblclick?: string;
 }
-export declare class ui {
+export declare class UI {
     el: HTMLElement;
     renameEvent: elementEvents;
     on(event: string, funct: Function): this;

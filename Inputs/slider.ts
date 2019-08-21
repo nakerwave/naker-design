@@ -1,5 +1,5 @@
 
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, mount, setAttr } from 'redom';
 import noUiSlider from 'nouislider';
@@ -18,7 +18,7 @@ export interface slideroption {
 	curve?:'logarithmic'|'linear';
 }
 
-export class ui_slider extends ui_input {
+export class SliderInput extends Input {
 
 	label:HTMLElement;
 	number:HTMLElement;

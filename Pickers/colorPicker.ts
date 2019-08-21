@@ -1,6 +1,6 @@
 
-import { ui_input } from '../Inputs/input';
-import { ui } from '../Layers/common';
+import { Input } from '../Inputs/input';
+import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import * as AColorPicker from 'a-color-picker';
@@ -18,7 +18,7 @@ export interface coloroption {
 	color?:Array<number>,
 }
 
-export class ui_colorbutton extends ui_input {
+export class ColorButton extends Input {
 
 	rgba:Array<number>;
 	opacity:boolean;
@@ -88,7 +88,7 @@ export class ui_colorbutton extends ui_input {
 	focus () {
 		this.startrgba = this.rgba;
 		setAttr(this.colorbutton, { active: true });
-		colorpicker.setCurrentInput(this);
+		colorPicker.setCurrentInput(this);
 		if (this.events.focus) this.events.focus(this.rgba);
 	}
 
@@ -109,7 +109,7 @@ export class ui_colorbutton extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_colorpicker extends ui {
+export class P extends UI {
 
 	back:HTMLElement;
 	title:HTMLElement;
@@ -176,8 +176,8 @@ export class ui_colorpicker extends ui {
 		});
 	}
 
-	currentInput:ui_colorbutton = null;
-	setCurrentInput (input:ui_colorbutton) {
+	currentInput:ColorButton = null;
+	setCurrentInput (input:ColorButton) {
 		this.visible = true;
 		if (input.rgba == undefined) input.rgba = [0, 0, 0, 1];
 		let rgba = clone(input.rgba);
@@ -200,4 +200,4 @@ export class ui_colorpicker extends ui {
 	}
 }
 
-export let colorpicker = new ui_colorpicker();
+export let colorPicker = new ColorPicker();

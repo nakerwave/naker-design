@@ -8,12 +8,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input, defaultleftinput } from './input';
+import { Input, defaultleftinput } from './input';
 import { el, unmount, mount, setAttr, setStyle } from 'redom';
 import merge from 'lodash/merge';
-var ui_numberinput = /** @class */ (function (_super) {
-    __extends(ui_numberinput, _super);
-    function ui_numberinput(parent, label, number) {
+var NumberInputinput = /** @class */ (function (_super) {
+    __extends(NumberInputinput, _super);
+    function NumberInputinput(parent, label, number) {
         var _this = _super.call(this, parent, label) || this;
         _this.width = 40;
         _this.left = defaultleftinput;
@@ -45,14 +45,14 @@ var ui_numberinput = /** @class */ (function (_super) {
         _this.setEvents();
         return _this;
     }
-    ui_numberinput.prototype.setMinMax = function (number) {
+    NumberInputinput.prototype.setMinMax = function (number) {
         this.min = number.min;
         this.max = number.max;
         // Prevent the correct step, it can add the minimum value to the step
         // if (number.min !== undefined) setAttr(this.el, { min: number.min });
         // if (number.max !== undefined) setAttr(this.el, { max: number.max });
     };
-    ui_numberinput.prototype.setUnit = function (number) {
+    NumberInputinput.prototype.setUnit = function (number) {
         var _this = this;
         this.unit = el('div', { class: 'input-unit' });
         this.unit.textContent = number.unit;
@@ -61,12 +61,12 @@ var ui_numberinput = /** @class */ (function (_super) {
         this.on('blur', function () { setStyle(_this.unit, { display: 'block' }); });
         this.updateUnit(number.unit);
     };
-    ui_numberinput.prototype.updateUnit = function (unit) {
+    NumberInputinput.prototype.updateUnit = function (unit) {
         var unitwidth = unit.length * 10;
         setStyle(this.unit, { left: (this.left + this.width - unitwidth - 2).toString() + 'px', width: unitwidth + 'px' });
         this.unit.textContent = unit;
     };
-    ui_numberinput.prototype.setValue = function (value) {
+    NumberInputinput.prototype.setValue = function (value) {
         var _this = this;
         if (value == undefined)
             return setAttr(this.el, { value: 0 });
@@ -79,7 +79,7 @@ var ui_numberinput = /** @class */ (function (_super) {
         setTimeout(function () { setAttr(_this.el, { changed: false }); }, 200);
         return this;
     };
-    ui_numberinput.prototype.checkDecimal = function () {
+    NumberInputinput.prototype.checkDecimal = function () {
         if (this.value) {
             var abs = Math.abs(this.value);
             var decimal = abs - Math.floor(abs);
@@ -92,7 +92,7 @@ var ui_numberinput = /** @class */ (function (_super) {
         if (!this.value && this.value !== 0)
             this.value = 0;
     };
-    ui_numberinput.prototype.checkMaxMin = function () {
+    NumberInputinput.prototype.checkMaxMin = function () {
         var value = parseFloat(this.el.value);
         if (this.min)
             value = Math.max(this.min, value);
@@ -108,7 +108,7 @@ var ui_numberinput = /** @class */ (function (_super) {
             setAttr(this.el, { value: this.value });
         this.value = value;
     };
-    ui_numberinput.prototype.setEvents = function () {
+    NumberInputinput.prototype.setEvents = function () {
         var _this = this;
         this.el.addEventListener('blur', function (evt) {
             setAttr(_this.el, { value: _this.value });
@@ -124,7 +124,7 @@ var ui_numberinput = /** @class */ (function (_super) {
             }
         });
     };
-    ui_numberinput.prototype.on = function (event, funct) {
+    NumberInputinput.prototype.on = function (event, funct) {
         var _this = this;
         if (event == 'change')
             this.changeFunctions.push(funct);
@@ -141,17 +141,17 @@ var ui_numberinput = /** @class */ (function (_super) {
         });
         return this;
     };
-    return ui_numberinput;
-}(ui_input));
-export { ui_numberinput };
+    return NumberInputinput;
+}(Input));
+export { NumberInputinput };
 /*
   +------------------------------------------------------------------------+
   | VECTOR                                                                 |
   +------------------------------------------------------------------------+
 */
-var ui_vectorinput = /** @class */ (function (_super) {
-    __extends(ui_vectorinput, _super);
-    function ui_vectorinput(parent, label, numberoption) {
+var VectorInputinput = /** @class */ (function (_super) {
+    __extends(VectorInputinput, _super);
+    function VectorInputinput(parent, label, numberoption) {
         var _this = _super.call(this, parent, label) || this;
         _this.numberInputs = {};
         var vectorContainer = el('div.vector-container');
@@ -159,7 +159,7 @@ var ui_vectorinput = /** @class */ (function (_super) {
         var i = 0;
         for (var key in { x: 0, y: 0, z: 0 }) {
             var vectoroption = merge(numberoption, { value: 0, unit: key.toUpperCase(), width: 50, left: i * 54, decimal: 2 });
-            _this.numberInputs[key] = new ui_numberinput(parent, '', vectoroption);
+            _this.numberInputs[key] = new NumberInputinput(parent, '', vectoroption);
             unmount(parent, _this.numberInputs[key].parent);
             mount(vectorContainer, _this.numberInputs[key].el);
             setAttr(_this.numberInputs[key].el, { class: 'vector-input' });
@@ -167,7 +167,7 @@ var ui_vectorinput = /** @class */ (function (_super) {
         }
         return _this;
     }
-    ui_vectorinput.prototype.on = function (event, funct) {
+    VectorInputinput.prototype.on = function (event, funct) {
         var _this = this;
         for (var key in this.numberInputs) {
             (function (key) {
@@ -180,7 +180,7 @@ var ui_vectorinput = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_vectorinput;
-}(ui_input));
-export { ui_vectorinput };
+    return VectorInputinput;
+}(Input));
+export { VectorInputinput };
 //# sourceMappingURL=number.js.map

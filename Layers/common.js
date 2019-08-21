@@ -1,6 +1,6 @@
 import { unmount, setStyle } from 'redom';
-var ui = /** @class */ (function () {
-    function ui() {
+var UI = /** @class */ (function () {
+    function UI() {
         this.renameEvent = {
             click: 'click',
             down: 'mousedown',
@@ -11,7 +11,7 @@ var ui = /** @class */ (function () {
             dblclick: "dblclick",
         };
     }
-    ui.prototype.on = function (event, funct) {
+    UI.prototype.on = function (event, funct) {
         var _this = this;
         var nodeevent = this.renameEvent[event];
         this.el.addEventListener(nodeevent, function (evt) {
@@ -22,20 +22,20 @@ var ui = /** @class */ (function () {
         return this;
     };
     // TODO delete all eventlistenner properly
-    ui.prototype.destroy = function () {
+    UI.prototype.destroy = function () {
         if (this.el.parentNode)
             unmount(this.el.parentNode, this.el);
         return this;
     };
-    ui.prototype.hide = function () {
+    UI.prototype.hide = function () {
         setStyle(this.el, { display: 'none' });
         return this;
     };
-    ui.prototype.show = function () {
+    UI.prototype.show = function () {
         setStyle(this.el, { display: 'block' });
         return this;
     };
-    return ui;
+    return UI;
 }());
-export { ui };
+export { UI };
 //# sourceMappingURL=common.js.map

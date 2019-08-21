@@ -8,11 +8,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input, defaultwithinput } from './input';
+import { Input, defaultwithinput } from './input';
 import { el, mount, setAttr, setStyle, setChildren } from 'redom';
-var ui_radio = /** @class */ (function (_super) {
-    __extends(ui_radio, _super);
-    function ui_radio(parent, label, radiooption) {
+var RadioInput = /** @class */ (function (_super) {
+    __extends(RadioInput, _super);
+    function RadioInput(parent, label, radiooption) {
         var _this = _super.call(this, parent, label) || this;
         _this.radiobuttons = [];
         _this.radionodes = [];
@@ -27,7 +27,7 @@ var ui_radio = /** @class */ (function (_super) {
         _this.setInput(radiooption);
         return _this;
     }
-    ui_radio.prototype.setInput = function (radiooption) {
+    RadioInput.prototype.setInput = function (radiooption) {
         this.option = radiooption.list;
         for (var i = 0; i < this.option.length; i++) {
             var label = this.option[i];
@@ -45,7 +45,7 @@ var ui_radio = /** @class */ (function (_super) {
         }
         setChildren(this.el, this.radionodes);
     };
-    ui_radio.prototype.setValue = function (value) {
+    RadioInput.prototype.setValue = function (value) {
         if (value == undefined)
             value = this.option[0];
         for (var i = 0; i < this.option.length; i++) {
@@ -55,7 +55,7 @@ var ui_radio = /** @class */ (function (_super) {
                 setAttr(this.radiobuttons[i], { checked: false });
         }
     };
-    ui_radio.prototype.on = function (event, funct) {
+    RadioInput.prototype.on = function (event, funct) {
         var _this = this;
         for (var i = 0; i < this.radiobuttons.length; i++) {
             (function (i) {
@@ -67,12 +67,12 @@ var ui_radio = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_radio;
-}(ui_input));
-export { ui_radio };
-var ui_radioicon = /** @class */ (function (_super) {
-    __extends(ui_radioicon, _super);
-    function ui_radioicon(parent, label, radiooption) {
+    return RadioInput;
+}(Input));
+export { RadioInput };
+var RadioIconInput = /** @class */ (function (_super) {
+    __extends(RadioIconInput, _super);
+    function RadioIconInput(parent, label, radiooption) {
         var _this = _super.call(this, parent, label) || this;
         _this.radiobuttons = [];
         _this.inputEvent = {
@@ -91,7 +91,7 @@ var ui_radioicon = /** @class */ (function (_super) {
         _this.setInput(label, radiooption);
         return _this;
     }
-    ui_radioicon.prototype.setInput = function (label, radiooption) {
+    RadioIconInput.prototype.setInput = function (label, radiooption) {
         var _this = this;
         var width = defaultwithinput / this.iconperline;
         var _loop_1 = function (i) {
@@ -111,7 +111,7 @@ var ui_radioicon = /** @class */ (function (_super) {
         setChildren(this.el, this.radiobuttons);
         this.setValue(radiooption.value);
     };
-    ui_radioicon.prototype.setValue = function (value) {
+    RadioIconInput.prototype.setValue = function (value) {
         if (value == undefined)
             value = this.option[0];
         for (var i = 0; i < this.option.length; i++) {
@@ -122,7 +122,7 @@ var ui_radioicon = /** @class */ (function (_super) {
                 setAttr(this.radiobuttons[i], { class: 'radio-icon-button icon-' + label });
         }
     };
-    ui_radioicon.prototype.on = function (event, funct) {
+    RadioIconInput.prototype.on = function (event, funct) {
         var _this = this;
         for (var i = 0; i < this.radiobuttons.length; i++) {
             (function (i) {
@@ -136,7 +136,7 @@ var ui_radioicon = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_radioicon;
-}(ui_input));
-export { ui_radioicon };
+    return RadioIconInput;
+}(Input));
+export { RadioIconInput };
 //# sourceMappingURL=radio.js.map

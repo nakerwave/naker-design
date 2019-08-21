@@ -1,14 +1,14 @@
 
 // import { undo } from '../service/undo';
-import { textnode, ui_button, ui_imagebutton } from '../Inputs/button';
-import { ui_textinput, ui_paragraphinput } from '../Inputs/text';
-import { ui_numberinput, numberoption, ui_vectorinput } from '../Inputs/number';
-import { ui_checkbox } from '../Inputs/checkbox';
-import { ui_slider, slideroption } from '../Inputs/slider';
-import { ui_radio, radiooption, ui_radioicon, radioiconoption } from '../Inputs/radio';
-import { ui_select, selectoption } from '../Inputs/select';
-import { ui_colorbutton, coloroption } from '../Pickers/colorPicker';
-import { ui_assetbutton, ui_imageassetbutton, ui_textassetbutton } from '../Pickers/assetPicker';
+import { textnode, Button, ImageButton } from '../Inputs/button';
+import { TextInputinput, ParagraphInputinput } from '../Inputs/text';
+import { NumberInputinput, numberoption, VectorInputinput } from '../Inputs/number';
+import { Checkbox } from '../Inputs/checkbox';
+import { SliderInput, slideroption } from '../Inputs/slider';
+import { RadioInput, radiooption, RadioIconInput, radioiconoption } from '../Inputs/radio';
+import { SelectInput, selectoption } from '../Inputs/select';
+import { ColorButton, coloroption } from '../Pickers/colorPicker';
+import { AssetButton, ImageAssetButton, TextAssetbutton } from '../Pickers/assetPicker';
 import { asset } from '../Pickers/assetPicker';
 
 import { el, mount, unmount, setStyle, setAttr } from 'redom';
@@ -29,7 +29,7 @@ export interface manageroption {
   +------------------------------------------------------------------------+
 */
 
-export class ui_manager {
+export class InputGroup {
 
     el:HTMLElement;
     constructor (parent:HTMLElement) {
@@ -56,7 +56,7 @@ export class ui_manager {
   }
 
   addButton (textnode:textnode, callback:Function) {
-      let button = new ui_button(this.el, textnode);
+      let button = new Button(this.el, textnode);
     button.on('click', (text) => {
       callback(text);
       // undo.pushState();
@@ -65,7 +65,7 @@ export class ui_manager {
   }
 
   addTextInput (label:string, text:string, callback:Function) {
-      let textInput = new ui_textinput(this.el, label, text);
+      let textInput = new TextInputinput(this.el, label, text);
     // textInput.on('blur', (text) => {
     //   undo.pushState();
     // });
@@ -76,7 +76,7 @@ export class ui_manager {
   }
 
   addParagraphInput (label:string, paragraph:string, callback:Function) {
-    let paragraphInput = new ui_paragraphinput(this.el, label, paragraph);
+    let paragraphInput = new ParagraphInputinput(this.el, label, paragraph);
     // paragraphInput.on('blur', (paragraph) => {
     //   undo.pushState();
     // });
@@ -88,7 +88,7 @@ export class ui_manager {
 
   currentCallback:any;
   addColorInput (label:string, coloroption:coloroption, callback:Function) {
-      let colorInput = new ui_colorbutton(this.el, label, coloroption);
+      let colorInput = new ColorButton(this.el, label, coloroption);
     colorInput.on('change', (rgba) => {
       callback(rgba);
     });
@@ -99,7 +99,7 @@ export class ui_manager {
   }
 
   addAssetInput (label:string, asset:asset, callback:Function) {
-    let assetInput = new ui_assetbutton(this.el, label, asset);
+    let assetInput = new AssetButton(this.el, label, asset);
     assetInput.on('change', (url) => {
       callback(url);
     });
@@ -110,7 +110,7 @@ export class ui_manager {
   }
   
     addImageAssetInput (label:string, asset:asset, callback:Function) {
-      let imageAssetInput = new ui_imageassetbutton(this.el, label, asset);
+      let imageAssetInput = new ImageAssetButton(this.el, label, asset);
       imageAssetInput.on('change', (url) => {
         callback(url);
       });
@@ -121,7 +121,7 @@ export class ui_manager {
     }
   
     addTextAssetInput (label:string, asset:asset, callback:Function) {
-      let textAssetInput = new ui_textassetbutton(this.el, label, asset);
+      let textAssetInput = new TextAssetbutton(this.el, label, asset);
       textAssetInput.on('change', (url) => {
         callback(url);
       });
@@ -132,7 +132,7 @@ export class ui_manager {
     }
 
   addColorAndAssetInput (label:string, coloroption:coloroption, asset:asset, callback:Function) {
-    let colorInput = new ui_colorbutton(this.el, label, coloroption);
+    let colorInput = new ColorButton(this.el, label, coloroption);
     setAttr(colorInput, {class:'input-parameter-first'})
     colorInput.on('change', (rgba) => {
       callback('color', rgba);
@@ -151,7 +151,7 @@ export class ui_manager {
   }
 
   addCheckBox (label:string, checked:boolean, callback:Function) {
-    let checkboxInput = new ui_checkbox(this.el, label, checked);
+    let checkboxInput = new Checkbox(this.el, label, checked);
     checkboxInput.on('change', (checked) => {
       callback(checked);
       // undo.pushState();
@@ -160,7 +160,7 @@ export class ui_manager {
   }
 
   addSlider (label:string, slideroption:slideroption, callback:Function) {
-      let sliderInput = new ui_slider(this.el, label, slideroption);
+      let sliderInput = new SliderInput(this.el, label, slideroption);
     sliderInput.on('change', (value) => {
       callback(value);
     });
@@ -171,7 +171,7 @@ export class ui_manager {
   }
 
   addRadio (label:string, radiooption:radiooption, callback:Function) {
-    let radioInput = new ui_radio(this.el, label, radiooption);
+    let radioInput = new RadioInput(this.el, label, radiooption);
     radioInput.on('change', (value) => {
       callback(value);
       // PushState in change because blur is called before change and it won't be saved
@@ -181,7 +181,7 @@ export class ui_manager {
   }
 
   addRadioIcon (label:string, radiooption:radioiconoption, callback:Function) {
-      let radioInput = new ui_radioicon(this.el, label, radiooption);
+      let radioInput = new RadioIconInput(this.el, label, radiooption);
     radioInput.on('change', (value) => {
       callback(value);
       // PushState in change event because blur is called before change and it won't be saved
@@ -191,7 +191,7 @@ export class ui_manager {
   }
 
   addSelect (label:string, selectoption:selectoption, callback:Function) {
-      let selectInput = new ui_select(this.el, label, selectoption);
+      let selectInput = new SelectInput(this.el, label, selectoption);
     selectInput.on('change', (value) => {
       callback(value);
       // undo.pushState();
@@ -200,7 +200,7 @@ export class ui_manager {
   }
 
    addNumberInput (label:string, numberoption:numberoption, callback:Function) {
-       let numberInput = new ui_numberinput(this.el, label, numberoption);
+       let numberInput = new NumberInputinput(this.el, label, numberoption);
     numberInput.on('change', (text) => {
       callback(text);
     });
@@ -211,7 +211,7 @@ export class ui_manager {
   }
 
   addVectorInput (label:string, numberoption:numberoption, callback:Function) {
-    let vectorInput = new ui_vectorinput(this.el, label, numberoption);
+    let vectorInput = new VectorInputinput(this.el, label, numberoption);
         vectorInput.on('change', (change) => {
           callback(change);
         });
@@ -229,7 +229,7 @@ export class ui_manager {
   +------------------------------------------------------------------------+
 */
 
-export class floatingManager extends ui_manager {
+export class InputGroupSwitch extends InputGroup {
 
     title:HTMLElement;
     expand:HTMLElement;

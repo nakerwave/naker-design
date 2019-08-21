@@ -1,5 +1,5 @@
-import { ui_input, inputEvents } from './input';
-export declare class ui_checkbox extends ui_input {
+import { Input, inputEvents } from './input';
+export declare class Checkbox extends Input {
     constructor(parent: HTMLElement, label: string, checked: boolean);
     setValue(checked: boolean): void;
     inputEvent: inputEvents;

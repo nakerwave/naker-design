@@ -1,6 +1,6 @@
-import { ui_input } from '../Inputs/input';
-import { ui_imagebutton, ui_button } from '../Inputs/button';
-import { ui } from '../Layers/common';
+import { Input } from '../Inputs/input';
+import { ImageButton, Button } from '../Inputs/button';
+import { UI } from '../Layers/common';
 export interface asset {
     type: string;
     url: string;
@@ -10,7 +10,7 @@ export interface assetEvents {
     focus?: Function;
     blur?: Function;
 }
-export declare class ui_assetinput extends ui_input {
+export declare class BaseAssetButton extends Input {
     url: string;
     type: string;
     constructor(parent: HTMLElement, label: string, assetoption: asset);
@@ -24,7 +24,7 @@ export declare class ui_assetinput extends ui_input {
     on(event: 'focus' | 'blur' | 'change', funct: Function): this;
     checkErase(evt: Event): void;
 }
-export declare class ui_assetbutton extends ui_assetinput {
+export declare class AssetButton extends BaseAssetButton {
     image: HTMLElement;
     text: HTMLElement;
     assetbutton: HTMLElement;
@@ -36,7 +36,7 @@ export declare class ui_assetbutton extends ui_assetinput {
     setIcon(icon: string): void;
     erase(frompicker?: any): void;
 }
-export declare class ui_imageassetbutton extends ui_assetinput {
+export declare class ImageAssetButton extends BaseAssetButton {
     image: HTMLElement;
     text: HTMLElement;
     hover: HTMLElement;
@@ -45,7 +45,7 @@ export declare class ui_imageassetbutton extends ui_assetinput {
     constructor(parent: HTMLElement, label: string, assetoption: asset);
     setValue(url: string, frompicker?: any): this;
 }
-export declare class ui_textassetbutton extends ui_assetinput {
+export declare class TextAssetbutton extends BaseAssetButton {
     text: HTMLElement;
     hover: HTMLElement;
     label: HTMLElement;
@@ -70,12 +70,12 @@ export declare let overlayAlpha: {
     'image': boolean;
     'heightmap': boolean;
 };
-export declare class ui_assetpicker extends ui {
+export declare class AssetPicker extends UI {
     back: HTMLElement;
     title: HTMLElement;
     constructor();
-    currentInput: ui_assetinput;
-    setCurrentInput(input: ui_assetinput): void;
+    currentInput: AssetButton;
+    setCurrentInput(input: AssetButton): void;
     assetButtons: any;
     assetImages: any;
     assetperline: number;
@@ -86,14 +86,14 @@ export declare class ui_assetpicker extends ui {
     hideAsset(): void;
     setAddAssetMode(type: string, callback: Function): void;
     waitingAsset: string;
-    waitingInput: ui_assetinput;
+    waitingInput: AssetButton;
     addWaitedAssetButton(url: string, image: string): void;
     addAssetMode: boolean;
     addAssetFunction: Function;
-    addButton(type: string, url: string, image: string): ui_button | ui_imagebutton;
+    addButton(type: string, url: string, image: string): Button | ImageButton;
     onAssetDeleted: Function;
-    deleteAsset(button: ui_imagebutton | ui_button, type: string, key: string): void;
+    deleteAsset(button: ImageButton | Button, type: string, key: string): void;
     eraseCurrent(): void;
     hidePicker(): void;
 }
-export declare let assetpicker: ui_assetpicker;
+export declare let assetPicker: AssetPicker;

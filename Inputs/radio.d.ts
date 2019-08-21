@@ -1,10 +1,10 @@
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 import { RedomElement } from 'redom';
 export interface radiooption {
     value: string;
     list: Array<string>;
 }
-export declare class ui_radio extends ui_input {
+export declare class RadioInput extends Input {
     option: Array<string>;
     label: HTMLElement;
     constructor(parent: HTMLElement, label: string, radiooption: radiooption);
@@ -20,7 +20,7 @@ export interface radioiconoption {
     iconperline: number;
     list: Array<string>;
 }
-export declare class ui_radioicon extends ui_input {
+export declare class RadioIconInput extends Input {
     option: Array<string>;
     iconperline: number;
     label: HTMLElement;

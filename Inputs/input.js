@@ -8,13 +8,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui } from '../Layers/common';
+import { UI } from '../Layers/common';
 import { el, mount } from 'redom';
 export var defaultwithinput = 108;
 export var defaultleftinput = 204;
-var ui_input = /** @class */ (function (_super) {
-    __extends(ui_input, _super);
-    function ui_input(container, label) {
+var Input = /** @class */ (function (_super) {
+    __extends(Input, _super);
+    function Input(container, label) {
         var _this = _super.call(this) || this;
         _this.parent = el('div.input-container');
         if (label) {
@@ -24,7 +24,7 @@ var ui_input = /** @class */ (function (_super) {
         mount(container, _this.parent);
         return _this;
     }
-    return ui_input;
-}(ui));
-export { ui_input };
+    return Input;
+}(UI));
+export { Input };
 //# sourceMappingURL=input.js.map

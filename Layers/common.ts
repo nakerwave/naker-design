@@ -16,7 +16,7 @@ export interface elementEvents {
 	dblclick?:string,
 }
 
-export class ui {
+export class UI {
 
 	el:HTMLElement;
 

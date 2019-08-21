@@ -1,2 +1,2 @@
 
-import { floatingManager } from './Layers/layer';
+import { InputGroupSwitch } from './Layers/layer';

@@ -1,14 +1,14 @@
 
-import { ui_colorbutton, colorpicker } from './Pickers/colorPicker';
-import { ui_assetbutton, ui_imageassetbutton, ui_textassetbutton } from './Pickers/assetPicker';
-import { ui_button } from './Inputs/button';
-import { ui_textinput, ui_paragraphinput } from './Inputs/text';
-import { ui_numberinput, ui_vectorinput } from './Inputs/number';
-import { ui_radio, ui_radioicon } from './Inputs/radio';
-import { ui_select } from './Inputs/select';
-import { ui_checkbox } from './Inputs/checkbox';
-import { ui_slider } from './Inputs/slider';
-import { floatingManager } from './Layers/layer';
+import { ColorButton, colorpicker } from './Pickers/colorPicker';
+import { AssetButton, ImageAssetButton, TextAssetbutton } from './Pickers/assetPicker';
+import { UI _button } from './Inputs/button';
+import { TextInputinput, ParagraphInputinput } from './Inputs/text';
+import { NumberInputinput, VectorInputinput } from './Inputs/number';
+import { RadioInput, RadioIconInput } from './Inputs/radio';
+import { SelectInput } from './Inputs/select';
+import { Checkbox } from './Inputs/checkbox';
+import { SliderInput } from './Inputs/slider';
+import { InputGroupSwitch } from './Layers/layer';
 // import { undoChannel } from './service/undo';
 
 // import './styles/custom-siimple.sass';
@@ -27,7 +27,7 @@ import './styles/radio.sass';
   +------------------------------------------------------------------------+
 */
 
-export class TestDesign extends floatingManager {
+export class TestDesign extends InputGroupSwitch {
 
     backgroundBottom:HTMLElement;
     backgroundTop:HTMLElement;
@@ -40,21 +40,21 @@ export class TestDesign extends floatingManager {
         this.addInputs();
     }
 
-    color:ui_assetbutton;
-    asset: ui_assetbutton;
-    asset2: ui_imageassetbutton;
-    asset3: ui_textassetbutton;
-    number: ui_numberinput;
-    numberunit: ui_numberinput;
-    slider: ui_slider;
-    sliderloga: ui_slider;
-    vector: ui_vectorinput;
-    radio: ui_radio;
-    radioicon: ui_radioicon;
-    select: ui_select;
-    checkbox: ui_checkbox;
-    text: ui_textinput;
-    paragraph: ui_paragraphinput;
+    color:AssetButton;
+    asset: AssetButton;
+    asset2: ImageAssetButton;
+    asset3: TextAssetbutton;
+    number: NumberInputinput;
+    numberunit: NumberInputinput;
+    slider: SliderInput;
+    sliderloga: SliderInput;
+    vector: VectorInputinput;
+    radio: RadioInput;
+    radioicon: RadioIconInput;
+    select: SelectInput;
+    checkbox: Checkbox;
+    text: TextInputinput;
+    paragraph: ParagraphInputinput;
 
     addInputs () {
       this.addSubTitle('Color Pickers');

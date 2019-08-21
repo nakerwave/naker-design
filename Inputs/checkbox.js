@@ -8,16 +8,16 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input } from './input';
+import { Input } from './input';
 import { el, mount, setAttr } from 'redom';
 /*
   +------------------------------------------------------------------------+
   | CHECKBOX                                                               |
   +------------------------------------------------------------------------+
 */
-var ui_checkbox = /** @class */ (function (_super) {
-    __extends(ui_checkbox, _super);
-    function ui_checkbox(parent, label, checked) {
+var Checkbox = /** @class */ (function (_super) {
+    __extends(Checkbox, _super);
+    function Checkbox(parent, label, checked) {
         var _this = _super.call(this, parent, label) || this;
         _this.inputEvent = {
             change: 'click',
@@ -32,19 +32,19 @@ var ui_checkbox = /** @class */ (function (_super) {
         mount(_this.parent, div);
         return _this;
     }
-    ui_checkbox.prototype.setValue = function (checked) {
+    Checkbox.prototype.setValue = function (checked) {
         if (checked == undefined)
             return setAttr(this.el, { checked: false });
         setAttr(this.el, { checked: checked });
     };
-    ui_checkbox.prototype.on = function (event, funct) {
+    Checkbox.prototype.on = function (event, funct) {
         var _this = this;
         this.el.addEventListener(this.inputEvent[event], function (evt) {
             funct(evt.target.checked, _this);
         });
         return this;
     };
-    return ui_checkbox;
-}(ui_input));
-export { ui_checkbox };
+    return Checkbox;
+}(Input));
+export { Checkbox };
 //# sourceMappingURL=checkbox.js.map

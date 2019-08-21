@@ -1,5 +1,5 @@
 
-import { ui_input, inputEvents, defaultleftinput } from './input';
+import { Input, inputEvents, defaultleftinput } from './input';
 
 import { el, unmount, mount, setAttr, setStyle } from 'redom';
 import merge from 'lodash/merge';
@@ -21,7 +21,7 @@ export interface numberoption {
 	decimal?:number
 }
 
-export class ui_numberinput extends ui_input {
+export class NumberInputinput extends Input {
 
 	unit:any;
 	value:number;
@@ -157,7 +157,7 @@ export class ui_numberinput extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_vectorinput extends ui_input {
+export class VectorInputinput extends Input {
 
     numberInputs:any = {};
     constructor (parent:HTMLElement, label:string, numberoption:numberoption) {
@@ -167,7 +167,7 @@ export class ui_vectorinput extends ui_input {
         let i = 0;
         for (let key in {x:0, y:0, z:0}) {
             let vectoroption = merge(numberoption, {value:0, unit:key.toUpperCase(), width:50, left:i*54, decimal:2});
-			this.numberInputs[key] = new ui_numberinput(parent, '', vectoroption);
+			this.numberInputs[key] = new NumberInputinput(parent, '', vectoroption);
             unmount(parent, this.numberInputs[key].parent);
 			mount(vectorContainer, this.numberInputs[key].el);
             setAttr(this.numberInputs[key].el, {class:'vector-input'});

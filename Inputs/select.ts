@@ -1,5 +1,5 @@
 
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, mount } from 'redom';
 import Suggestions from 'suggestions';
@@ -15,7 +15,7 @@ export interface selectoption {
 	list:Array<string>;
 }
 
-export class ui_select extends ui_input {
+export class SelectInput extends Input {
 	options:Array<string>;
 	label:HTMLElement;
 

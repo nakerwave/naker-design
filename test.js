@@ -9,7 +9,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import { colorpicker } from './Pickers/colorPicker';
-import { floatingManager } from './Layers/layer';
+import { InputGroupSwitch } from './Layers/layer';
 // import { undoChannel } from './service/undo';
 // import './styles/custom-siimple.sass';
 import './styles/main.sass';
@@ -76,7 +76,7 @@ var TestDesign = /** @class */ (function (_super) {
         });
     };
     return TestDesign;
-}(floatingManager));
+}(InputGroupSwitch));
 export { TestDesign };
 window.onload = function () {
     var test = new TestDesign();

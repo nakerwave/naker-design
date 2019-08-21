@@ -1,5 +1,5 @@
 
-import { ui_input, inputEvents, defaultwithinput } from './input';
+import { Input, inputEvents, defaultwithinput } from './input';
 
 import { el, mount, setAttr, setStyle, setChildren, RedomElement } from 'redom';
 
@@ -14,7 +14,7 @@ export interface radiooption {
 	list:Array<string>;
 }
 
-export class ui_radio extends ui_input {
+export class RadioInput extends Input {
 	option:Array<string>;
 	label:HTMLElement;
 
@@ -88,7 +88,7 @@ export interface radioiconoption {
 	list:Array<string>;
 }
 
-export class ui_radioicon extends ui_input {
+export class RadioIconInput extends Input {
 	option:Array<string>;
 	iconperline:number;
 	label:HTMLElement;

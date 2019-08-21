@@ -1,7 +1,7 @@
 
-import { defaultwithinput, ui_input } from '../Inputs/input';
-import {  ui_imagebutton, ui_button } from '../Inputs/button';
-import { ui } from '../Layers/common';
+import { defaultwithinput, Input } from '../Inputs/input';
+import {  ImageButton, Button } from '../Inputs/button';
+import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import find from 'lodash/find';
@@ -18,7 +18,7 @@ export interface assetEvents {
   blur?:Function,
 };
 
-export class ui_assetinput extends ui_input {
+export class BaseAssetButton extends Input {
 	url:string;
 	type:string;
 
@@ -29,7 +29,7 @@ export class ui_assetinput extends ui_input {
 	}
 
 	getThumbnail (url:string) {
-		let asset = find(assetpicker.assetImages[this.type], (o:asset) => { return o.url == url; });
+		let asset = find(assetPicker.assetImages[this.type], (o:asset) => { return o.url == url; });
 		if (asset) return asset.thumbnail;
 		else return url;
 	}
@@ -50,13 +50,13 @@ export class ui_assetinput extends ui_input {
 	focus () {
 		this.starturl = this.url;
 		if (this.events.focus) this.events.focus(this.url, this);
-		assetpicker.setCurrentInput(this);
+		assetPicker.setCurrentInput(this);
 	}
 
 	blurEvent () {
 		if (this.events.blur && this.starturl != this.url) this.events.blur(this.url, this);
 		// In order to avoid waitedAsset changing last selected texture
-		assetpicker.currentInput = undefined;
+		assetPicker.currentInput = undefined;
 	}
 
 	on (event:'focus'|'blur'|'change', funct:Function) {
@@ -79,7 +79,7 @@ export class ui_assetinput extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_assetbutton extends ui_assetinput {
+export class AssetButton extends BaseAssetButton {
 
 	image:HTMLElement;
 	text:HTMLElement;
@@ -104,10 +104,10 @@ export class ui_assetbutton extends ui_assetinput {
 	}
 
 	setValue (url:string, frompicker?:any) {
+		let thumbnail = this._setValue(url, frompicker);
 		if (url !== undefined && url !== null) {
 			let image = url;
-			let asset = find(assetpicker.assetImages[this.type], (o) => { return o.url == url; });
-			if (asset) image = asset.thumbnail;
+			if (thumbnail) image = thumbnail;
 			if (image.indexOf('http') != -1) {
 				setStyle(this.image, {display:'block'});
 				setStyle(this.text, {display:'none'});
@@ -117,12 +117,10 @@ export class ui_assetbutton extends ui_assetinput {
 				setStyle(this.image, {display:'none'});
 				this.text.textContent = image;
 			}
-			// setStyle(this.asseticon, {'color':colormain});
 		} else {
-			this.erase(frompicker);
+			setStyle(this.image, {display:'none'});
+			setStyle(this.text, {display:'none'});
 		}
-		this.url = url;
-		if (this.events.change && frompicker) this.events.change(url);
 		return this;
 	}
 
@@ -137,14 +135,6 @@ export class ui_assetbutton extends ui_assetinput {
 	setIcon (icon:string) {
 		setAttr(this.asseticon, {class:'icon-'+icon+' erase-icon'});
 	}
-
-	erase (frompicker?:any) {
-		setStyle(this.image, {display:'none'});
-		setStyle(this.text, {display:'none'});
-		// setStyle(this.asseticon, {'color':colorthirdgrey});
-		if (this.events.change && frompicker) this.events.change(undefined);
-		if (frompicker) this.blurEvent();
-	}
 }
 
 /*
@@ -153,7 +143,7 @@ export class ui_assetbutton extends ui_assetinput {
   +------------------------------------------------------------------------+
 */
 
-export class ui_imageassetbutton extends ui_assetinput {
+export class ImageAssetButton extends BaseAssetButton {
 
 	image:HTMLElement;
 	text:HTMLElement;
@@ -208,7 +198,7 @@ export class ui_imageassetbutton extends ui_assetinput {
   +------------------------------------------------------------------------+
 */
 
-export class ui_textassetbutton extends ui_assetinput {
+export class TextAssetbutton extends BaseAssetButton {
 
 	text:HTMLElement;
 	hover:HTMLElement;
@@ -269,7 +259,7 @@ export class ui_textassetbutton extends ui_assetinput {
 export let overlayImages:Array<string> = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
 export let overlayAlpha = {'albedo':false, 'ambient':false, 'specular':false, 'emissive':false, 'bump':false, 'opacity':true, 'reflectivity':false, 'reflection':false, 'particle':false, 'image':true, 'heightmap':false};
 
-export class ui_assetpicker extends ui {
+export class AssetPicker extends UI {
 	back:HTMLElement;
 	title:HTMLElement;
 
@@ -282,8 +272,8 @@ export class ui_assetpicker extends ui {
 		})
 	}
 
-	currentInput:ui_assetinput;
-	setCurrentInput (input:ui_assetinput) {
+	currentInput:AssetButton;
+	setCurrentInput (input:AssetButton) {
 		this.currentInput = input;
 		this.setAssetList(input.type);
 		this.show();
@@ -354,7 +344,7 @@ export class ui_assetpicker extends ui {
 	}
 
 	waitingAsset:string = null;
-	waitingInput:ui_assetinput;
+	waitingInput:AssetButton;
 	addWaitedAssetButton (url:string, image:string) {
 		if (this.waitingAsset == null) return;
 		this.checkTypeButton(this.waitingAsset);
@@ -373,16 +363,16 @@ export class ui_assetpicker extends ui {
 	addAssetMode = false;
 	addAssetFunction:Function;
 	addButton (type:string, url:string, image:string) {
-		let button:ui_imagebutton|ui_button;
+		let button:ImageButton|Button;
 		if (image.indexOf('http') != -1) {
 			// If opacity we add the opacity background
 			if (type == 'opacity') {
-				button = new ui_imagebutton(this.el, image, 'asset-button color-default-background');
+				button = new ImageButton(this.el, image, 'asset-button color-default-background');
 			} else {
-				button = new ui_imagebutton(this.el, image, 'asset-button');
+				button = new ImageButton(this.el, image, 'asset-button');
 			}
 		} else {
-			button = new ui_button(this.el, {ui:'text', text:image}, 'asset-button');
+			button = new Button(this.el, {ui:'text', text:image}, 'asset-button');
 		}
 
 		button.on('click', () => {
@@ -391,7 +381,7 @@ export class ui_assetpicker extends ui {
 			this.hidePicker();
 			this.eraseCurrent();
 		});
-		let deletebutton = new ui_button(button.el, {ui:'icon', text:'delete'}, 'delete-asset-button');
+		let deletebutton = new Button(button.el, {ui:'icon', text:'delete'}, 'delete-asset-button');
 		deletebutton.on('click', (e) => {
 			e.stopPropagation();
 			this.deleteAsset(button, type, image);
@@ -400,7 +390,7 @@ export class ui_assetpicker extends ui {
 	}
 
 	onAssetDeleted:Function;
-	deleteAsset (button:ui_imagebutton|ui_button, type:string, key:string) {
+	deleteAsset (button:ImageButton|Button, type:string, key:string) {
 		let index = this.assetButtons[type].indexOf(button);
 		if (index != -1) this.assetButtons[type].splice(index, 1);
 		if (this.onAssetDeleted) this.onAssetDeleted(key)
@@ -426,4 +416,4 @@ export class ui_assetpicker extends ui {
 	}
 }
 
-export let assetpicker = new ui_assetpicker();
+export let assetPicker = new AssetPicker();

@@ -1,5 +1,5 @@
 
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, mount, setAttr } from 'redom';
 
@@ -9,7 +9,7 @@ import { el, mount, setAttr } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export class ui_checkbox extends ui_input {
+export class Checkbox extends Input {
 
   constructor(parent:HTMLElement, label:string, checked:boolean) {
 		super(parent, label)

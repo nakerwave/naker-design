@@ -1,4 +1,4 @@
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 import noUiSlider from 'nouislider';
 export interface slideroption {
     value: number;
@@ -7,7 +7,7 @@ export interface slideroption {
     step?: number;
     curve?: 'logarithmic' | 'linear';
 }
-export declare class ui_slider extends ui_input {
+export declare class SliderInput extends Input {
     label: HTMLElement;
     number: HTMLElement;
     defaultValue: number;

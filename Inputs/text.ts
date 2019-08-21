@@ -1,5 +1,5 @@
 
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 
@@ -9,7 +9,7 @@ import { el, mount, setAttr, setStyle } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export class ui_textinput extends ui_input {
+export class TextInputinput extends Input {
 	label:HTMLElement;
 	value:string;
 
@@ -86,7 +86,7 @@ export class ui_textinput extends ui_input {
   +------------------------------------------------------------------------+
 */
 
-export class ui_paragraphinput extends ui_input {
+export class ParagraphInputinput extends Input {
 	label:HTMLElement;
 	value:string;
 	max = 300;

@@ -8,7 +8,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_container } from './group';
 import { threedJsonHelper } from '../../viewer/service/threedjsonhelper';
 import { projectInterface } from '../../viewer/service/projectInterface';
 import { el, setAttr, mount, unmount } from 'redom';

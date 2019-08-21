@@ -8,16 +8,16 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input } from './input';
+import { Input } from './input';
 import { el, mount, setAttr } from 'redom';
 /*
   +------------------------------------------------------------------------+
   | TEXT INPUT                                                             |
   +------------------------------------------------------------------------+
 */
-var ui_textinput = /** @class */ (function (_super) {
-    __extends(ui_textinput, _super);
-    function ui_textinput(parent, label, text, className) {
+var TextInputinput = /** @class */ (function (_super) {
+    __extends(TextInputinput, _super);
+    function TextInputinput(parent, label, text, className) {
         var _this = _super.call(this, parent, label) || this;
         _this.inputEvent = {
             change: 'change',
@@ -38,7 +38,7 @@ var ui_textinput = /** @class */ (function (_super) {
         _this.setEvents();
         return _this;
     }
-    ui_textinput.prototype.setValue = function (value) {
+    TextInputinput.prototype.setValue = function (value) {
         var _this = this;
         if (value == undefined)
             return setAttr(this.el, { value: '' });
@@ -50,11 +50,11 @@ var ui_textinput = /** @class */ (function (_super) {
         setTimeout(function () { setAttr(_this.el, { changed: false }); }, 200);
         return this;
     };
-    ui_textinput.prototype.setPlaceholder = function (text) {
+    TextInputinput.prototype.setPlaceholder = function (text) {
         setAttr(this.el, { value: '' });
         setAttr(this.el, { placeholder: text.toString() });
     };
-    ui_textinput.prototype.setEvents = function () {
+    TextInputinput.prototype.setEvents = function () {
         var _this = this;
         this.el.addEventListener('input', function (evt) {
             _this.value = evt.target.value;
@@ -69,7 +69,7 @@ var ui_textinput = /** @class */ (function (_super) {
             }
         });
     };
-    ui_textinput.prototype.on = function (event, funct) {
+    TextInputinput.prototype.on = function (event, funct) {
         var _this = this;
         if (event == 'change')
             this.changeFunctions.push(funct);
@@ -86,17 +86,17 @@ var ui_textinput = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_textinput;
-}(ui_input));
-export { ui_textinput };
+    return TextInputinput;
+}(Input));
+export { TextInputinput };
 /*
   +------------------------------------------------------------------------+
   | PARAGRAPH INPUT                                                        |
   +------------------------------------------------------------------------+
 */
-var ui_paragraphinput = /** @class */ (function (_super) {
-    __extends(ui_paragraphinput, _super);
-    function ui_paragraphinput(parent, label, text, className) {
+var ParagraphInputinput = /** @class */ (function (_super) {
+    __extends(ParagraphInputinput, _super);
+    function ParagraphInputinput(parent, label, text, className) {
         var _this = _super.call(this, parent, label) || this;
         _this.max = 300;
         _this.inputEvent = {
@@ -120,11 +120,11 @@ var ui_paragraphinput = /** @class */ (function (_super) {
         _this.setCount();
         return _this;
     }
-    ui_paragraphinput.prototype.setCount = function () {
+    ParagraphInputinput.prototype.setCount = function () {
         this.count = el('div', { class: 'input-count' });
         mount(this.el.parentNode, this.count);
     };
-    ui_paragraphinput.prototype.setValue = function (value) {
+    ParagraphInputinput.prototype.setValue = function (value) {
         var _this = this;
         if (value == undefined)
             return setAttr(this.el, { value: '' });
@@ -137,11 +137,11 @@ var ui_paragraphinput = /** @class */ (function (_super) {
         this.count.textContent = this.value.length + '/' + this.max;
         return this;
     };
-    ui_paragraphinput.prototype.setPlaceholder = function (text) {
+    ParagraphInputinput.prototype.setPlaceholder = function (text) {
         setAttr(this.el, { value: '' });
         setAttr(this.el, { placeholder: text.toString() });
     };
-    ui_paragraphinput.prototype.setEvents = function () {
+    ParagraphInputinput.prototype.setEvents = function () {
         var _this = this;
         this.el.addEventListener('input', function (evt) {
             _this.value = evt.target.value;
@@ -157,7 +157,7 @@ var ui_paragraphinput = /** @class */ (function (_super) {
             }
         });
     };
-    ui_paragraphinput.prototype.on = function (event, funct) {
+    ParagraphInputinput.prototype.on = function (event, funct) {
         var _this = this;
         if (event == 'change')
             this.changeFunctions.push(funct);
@@ -174,7 +174,7 @@ var ui_paragraphinput = /** @class */ (function (_super) {
         }
         return this;
     };
-    return ui_paragraphinput;
-}(ui_input));
-export { ui_paragraphinput };
+    return ParagraphInputinput;
+}(Input));
+export { ParagraphInputinput };
 //# sourceMappingURL=text.js.map

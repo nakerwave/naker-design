@@ -8,12 +8,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input } from './input';
+import { Input } from './input';
 import { el, mount } from 'redom';
 import Suggestions from 'suggestions';
-var ui_select = /** @class */ (function (_super) {
-    __extends(ui_select, _super);
-    function ui_select(parent, label, selectoption) {
+var SelectInput = /** @class */ (function (_super) {
+    __extends(SelectInput, _super);
+    function SelectInput(parent, label, selectoption) {
         var _this = _super.call(this, parent, label) || this;
         _this.selectlabels = [];
         _this.inputEvent = {
@@ -30,7 +30,7 @@ var ui_select = /** @class */ (function (_super) {
         _this.setEvents();
         return _this;
     }
-    ui_select.prototype.setInput = function (selectoption) {
+    SelectInput.prototype.setInput = function (selectoption) {
         var _this = this;
         // We trick the suggestion library to be able to use it as select list
         // Classic select style not really beautiful and customizable
@@ -47,7 +47,7 @@ var ui_select = /** @class */ (function (_super) {
             }
         };
     };
-    ui_select.prototype.setOptions = function (options) {
+    SelectInput.prototype.setOptions = function (options) {
         this.options = options;
         this.suggestion.update(options);
         this.list = this.suggestion.list;
@@ -58,7 +58,7 @@ var ui_select = /** @class */ (function (_super) {
         this.list.draw();
         this.list.hide();
     };
-    ui_select.prototype.setEvents = function () {
+    SelectInput.prototype.setEvents = function () {
         var _this = this;
         this.on('focus', function () {
             _this.list.show();
@@ -71,18 +71,18 @@ var ui_select = /** @class */ (function (_super) {
                 _this.blur();
         });
     };
-    ui_select.prototype.blur = function () {
+    SelectInput.prototype.blur = function () {
         for (var i = 0; i < this.blurFunctions.length; i++) {
             this.blurFunctions[i](this.value, this);
         }
     };
-    ui_select.prototype.setValue = function (value) {
+    SelectInput.prototype.setValue = function (value) {
         if (value == undefined)
             value = '';
         this.value = value;
         this.el.textContent = value;
     };
-    ui_select.prototype.on = function (event, funct) {
+    SelectInput.prototype.on = function (event, funct) {
         var _this = this;
         if (event == 'change')
             this.changeFunctions.push(funct);
@@ -93,7 +93,7 @@ var ui_select = /** @class */ (function (_super) {
         });
         return this;
     };
-    return ui_select;
-}(ui_input));
-export { ui_select };
+    return SelectInput;
+}(Input));
+export { SelectInput };
 //# sourceMappingURL=select.js.map

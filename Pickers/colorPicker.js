@@ -8,14 +8,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input } from '../Inputs/input';
-import { ui } from '../Layers/common';
+import { Input } from '../Inputs/input';
+import { UI } from '../Layers/common';
 import { el, mount, setAttr, setStyle } from 'redom';
 import * as AColorPicker from 'a-color-picker';
 import clone from 'lodash/clone';
-var ui_colorbutton = /** @class */ (function (_super) {
-    __extends(ui_colorbutton, _super);
-    function ui_colorbutton(parent, label, coloroption) {
+var ColorButton = /** @class */ (function (_super) {
+    __extends(ColorButton, _super);
+    function ColorButton(parent, label, coloroption) {
         var _this = _super.call(this, parent, label) || this;
         _this.events = {};
         _this.opacity = coloroption.opacity;
@@ -30,23 +30,23 @@ var ui_colorbutton = /** @class */ (function (_super) {
             _this.setValue(coloroption.color);
         return _this;
     }
-    ui_colorbutton.prototype.checkErase = function () {
+    ColorButton.prototype.checkErase = function () {
         if (this.rgba !== undefined)
             this.setValue(undefined, true);
         else
             this.focus();
     };
-    ui_colorbutton.prototype.mouseEnter = function () {
+    ColorButton.prototype.mouseEnter = function () {
         if (this.rgba !== undefined)
             this.setIcon('delete');
     };
-    ui_colorbutton.prototype.mouseLeave = function () {
+    ColorButton.prototype.mouseLeave = function () {
         this.setIcon('color');
     };
-    ui_colorbutton.prototype.setIcon = function (icon) {
+    ColorButton.prototype.setIcon = function (icon) {
         setAttr(this.coloricon, { class: 'icon-' + icon + ' erase-icon' });
     };
-    ui_colorbutton.prototype.setValue = function (rgba, frompicker) {
+    ColorButton.prototype.setValue = function (rgba, frompicker) {
         if (rgba == undefined)
             return this.erase(frompicker);
         if (rgba[0] == null)
@@ -62,7 +62,7 @@ var ui_colorbutton = /** @class */ (function (_super) {
             this.events.change(this.rgba);
         return this;
     };
-    ui_colorbutton.prototype.erase = function (frompicker) {
+    ColorButton.prototype.erase = function (frompicker) {
         setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
         setAttr(this.coloricon, { active: false });
         if (this.events.change && frompicker)
@@ -70,40 +70,40 @@ var ui_colorbutton = /** @class */ (function (_super) {
         if (this.events.blur && frompicker)
             this.events.blur(undefined);
     };
-    ui_colorbutton.prototype.focus = function () {
+    ColorButton.prototype.focus = function () {
         this.startrgba = this.rgba;
         setAttr(this.colorbutton, { active: true });
         colorpicker.setCurrentInput(this);
         if (this.events.focus)
             this.events.focus(this.rgba);
     };
-    ui_colorbutton.prototype.blurEvent = function (picker) {
+    ColorButton.prototype.blurEvent = function (picker) {
         if (this.events.blur && picker && this.startrgba != this.rgba)
             this.events.blur(this.rgba);
         setAttr(this.colorbutton, { active: false });
     };
-    ui_colorbutton.prototype.on = function (event, funct) {
+    ColorButton.prototype.on = function (event, funct) {
         this.events[event] = funct;
         return this;
     };
-    return ui_colorbutton;
-}(ui_input));
-export { ui_colorbutton };
+    return ColorButton;
+}(Input));
+export { ColorButton };
 /*
   +------------------------------------------------------------------------+
   | COLOR PICKER                                                           |
   +------------------------------------------------------------------------+
 */
-var ui_colorpicker = /** @class */ (function (_super) {
-    __extends(ui_colorpicker, _super);
-    function ui_colorpicker() {
+var ColorPicker = /** @class */ (function (_super) {
+    __extends(ColorPicker, _super);
+    function ColorPicker() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.palette = [];
         _this.visible = false;
         _this.currentInput = null;
         return _this;
     }
-    ui_colorpicker.prototype.set = function (palette) {
+    ColorPicker.prototype.set = function (palette) {
         if (typeof palette === 'object')
             this.palette = palette;
         this.el = el('div', { id: 'colorpicker', class: 'picker color-picker' }, [
@@ -125,13 +125,13 @@ var ui_colorpicker = /** @class */ (function (_super) {
         this.hide();
         return this;
     };
-    ui_colorpicker.prototype.setBack = function () {
+    ColorPicker.prototype.setBack = function () {
         var _this = this;
         this.back = el('div.modal-background', { onclick: function () { _this.hidePicker(); } });
         setStyle(this.back, { cursor: 'auto', 'z-index': 199 });
         mount(document.body, this.back);
     };
-    ui_colorpicker.prototype.hidePicker = function () {
+    ColorPicker.prototype.hidePicker = function () {
         if (!this.visible)
             return;
         this.visible = false;
@@ -140,7 +140,7 @@ var ui_colorpicker = /** @class */ (function (_super) {
         this.currentInput.blurEvent(this.picker);
         this.currentInput = undefined;
     };
-    ui_colorpicker.prototype.setEvent = function () {
+    ColorPicker.prototype.setEvent = function () {
         var _this = this;
         this.picker.onchange = function (picker) {
             if (_this.currentInput)
@@ -158,7 +158,7 @@ var ui_colorpicker = /** @class */ (function (_super) {
                 _this.setPickerPosition();
         });
     };
-    ui_colorpicker.prototype.setCurrentInput = function (input) {
+    ColorPicker.prototype.setCurrentInput = function (input) {
         this.visible = true;
         if (input.rgba == undefined)
             input.rgba = [0, 0, 0, 1];
@@ -176,14 +176,14 @@ var ui_colorpicker = /** @class */ (function (_super) {
             setStyle(this.opacityPicker, { display: 'none' });
         this.show();
     };
-    ui_colorpicker.prototype.setPickerPosition = function () {
+    ColorPicker.prototype.setPickerPosition = function () {
         var pos = this.currentInput.el.getBoundingClientRect();
         var y = Math.min(pos.top - 80, window.innerHeight - 230);
         y = Math.max(y, 0);
         setStyle(this.el, { left: pos.left - 285 + 'px', top: y + 'px' });
     };
-    return ui_colorpicker;
-}(ui));
-export { ui_colorpicker };
-export var colorpicker = new ui_colorpicker();
+    return ColorPicker;
+}(UI));
+export { ColorPicker };
+export var colorPicker = new ColorPicker();
 //# sourceMappingURL=colorPicker.js.map

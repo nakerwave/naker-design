@@ -1,12 +1,12 @@
-import { textnode, ui_button } from '../Inputs/button';
-import { ui_textinput, ui_paragraphinput } from '../Inputs/text';
-import { ui_numberinput, numberoption, ui_vectorinput } from '../Inputs/number';
-import { ui_checkbox } from '../Inputs/checkbox';
-import { ui_slider, slideroption } from '../Inputs/slider';
-import { ui_radio, radiooption, ui_radioicon, radioiconoption } from '../Inputs/radio';
-import { ui_select, selectoption } from '../Inputs/select';
-import { ui_colorbutton, coloroption } from '../Pickers/colorPicker';
-import { ui_assetbutton, ui_imageassetbutton, ui_textassetbutton } from '../Pickers/assetPicker';
+import { textnode, Button } from '../Inputs/button';
+import { TextInputinput, ParagraphInputinput } from '../Inputs/text';
+import { NumberInputinput, numberoption, VectorInputinput } from '../Inputs/number';
+import { Checkbox } from '../Inputs/checkbox';
+import { SliderInput, slideroption } from '../Inputs/slider';
+import { RadioInput, radiooption, RadioIconInput, radioiconoption } from '../Inputs/radio';
+import { SelectInput, selectoption } from '../Inputs/select';
+import { ColorButton, coloroption } from '../Pickers/colorPicker';
+import { AssetButton, ImageAssetButton, TextAssetbutton } from '../Pickers/assetPicker';
 import { asset } from '../Pickers/assetPicker';
 export interface manageroption {
     title: string;
@@ -17,30 +17,30 @@ export interface manageroption {
     opacity?: boolean;
     fixed?: boolean;
 }
-export declare class ui_manager {
+export declare class InputGroup {
     el: HTMLElement;
     constructor(parent: HTMLElement);
     addText(text: string, className: string): HTMLDivElement;
     addLink(text: string, link: string, className: string): HTMLAnchorElement;
     addIcon(icon: string, className: string): HTMLDivElement;
-    addButton(textnode: textnode, callback: Function): ui_button;
-    addTextInput(label: string, text: string, callback: Function): ui_textinput;
-    addParagraphInput(label: string, paragraph: string, callback: Function): ui_paragraphinput;
+    addButton(textnode: textnode, callback: Function): Button;
+    addTextInput(label: string, text: string, callback: Function): TextInputinput;
+    addParagraphInput(label: string, paragraph: string, callback: Function): ParagraphInputinput;
     currentCallback: any;
-    addColorInput(label: string, coloroption: coloroption, callback: Function): ui_colorbutton;
-    addAssetInput(label: string, asset: asset, callback: Function): ui_assetbutton;
-    addImageAssetInput(label: string, asset: asset, callback: Function): ui_imageassetbutton;
-    addTextAssetInput(label: string, asset: asset, callback: Function): ui_textassetbutton;
+    addColorInput(label: string, coloroption: coloroption, callback: Function): ColorButton;
+    addAssetInput(label: string, asset: asset, callback: Function): AssetButton;
+    addImageAssetInput(label: string, asset: asset, callback: Function): ImageAssetButton;
+    addTextAssetInput(label: string, asset: asset, callback: Function): TextAssetbutton;
     addColorAndAssetInput(label: string, coloroption: coloroption, asset: asset, callback: Function): void;
-    addCheckBox(label: string, checked: boolean, callback: Function): ui_checkbox;
-    addSlider(label: string, slideroption: slideroption, callback: Function): ui_slider;
-    addRadio(label: string, radiooption: radiooption, callback: Function): ui_radio;
-    addRadioIcon(label: string, radiooption: radioiconoption, callback: Function): ui_radioicon;
-    addSelect(label: string, selectoption: selectoption, callback: Function): ui_select;
-    addNumberInput(label: string, numberoption: numberoption, callback: Function): ui_numberinput;
-    addVectorInput(label: string, numberoption: numberoption, callback: Function): ui_vectorinput;
+    addCheckBox(label: string, checked: boolean, callback: Function): Checkbox;
+    addSlider(label: string, slideroption: slideroption, callback: Function): SliderInput;
+    addRadio(label: string, radiooption: radiooption, callback: Function): RadioInput;
+    addRadioIcon(label: string, radiooption: radioiconoption, callback: Function): RadioIconInput;
+    addSelect(label: string, selectoption: selectoption, callback: Function): SelectInput;
+    addNumberInput(label: string, numberoption: numberoption, callback: Function): NumberInputinput;
+    addVectorInput(label: string, numberoption: numberoption, callback: Function): VectorInputinput;
 }
-export declare class floatingManager extends ui_manager {
+export declare class InputGroupSwitch extends InputGroup {
     title: HTMLElement;
     expand: HTMLElement;
     constructor(title?: string, expandable?: boolean);

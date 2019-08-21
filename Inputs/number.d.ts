@@ -1,4 +1,4 @@
-import { ui_input, inputEvents } from './input';
+import { Input, inputEvents } from './input';
 export interface numberoption {
     value?: number;
     unit?: string;
@@ -9,7 +9,7 @@ export interface numberoption {
     step?: number;
     decimal?: number;
 }
-export declare class ui_numberinput extends ui_input {
+export declare class NumberInputinput extends Input {
     unit: any;
     value: number;
     width: number;
@@ -30,7 +30,7 @@ export declare class ui_numberinput extends ui_input {
     enterkeyFunctions: Array<Function>;
     on(event: string, funct: Function): this;
 }
-export declare class ui_vectorinput extends ui_input {
+export declare class VectorInputinput extends Input {
     numberInputs: any;
     constructor(parent: HTMLElement, label: string, numberoption: numberoption);
     on(event: string, funct: Function): this;

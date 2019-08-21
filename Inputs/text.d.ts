@@ -1,5 +1,5 @@
-import { ui_input, inputEvents } from './input';
-export declare class ui_textinput extends ui_input {
+import { Input, inputEvents } from './input';
+export declare class TextInputinput extends Input {
     label: HTMLElement;
     value: string;
     constructor(parent: HTMLElement, label: string, text: string, className?: string);
@@ -11,7 +11,7 @@ export declare class ui_textinput extends ui_input {
     enterkeyFunctions: Array<Function>;
     on(event: string, funct: Function): this;
 }
-export declare class ui_paragraphinput extends ui_input {
+export declare class ParagraphInputinput extends Input {
     label: HTMLElement;
     value: string;
     max: number;

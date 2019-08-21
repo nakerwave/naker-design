@@ -1,4 +1,4 @@
-import { elementEvents, ui } from '../Layers/common';
+import { elementEvents, UI } from '../Layers/common';
 export declare let defaultwithinput: number;
 export declare let defaultleftinput: number;
 export interface inputEvents extends elementEvents {
@@ -6,7 +6,7 @@ export interface inputEvents extends elementEvents {
     focus: string;
     blur: string;
 }
-export declare class ui_input extends ui {
+export declare class Input extends UI {
     label: HTMLElement;
     parent: HTMLElement;
     el: any;

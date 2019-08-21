@@ -8,12 +8,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input } from './input';
+import { Input } from './input';
 import { el, mount, setAttr } from 'redom';
 import noUiSlider from 'nouislider';
-var ui_slider = /** @class */ (function (_super) {
-    __extends(ui_slider, _super);
-    function ui_slider(parent, label, slideroption) {
+var SliderInput = /** @class */ (function (_super) {
+    __extends(SliderInput, _super);
+    function SliderInput(parent, label, slideroption) {
         var _this = _super.call(this, parent, label) || this;
         _this.step = 0.01;
         _this.curve = 'linear';
@@ -43,7 +43,7 @@ var ui_slider = /** @class */ (function (_super) {
         mount(_this.parent, _this.number);
         return _this;
     }
-    ui_slider.prototype.createSlider = function (parent, value) {
+    SliderInput.prototype.createSlider = function (parent, value) {
         this.noUiSlider = noUiSlider.create(parent, {
             range: { 'min': this.min, 'max': this.max },
             step: this.step,
@@ -51,7 +51,7 @@ var ui_slider = /** @class */ (function (_super) {
             connect: 'lower',
         });
     };
-    ui_slider.prototype.setValue = function (value) {
+    SliderInput.prototype.setValue = function (value) {
         if (value == undefined) {
             setAttr(this.number, { value: this.defaultValue });
             this.noUiSlider.set([this.defaultValue]);
@@ -64,7 +64,7 @@ var ui_slider = /** @class */ (function (_super) {
         }
         this.formerValue = value;
     };
-    ui_slider.prototype.checkSliderCurve = function (value) {
+    SliderInput.prototype.checkSliderCurve = function (value) {
         if (this.curve == 'linear') {
             return value;
         }
@@ -75,7 +75,7 @@ var ui_slider = /** @class */ (function (_super) {
             return newvalue.toString();
         }
     };
-    ui_slider.prototype.checkNumberCurve = function (value) {
+    SliderInput.prototype.checkNumberCurve = function (value) {
         if (this.curve == 'linear') {
             return value;
         }
@@ -85,7 +85,7 @@ var ui_slider = /** @class */ (function (_super) {
             return newvalue.toString();
         }
     };
-    ui_slider.prototype.checkMaxMin = function (value) {
+    SliderInput.prototype.checkMaxMin = function (value) {
         var newvalue = parseFloat(value);
         if (this.min)
             newvalue = Math.max(this.min, newvalue);
@@ -101,11 +101,11 @@ var ui_slider = /** @class */ (function (_super) {
         else
             return value;
     };
-    ui_slider.prototype.checkAccuracy = function (value) {
+    SliderInput.prototype.checkAccuracy = function (value) {
         var accuracy = 1 / this.step;
         return Math.round(value * accuracy) / accuracy;
     };
-    ui_slider.prototype.on = function (event, funct) {
+    SliderInput.prototype.on = function (event, funct) {
         var _this = this;
         this.noUiSlider.on(this.inputEvent[event], function (values, handle) {
             var value = values[0];
@@ -130,7 +130,7 @@ var ui_slider = /** @class */ (function (_super) {
         });
         return this;
     };
-    return ui_slider;
-}(ui_input));
-export { ui_slider };
+    return SliderInput;
+}(Input));
+export { SliderInput };
 //# sourceMappingURL=slider.js.map

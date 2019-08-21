@@ -1,5 +1,5 @@
 
-import { elementEvents, ui } from '../Layers/common';
+import { elementEvents, UI } from '../Layers/common';
 
 import { el, mount } from 'redom';
 
@@ -12,7 +12,7 @@ export interface inputEvents extends elementEvents {
 	blur:string,
 }
 
-export class ui_input extends ui {
+export class Input extends UI {
 
 	label:HTMLElement;
 	parent:HTMLElement;

@@ -8,14 +8,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import { ui_input } from './input';
+import { Input } from './input';
 import { el, mount, setChildren } from 'redom';
-var ui_button = /** @class */ (function (_super) {
-    __extends(ui_button, _super);
-    function ui_button(parent, textnode, className) {
+var Button = /** @class */ (function (_super) {
+    __extends(Button, _super);
+    function Button(parent, textnode, className) {
         var _this = _super.call(this, parent) || this;
         if (!className)
-            className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
+            className = 'button';
         _this.textnode = textnode;
         if (textnode.ui == 'text') {
             _this.el = el('div', { class: className }, textnode.text);
@@ -31,20 +31,20 @@ var ui_button = /** @class */ (function (_super) {
         }
         return _this;
     }
-    ui_button.prototype.setText = function (text) {
+    Button.prototype.setText = function (text) {
         this.el.textContent = text;
     };
-    return ui_button;
-}(ui_input));
-export { ui_button };
+    return Button;
+}(Input));
+export { Button };
 /*
   +------------------------------------------------------------------------+
   | IMAGE BUTTON                                                           |
   +------------------------------------------------------------------------+
 */
-var ui_imagebutton = /** @class */ (function (_super) {
-    __extends(ui_imagebutton, _super);
-    function ui_imagebutton(parent, imageurl, className) {
+var ImageButton = /** @class */ (function (_super) {
+    __extends(ImageButton, _super);
+    function ImageButton(parent, imageurl, className) {
         var _this = _super.call(this, parent) || this;
         if (!className)
             className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
@@ -53,11 +53,11 @@ var ui_imagebutton = /** @class */ (function (_super) {
         _this.setImage(imageurl);
         return _this;
     }
-    ui_imagebutton.prototype.setImage = function (imageurl) {
+    ImageButton.prototype.setImage = function (imageurl) {
         this.image = el('img', { src: imageurl, style: { width: '100%', height: '100%', 'object-fit': 'contain' } });
         setChildren(this.el, [this.image]);
     };
-    return ui_imagebutton;
-}(ui_input));
-export { ui_imagebutton };
+    return ImageButton;
+}(Input));
+export { ImageButton };
 //# sourceMappingURL=button.js.map
