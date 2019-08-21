@@ -19,7 +19,7 @@ export class ui_button extends ui_input {
 
 	constructor(parent:HTMLElement, textnode:textnode, className?:string) {
     super(parent)
-	if (!className) className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
+	if (!className) className = 'button';
 		this.textnode = textnode;
 		if (textnode.ui == 'text') {
 			this.el = el('div', {class:className}, textnode.text);
