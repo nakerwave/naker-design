@@ -1,0 +1,66 @@
+
+@import '_colors'
+
+/***************************************** BUTTON ****************************************
+
+.button
+    position: relative
+    left: 10px
+    top: 0px
+    width: 180px
+    height: 20px
+    color: $colortext
+    background: $colorthirdgrey
+    display: inline-block
+    min-height: 24px
+    transition: opacity 0.3s
+    transition: background-color 0.3s
+    cursor: pointer
+    line-height: 24px
+    text-align: center
+    text-decoration: none
+    font-size: 13px
+    padding-left: 15px
+    padding-right: 15px
+    padding-top: 5px
+    padding-bottom: 5px
+    border-radius: 5px
+    border: 0px
+
+.small-icon-button
+  position: relative
+  left: 10px
+  top: 0px
+  width: 18px
+  height: 18px
+  font-size: 12
+  color: $colortext
+  background: $colorthirdgrey
+  border-radius: 10px
+  z-index: 10
+
+.button
+  .path1:before
+    transition: color 200ms ease
+    color: $colortext
+  .path2:before
+    color: $colortext
+    transition: all 200ms ease
+  .path3:before
+    transition: color 200ms ease
+    color: $colortext
+
+  &:hover
+    .path1:before
+      color: $colordarkgrey
+    .path2:before
+      color: $colordarkgrey
+    .path3:before
+      color: $colordarkgrey
+
+.path1:before
+  color: inherit
+.path2:before
+  color: inherit
+.path3:before
+  color: inherit
