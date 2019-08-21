@@ -1,0 +1,38 @@
+import { ui_assetbutton, ui_imageassetbutton, ui_textassetbutton } from './Pickers/assetPicker';
+import { ui_textinput, ui_paragraphinput } from './Inputs/text';
+import { ui_numberinput, ui_vectorinput } from './Inputs/number';
+import { ui_radio, ui_radioicon } from './Inputs/radio';
+import { ui_select } from './Inputs/select';
+import { ui_checkbox } from './Inputs/checkbox';
+import { ui_slider } from './Inputs/slider';
+import { floatingManager } from './Layers/layer';
+import './styles/main.sass';
+import './styles/font.css';
+import './styles/inputs.sass';
+import './styles/suggestions.sass';
+import './styles/modal.sass';
+import './styles/uislider.sass';
+import './styles/checkbox.sass';
+import './styles/radio.sass';
+export declare class TestDesign extends floatingManager {
+    backgroundBottom: HTMLElement;
+    backgroundTop: HTMLElement;
+    colorPalette: HTMLElement;
+    constructor();
+    color: ui_assetbutton;
+    asset: ui_assetbutton;
+    asset2: ui_imageassetbutton;
+    asset3: ui_textassetbutton;
+    number: ui_numberinput;
+    numberunit: ui_numberinput;
+    slider: ui_slider;
+    sliderloga: ui_slider;
+    vector: ui_vectorinput;
+    radio: ui_radio;
+    radioicon: ui_radioicon;
+    select: ui_select;
+    checkbox: ui_checkbox;
+    text: ui_textinput;
+    paragraph: ui_paragraphinput;
+    addInputs(): void;
+}
