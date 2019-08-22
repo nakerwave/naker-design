@@ -109,7 +109,7 @@ export class ColorButton extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class P extends UI {
+export class ColorPicker extends UI {
 
 	back:HTMLElement;
 	title:HTMLElement;

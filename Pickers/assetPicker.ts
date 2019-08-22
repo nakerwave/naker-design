@@ -3,7 +3,7 @@ import { defaultwithinput, Input } from '../Inputs/input';
 import {  ImageButton, Button } from '../Inputs/button';
 import { UI } from '../Layers/common';
 
-import { el, mount, setAttr, setStyle } from 'redom';
+import { el, mount, setAttr, setStyle, unmount } from 'redom';
 import find from 'lodash/find';
 import remove from 'lodash/remove';
 
@@ -70,7 +70,6 @@ export class BaseAssetButton extends Input {
 		if (this.url !== undefined) this.setValue(undefined, true);
 		else this.focus();
 	}
-
 }
 
 /*
@@ -295,13 +294,13 @@ export class AssetPicker extends UI {
 		// models, videos and sounds stays appart because you can't replace a model by an image
 		if (overlayImages.indexOf(type) == -1) {
 			for (let i = 0; i < this.assetButtons[type].length; i++) {
-				this.assetButtons[type][i].show();
+				setStyle(this.assetButtons[type][i], { display: 'block' });
 			}
 		} else {
 			for (let i = 0; i < overlayImages.length; i++) {
 		    let keytype = overlayImages[i];
 				for (let i = 0; i < this.assetButtons[keytype].length; i++) {
-					this.assetButtons[keytype][i].show();
+					setStyle(this.assetButtons[keytype][i], { display: 'block' });
 				}
 			}
 		}
@@ -330,7 +329,7 @@ export class AssetPicker extends UI {
 	hideAsset () {
 		for (let key in this.assetButtons) {
 			for (let i = 0; i < this.assetButtons[key].length; i++) {
-			   this.assetButtons[key][i].hide();
+			   setStyle(this.assetButtons[key][i], {display:'none'});
 			}
 		}
 	}
@@ -362,35 +361,38 @@ export class AssetPicker extends UI {
 
 	addAssetMode = false;
 	addAssetFunction:Function;
-	addButton (type:string, url:string, image:string) {
-		let button:ImageButton|Button;
+	addButton (type:string, url:string, image:string, removable?:boolean) {
+		let button:HTMLElement;
 		if (image.indexOf('http') != -1) {
-			// If opacity we add the opacity background
-			if (type == 'opacity') {
-				button = new ImageButton(this.el, image, 'asset-button color-default-background');
-			} else {
-				button = new ImageButton(this.el, image, 'asset-button');
-			}
-		} else {
-			button = new Button(this.el, {ui:'text', text:image}, 'asset-button');
-		}
+			let remove:HTMLElement;
+			button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
+					el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
+					remove = el('div.delete-asset-button.icon-delete', {
+						onclick: (e) => {
+							e.stopPropagation();
+							this.deleteAsset(button, type, image);
+						}
+					}, [el('span.path1'), el('span.path2'), el('span.path3')])
+				]
 
-		button.on('click', () => {
-			if (this.addAssetMode) this.addAssetFunction(url);
-			else this.currentInput.setValue(url, true);
-			this.hidePicker();
-			this.eraseCurrent();
-		});
-		let deletebutton = new Button(button.el, {ui:'icon', text:'delete'}, 'delete-asset-button');
-		deletebutton.on('click', (e) => {
-			e.stopPropagation();
-			this.deleteAsset(button, type, image);
-		});
+			);
+			if (removable === false) unmount(button, remove);
+		} else {
+			button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, image);
+		}
+		mount(this.el, button);
 		return button;
 	}
 
+	selectAsset (url:string) {
+		if (this.addAssetMode) this.addAssetFunction(url);
+		else this.currentInput.setValue(url, true);
+		this.hidePicker();
+		this.eraseCurrent();
+	}
+
 	onAssetDeleted:Function;
-	deleteAsset (button:ImageButton|Button, type:string, key:string) {
+	deleteAsset (button:HTMLElement, type:string, key:string) {
 		let index = this.assetButtons[type].indexOf(button);
 		if (index != -1) this.assetButtons[type].splice(index, 1);
 		if (this.onAssetDeleted) this.onAssetDeleted(key)
@@ -400,7 +402,7 @@ export class AssetPicker extends UI {
 		remove(this.assetImages[type], (n) => {
 		  return n.url == key;
 		});
-		button.destroy();
+		unmount(button.parentNode, button);
 		this.setAssetList(type);
 	}
 
