@@ -1,6 +1,5 @@
 
 import { defaultwithinput, Input } from '../Inputs/input';
-import {  ImageButton, Button } from '../Inputs/button';
 import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle, unmount } from 'redom';
@@ -193,11 +192,11 @@ export class ImageAssetButton extends BaseAssetButton {
 
 /*
   +------------------------------------------------------------------------+
-  | TEXT ASSET BUTTON                                                           |
+  | TEXT ASSET BUTTON                                                      |
   +------------------------------------------------------------------------+
 */
 
-export class TextAssetbutton extends BaseAssetButton {
+export class TextAssetButton extends BaseAssetButton {
 
 	text:HTMLElement;
 	hover:HTMLElement;
@@ -271,11 +270,11 @@ export class AssetPicker extends UI {
 		})
 	}
 
-	currentInput:AssetButton;
-	setCurrentInput (input:AssetButton) {
+	currentInput:BaseAssetButton;
+	setCurrentInput (input:BaseAssetButton) {
 		this.currentInput = input;
 		this.setAssetList(input.type);
-		this.show();
+		this.showPicker();
 		this.addAssetMode = false;
 		this.waitingAsset = this.type;
 		this.waitingInput = this.currentInput;
@@ -338,12 +337,12 @@ export class AssetPicker extends UI {
 		this.addAssetFunction = callback;
 		this.addAssetMode = true;
 		this.type = type;
-		this.show();
+		this.showPicker();
 		this.setAssetList(type);
 	}
 
 	waitingAsset:string = null;
-	waitingInput:AssetButton;
+	waitingInput: BaseAssetButton;
 	addWaitedAssetButton (url:string, image:string) {
 		if (this.waitingAsset == null) return;
 		this.checkTypeButton(this.waitingAsset);
@@ -412,9 +411,17 @@ export class AssetPicker extends UI {
 		this.waitingAsset = null;
 	}
 
+	onShow:Function;
+	showPicker() {
+		this.show();
+		if (this.onShow) this.onShow();
+	}
+
+	onHide: Function;
 	hidePicker () {
 		this.hide();
 		this.currentInput = undefined;
+		if (this.onHide) this.onHide();
 	}
 }
 
