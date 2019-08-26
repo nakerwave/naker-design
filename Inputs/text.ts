@@ -9,7 +9,7 @@ import { el, mount, setAttr, setStyle } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export class TextInputinput extends Input {
+export class TextInput extends Input {
 	label:HTMLElement;
 	value:string;
 
@@ -86,7 +86,7 @@ export class TextInputinput extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class ParagraphInputinput extends Input {
+export class ParagraphInput extends Input {
 	label:HTMLElement;
 	value:string;
 	max = 300;

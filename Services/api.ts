@@ -22,8 +22,10 @@ export class Api {
 
 	constructor() {
 		let tokenCookie = Cookies.get('token');
-		let tokenObject = JSON.parse(tokenCookie);
-		this.setToken(tokenObject);
+		if (tokenCookie) {
+			let tokenObject = JSON.parse(tokenCookie);
+			this.setToken(tokenObject);
+		}
 	}
 
 	setHost (host:string) {

@@ -21,7 +21,7 @@ export interface numberoption {
 	decimal?:number
 }
 
-export class NumberInputinput extends Input {
+export class NumberInput extends Input {
 
 	unit:any;
 	value:number;
@@ -157,7 +157,7 @@ export class NumberInputinput extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class VectorInputinput extends Input {
+export class VectorInput extends Input {
 
     numberInputs:any = {};
     constructor (parent:HTMLElement, label:string, numberoption:numberoption) {

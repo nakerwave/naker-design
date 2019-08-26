@@ -9,7 +9,7 @@ import { el, mount, setAttr } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export class Checkbox extends Input {
+export class CheckboxInput extends Input {
 
   constructor(parent:HTMLElement, label:string, checked:boolean) {
 		super(parent, label)

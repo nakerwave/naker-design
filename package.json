@@ -16,10 +16,6 @@
     "Layers"
   ],
   "author": "Pichou",
-  "peerDependencies": {
-    "lodash": "^4.17.11",
-    "redom": "^3.16.1"
-  },
   "dependencies": {
     "@sentry/browser": "^5.6.2",
     "a-color-picker": "^1.1.8",

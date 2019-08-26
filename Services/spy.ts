@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/browser";
 declare global {
   interface Window { Intercom: any; }
 }
-window.Intercom = window.Intercom || {};
 
 interface user {
   name: string;
@@ -31,7 +30,7 @@ export class Spy {
   }
 
   track (event:string, options?:Object) {
-    window.Intercom('trackEvent', event, options);
+    if (window.Intercom) window.Intercom('trackEvent', event, options);
   }
 
 }
