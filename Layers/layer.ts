@@ -1,14 +1,14 @@
 
-// import { undo } from '../service/undo';
-import { textnode, Button, ImageButton } from '../Inputs/button';
-import { TextInputinput, ParagraphInputinput } from '../Inputs/text';
-import { NumberInputinput, numberoption, VectorInputinput } from '../Inputs/number';
-import { Checkbox } from '../Inputs/checkbox';
+import { Undo } from '../Services/undo';
+import { textnode, Button } from '../Inputs/button';
+import { TextInput, ParagraphInput } from '../Inputs/text';
+import { NumberInput, numberoption, VectorInput } from '../Inputs/number';
+import { CheckboxInput } from '../Inputs/checkbox';
 import { SliderInput, slideroption } from '../Inputs/slider';
 import { RadioInput, radiooption, RadioIconInput, radioiconoption } from '../Inputs/radio';
 import { SelectInput, selectoption } from '../Inputs/select';
 import { ColorButton, coloroption } from '../Pickers/colorPicker';
-import { AssetButton, ImageAssetButton, TextAssetbutton } from '../Pickers/assetPicker';
+import { AssetButton, ImageAssetButton, TextAssetButton } from '../Pickers/assetPicker';
 import { asset } from '../Pickers/assetPicker';
 
 import { el, mount, unmount, setStyle, setAttr } from 'redom';
@@ -31,10 +31,12 @@ export interface manageroption {
 
 export class InputGroup {
 
-    el:HTMLElement;
-    constructor (parent:HTMLElement) {
+    el: HTMLElement;
+    undo:Undo;
+    constructor (parent?:HTMLElement, undo?:Undo) {
         this.el = el('div.parameter-group');
-        mount(parent, this.el);
+        if (parent) mount(parent, this.el);
+        if (undo) this.undo = undo;
     }
 
   addText(text: string, className: string) {
@@ -59,16 +61,16 @@ export class InputGroup {
       let button = new Button(this.el, textnode);
     button.on('click', (text) => {
       callback(text);
-      // undo.pushState();
+      if (this.undo) this.undo.pushState();
     });
     return button;
   }
 
   addTextInput (label:string, text:string, callback:Function) {
-      let textInput = new TextInputinput(this.el, label, text);
-    // textInput.on('blur', (text) => {
-    //   undo.pushState();
-    // });
+      let textInput = new TextInput(this.el, label, text);
+    textInput.on('blur', (text) => {
+      if (this.undo) this.undo.pushState();
+    });
     textInput.on('change', (text) => {
       callback(text);
     });
@@ -76,10 +78,10 @@ export class InputGroup {
   }
 
   addParagraphInput (label:string, paragraph:string, callback:Function) {
-    let paragraphInput = new ParagraphInputinput(this.el, label, paragraph);
-    // paragraphInput.on('blur', (paragraph) => {
-    //   undo.pushState();
-    // });
+    let paragraphInput = new ParagraphInput(this.el, label, paragraph);
+    paragraphInput.on('blur', (paragraph) => {
+      if (this.undo) this.undo.pushState();
+    });
     paragraphInput.on('change', (paragraph) => {
       callback(paragraph);
     });
@@ -92,9 +94,9 @@ export class InputGroup {
     colorInput.on('change', (rgba) => {
       callback(rgba);
     });
-    // colorInput.on('blur', (rgba) => {
-    //   undo.pushState();
-    // });
+    colorInput.on('blur', (rgba) => {
+      if (this.undo) this.undo.pushState();
+    });
     return colorInput;
   }
 
@@ -103,9 +105,9 @@ export class InputGroup {
     assetInput.on('change', (url) => {
       callback(url);
     });
-    // assetInput.on('blur', (url) => {
-    //   undo.pushState();
-    // });
+    assetInput.on('blur', (url) => {
+      if (this.undo) this.undo.pushState();
+    });
     return assetInput;
   }
   
@@ -114,20 +116,20 @@ export class InputGroup {
       imageAssetInput.on('change', (url) => {
         callback(url);
       });
-      // imageAssetInput.on('blur', (url) => {
-      //   undo.pushState();
-      // });
+      imageAssetInput.on('blur', (url) => {
+        if (this.undo) this.undo.pushState();
+      });
       return imageAssetInput;
     }
   
     addTextAssetInput (label:string, asset:asset, callback:Function) {
-      let textAssetInput = new TextAssetbutton(this.el, label, asset);
+      let textAssetInput = new TextAssetButton(this.el, label, asset);
       textAssetInput.on('change', (url) => {
         callback(url);
       });
-      // textAssetInput.on('blur', (url) => {
-      //   undo.pushState();
-      // });
+      textAssetInput.on('blur', (url) => {
+        if (this.undo) this.undo.pushState();
+      });
       return textAssetInput;
     }
 
@@ -151,10 +153,10 @@ export class InputGroup {
   }
 
   addCheckBox (label:string, checked:boolean, callback:Function) {
-    let checkboxInput = new Checkbox(this.el, label, checked);
+    let checkboxInput = new CheckboxInput(this.el, label, checked);
     checkboxInput.on('change', (checked) => {
       callback(checked);
-      // undo.pushState();
+      if (this.undo) this.undo.pushState();
     });
     return checkboxInput;
   }
@@ -164,9 +166,9 @@ export class InputGroup {
     sliderInput.on('change', (value) => {
       callback(value);
     });
-    // sliderInput.on('blur', (value) => {
-    //   undo.pushState();
-    // });
+    sliderInput.on('blur', (value) => {
+      if (this.undo) this.undo.pushState();
+    });
     return sliderInput;
   }
 
@@ -174,8 +176,7 @@ export class InputGroup {
     let radioInput = new RadioInput(this.el, label, radiooption);
     radioInput.on('change', (value) => {
       callback(value);
-      // PushState in change because blur is called before change and it won't be saved
-      // undo.pushState();
+      if (this.undo) this.undo.pushState();
     });
     return radioInput;
   }
@@ -184,8 +185,7 @@ export class InputGroup {
       let radioInput = new RadioIconInput(this.el, label, radiooption);
     radioInput.on('change', (value) => {
       callback(value);
-      // PushState in change event because blur is called before change and it won't be saved
-      // undo.pushState();
+      if (this.undo) this.undo.pushState();
     });
     return radioInput;
   }
@@ -194,32 +194,31 @@ export class InputGroup {
       let selectInput = new SelectInput(this.el, label, selectoption);
     selectInput.on('change', (value) => {
       callback(value);
-      // undo.pushState();
+      if (this.undo) this.undo.pushState();
     });
     return selectInput;
   }
 
    addNumberInput (label:string, numberoption:numberoption, callback:Function) {
-       let numberInput = new NumberInputinput(this.el, label, numberoption);
+       let numberInput = new NumberInput(this.el, label, numberoption);
     numberInput.on('change', (text) => {
       callback(text);
     });
-    // numberInput.on('blur', (text) => {
-    //   undo.pushState();
-    // });
+    numberInput.on('blur', (text) => {
+      if (this.undo) this.undo.pushState();
+    });
     return numberInput;
   }
 
   addVectorInput (label:string, numberoption:numberoption, callback:Function) {
-    let vectorInput = new VectorInputinput(this.el, label, numberoption);
-        vectorInput.on('change', (change) => {
-          callback(change);
-        });
-        // vectorInput.on('blur', () => {
-        //   undo.pushState();
-        // });
-
-    return vectorInput;
+      let vectorInput = new VectorInput(this.el, label, numberoption);
+      vectorInput.on('change', (change) => {
+        callback(change);
+      });
+      vectorInput.on('blur', () => {
+        if (this.undo) this.undo.pushState();
+      });
+      return vectorInput;
   }
 }
 
@@ -234,8 +233,8 @@ export class InputGroupSwitch extends InputGroup {
     title:HTMLElement;
     expand:HTMLElement;
 
-    constructor (title?:string, expandable?:boolean) {
-      super(layerRight);
+    constructor (title?:string, expandable?:boolean, undo?:Undo) {
+      super(layerRight, undo);
       if (title) this.addTitle(title);
       if (expandable === false) {
           unmount(this.titleParent, this.expand);
