@@ -1,13 +1,7 @@
 
-import { UI _container } from './group';
-import { TextInputinput, Button } from './input';
-import { threedJsonHelper } from '../../viewer/service/threedjsonhelper';
-import { projectInterface } from '../../viewer/service/projectInterface';
-import { animationOptions } from '../../viewer/contents/shared/animationContent';
-import { materialOptions } from '../../viewer/contents/shared/materialContent';
-import { pipelineOptions } from '../../viewer/scenery/pipeline';
+import { InputGroup } from './layer';
 
-import { el, setAttr, mount, unmount } from 'redom';
+import { el, setAttr, mount, unmount, setChildren } from 'redom';
 import cloneDeep from 'lodash/cloneDeep';
 
 /*
@@ -16,42 +10,49 @@ import cloneDeep from 'lodash/cloneDeep';
   +------------------------------------------------------------------------+
 */
 
-export class inventoryClass extends ui_container {
+export interface assetOptions {
+  name?:string;
+}
 
-  assetType:'material'|'animation'|'pipeline';
+export class Inventory extends InputGroup {
+
+  assetName:string;
   onClick:Function;
   onAdd:Function;
 
   namelist:Array<string> = [];
   buttonList:any = {};
-  assetList:Array<materialOptions|animationOptions|pipelineOptions> = [];
+  assetList: Array<assetOptions> = [];
 
-  inventoryContainer:ui_container;
-  nameinput:TextInputinput;
+  inventoryContainer: HTMLElement;
+  nameinput:HTMLElement;
   currentname:string;
   placeholder:string;
 
-  constructor (assetType:'material'|'animation'|'pipeline', parent:ui_container) {
-    super(parent.el, 'inventory');
-    this.assetType = assetType;
-    this.setSaveInputs(this.assetType);
+  constructor(parent: HTMLElement, assetName:string) {
+    super(parent);
+    this.assetName = assetName;
+    this.setSaveInputs(this.assetName);
   }
 
+  control:HTMLElement;
   setSaveInputs (placeholder:string) {
-    this.addTitle(placeholder+'s Inventory');
     this.placeholder = placeholder;
-    this.nameinput = this.addInput(placeholder + ' name', 'inventory-input');
-    this.nameinput.on('input', (text) => {
-      this.currentname = text;
-    });
-    this.nameinput.on('enterkey', (text) => {
-      this.addNewValueFromInput(placeholder);
-    });
-    let button = this.addButton({ui:'text', text:'Save'}, 'inventory-add-button');
-    button.on('click', () => {
-      this.addNewValueFromInput(placeholder);
-    });
-    this.inventoryContainer = this.addContainer('inventory-container-list editor-scroll');
+    let children = [
+      el('div.parameter-title', el('div.title-text', { style: { left: '3px' } }, placeholder + 's Inventory')),
+      this.nameinput = el('input.inventory-input', { 
+        type: 'text', 
+        placeholder: placeholder + ' name', 
+        onclick: () => { this.manageClick(name); },
+        oninput: (evt) => { this.currentname = evt.target.value; },
+        onkeyup: (evt) => { if (evt.keyCode === 13) this.addNewValueFromInput(placeholder); }
+      }),
+      el('div.inventory-add-button', {
+        onclick: () => { this.addNewValueFromInput(placeholder); },
+      }, 'Save'),
+      this.inventoryContainer = el('div.inventory-container-list editor-scroll')
+    ]
+    setChildren(this.el, children);
   }
 
   addNewValueFromInput (name:string) {
@@ -62,20 +63,18 @@ export class inventoryClass extends ui_container {
     this.setInputValue();
   }
 
-  addNewValue (name:string, asset:materialOptions|animationOptions|pipelineOptions) {
-    this.addButtonInInventory(name);
-    this.addValueInInventory(name, asset);
+  _addNewValue (asset:assetOptions) {
+    this.addButtonInInventory(asset.name);
+    this._addValueInInventory(asset);
   }
 
-  addValueInInventory (name:string, asset:materialOptions|animationOptions|pipelineOptions) {
-    let assetToSave:any = threedJsonHelper.recursiveObjectToObject(projectInterface[this.assetType], asset);
-    assetToSave.name = name;
-    this.assetList.push(assetToSave);
+  _addValueInInventory (asset:assetOptions) {
+    this.assetList.push(asset);
   }
 
   setInputValue () {
-    this.nameinput.setValue('');
-    setAttr(this.nameinput.el, {placeholder:this.placeholder+' '+(this.namelist.length+1).toString()});
+    this.nameinput.value = '';
+    setAttr(this.nameinput, {placeholder:this.placeholder+' '+(this.namelist.length+1).toString()});
     this.currentname = '';
   }
 
@@ -86,19 +85,20 @@ export class inventoryClass extends ui_container {
         [el('span.path1'),el('span.path2'),el('span.path3')]
       ),
     )
-    mount(this.inventoryContainer.el, button);
+    mount(this.inventoryContainer, button);
     this.buttonList[name] = button;
   }
 
-  removeValue (button:Button, name:string) {
+  removeValue (button:HTMLElement, name:string) {
     let index = this.namelist.indexOf(name);
     if (index != -1) this.namelist.splice(index, 1);
     delete this.buttonList[name];
     this.setInputValue();
-    unmount(this.inventoryContainer.el, button);
+    unmount(this.inventoryContainer, button);
     for (let i = 0; i < this.assetList.length; i++) {
-      if (this.assetList[i].name == name) delete this.assetList[i];
+      if (this.assetList[i].name == name) this.assetList.splice(i, 1);
     }
+    console.log(this.assetList);
   }
 
   getAssetFromName (name:string) {
