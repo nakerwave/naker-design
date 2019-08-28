@@ -16,12 +16,13 @@ export class ColorAssetInput extends Input {
         let vectorContainer = el('div.input-container')
         mount(this.parent, vectorContainer);
 
-        this.colorButton = new ColorButton(parent, '', coloroption);
+        // Force label for colorPicker
+        this.colorButton = new ColorButton(parent, label, coloroption);
         unmount(parent, this.colorButton.parent);
         mount(vectorContainer, this.colorButton.el);
         setAttr(this.colorButton.el, { class: 'input-parameter-first' });
 
-        this.assetButton = new AssetButton(parent, '', asset);
+        this.assetButton = new AssetButton(parent, label, asset);
         unmount(parent, this.assetButton.parent);
         mount(vectorContainer, this.assetButton.el);
         setAttr(this.assetButton.el, { class: 'input-parameter-second' });

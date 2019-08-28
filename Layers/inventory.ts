@@ -1,7 +1,7 @@
 
 import { InputGroup } from './layer';
 
-import { el, setAttr, mount, unmount, setChildren } from 'redom';
+import { el, setAttr, mount, unmount, setChildren, setStyle } from 'redom';
 import cloneDeep from 'lodash/cloneDeep';
 
 /*
@@ -31,6 +31,7 @@ export class Inventory extends InputGroup {
 
   constructor(parent: HTMLElement, assetName:string) {
     super(parent);
+    setStyle(this.el, {border:'0px'});
     this.assetName = assetName;
     this.setSaveInputs(this.assetName);
   }

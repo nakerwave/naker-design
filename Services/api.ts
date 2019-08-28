@@ -133,8 +133,10 @@ export class Api {
 		});
 	}
 
+	onDisconnected:Function;
 	disconnect() {
 		Cookies.remove('token');
+		if (this.onDisconnected) this.onDisconnected();
 	}
 
 	getToken() {

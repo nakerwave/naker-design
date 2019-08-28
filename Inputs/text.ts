@@ -1,7 +1,7 @@
 
 import { Input, inputEvents } from './input';
 
-import { el, mount, setAttr, setStyle } from 'redom';
+import { el, mount, setAttr } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
@@ -16,7 +16,7 @@ export class TextInput extends Input {
   constructor(parent:HTMLElement, label:string, text:string, className?:string) {
 		super(parent, label)
 		if (!className) className = 'input-parameter input-text'
-		this.el = el('input', {class:'siimple-input '+className});
+		this.el = el('input', {class:className});
 	  	mount(this.parent, this.el);
 		setAttr(this.el, { type: 'text', placeholder:text.toString(), onfocus:()=>{this.el.select()} });
 		this.value = text.toString();

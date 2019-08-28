@@ -6,12 +6,17 @@ declare global {
 }
 
 interface user {
-  name: string;
-  email: string;
   _id: string;
+  email: string;
+  name: string;
 };
 
 export class Spy {
+
+  engine: 'NB' | 'NF' | 'NS';
+  setEngine(engine: 'NB' | 'NF' | 'NS') {
+    this.engine = engine;
+  }
 
   startIntercom (user:user) {
     window.Intercom('boot', {
@@ -30,6 +35,7 @@ export class Spy {
   }
 
   track (event:string, options?:Object) {
+    if (this.engine) event = this.engine + ' ' + event;
     if (window.Intercom) window.Intercom('trackEvent', event, options);
   }
 

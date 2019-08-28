@@ -127,6 +127,7 @@ export class ColorPicker extends UI {
 				el('div.a-color-picker-palette-background')
 			]
 		);
+		
 		mount(document.body, this.el);
 		this.picker = AColorPicker.createPicker({
 			attachTo: '#colorpicker',
@@ -185,7 +186,8 @@ export class ColorPicker extends UI {
 		this.picker.rgba = rgba;
 		this.currentInput = input;
 		this.setPickerPosition();
-		this.title.textContent = input.label.textContent;
+		if (input.label) this.title.textContent = input.label.textContent;
+		else this.title.textContent = 'Color';
 		setStyle(this.back, {display:'block'});
 		if (input.opacity) setStyle(this.opacityPicker, {display:'block'});
 		else setStyle(this.opacityPicker, {display:'none'});
