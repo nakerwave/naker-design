@@ -36,10 +36,11 @@
 
 .asset-picker
   position: absolute
-  top: 62px
-  left: 2px
-  height: calc(100% - 62px)
-  width: calc(100% - 250px)
+  top: 50%
+  left: 50%
+  height: 50%
+  width: 50%
+  transform: translate(-50%, -50%)
   display: block
   background: $colordarkgrey
   color: $colormain
@@ -101,6 +102,7 @@
   background: $colordarkgrey
   cursor: pointer
   width: $defaultwithinput
+  left: 135px
   &:hover
     .image-hover
       opacity: 1
@@ -116,6 +118,7 @@
   text-align: center
   line-height: 30px
   color: $colortext
+  font-size: 16px
   transition: opacity 200ms ease
 
 .image-hover-text
@@ -126,6 +129,7 @@
   height: auto
   padding: 5px
   overflow: hidden
+  text-overflow: ellipsis
 
 
 /***************************************** TEXT ASSET BUTTON ****************************************

@@ -19,7 +19,7 @@ export class Button extends Input {
 
 	constructor(parent:HTMLElement, textnode:textnode, className?:string) {
     super(parent)
-	if (!className) className = 'button';
+	if (!className) className = 'input-button';
 		this.textnode = textnode;
 		if (textnode.ui == 'text') {
 			this.el = el('div', {class:className}, textnode.text);

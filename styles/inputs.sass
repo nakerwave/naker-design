@@ -57,12 +57,12 @@ label
 .input-parameter-first
   position: absolute
   height: 22px
-  left: $defaultleftinput
+  left: $defaultleftinput + 6px
 
 .input-parameter-second
   position: absolute
   height: 22px
-  left: $defaultleftinput - 65px
+  left: $defaultleftinput - 60px
 
 .input-paragraph
   position: relative
@@ -83,14 +83,15 @@ label
 .input-button
   position: relative
   line-height: 20px
-  height: 20px
-  line-height: 20px
+  height: 30px
+  line-height: 30px
   font-size: 13px
   left: 55px
   width: 150px
-  top: 2px
-  margin-top: 10px
+  margin: 5px 0px
   background-color: $colormain !important
+  text-align: center
+  border-radius: 5px
   transition: all 200ms ease
 
 .input-label
@@ -133,12 +134,14 @@ input
     font-size: 12px
     color: $colortext
     background: $colorthirdgrey
-    border: 0px
+    border: 2px solid $colorthirdgrey
     border-radius: $defaultborderradius
     height: 22px
     padding-left: 5px
     padding-right: 0px
     z-index: 2
+    position: absolute
+    top: 0px
     // transition: all 200ms ease
     &:focus
       background: $colormain

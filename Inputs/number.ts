@@ -73,14 +73,16 @@ export class NumberInput extends Input {
 		this.unit.textContent = unit;
 	}
 
+	valueChangedTimeout:any;
 	setValue (value:number) {
 		if (value == undefined) return setAttr(this.el, {value: 0});
-		if (value === this.el.value) return this;
+		if (value == this.el.value) return this;
 		this.value = value;
 		this.checkDecimal();
 		setAttr(this.el, {value: this.value});
+		if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
 		setAttr(this.el, { changed: true });
-		setTimeout(() => { setAttr(this.el, { changed: false }) }, 200);
+		this.valueChangedTimeout = setTimeout(() => { setAttr(this.el, { changed: false }) }, 100);
 		return this;
 	}
 
@@ -157,9 +159,17 @@ export class NumberInput extends Input {
   +------------------------------------------------------------------------+
 */
 
+interface vectorvalue {
+	x?: number;
+	y?: number;
+	z?: number;
+}
 export class VectorInput extends Input {
 
-    numberInputs:any = {};
+	x: NumberInput;
+	y: NumberInput;
+	z: NumberInput;
+
     constructor (parent:HTMLElement, label:string, numberoption:numberoption) {
 		super(parent, label);
 		let vectorContainer = el('div.vector-container')
@@ -167,18 +177,18 @@ export class VectorInput extends Input {
         let i = 0;
         for (let key in {x:0, y:0, z:0}) {
             let vectoroption = merge(numberoption, {value:0, unit:key.toUpperCase(), width:50, left:i*54, decimal:2});
-			this.numberInputs[key] = new NumberInputinput(parent, '', vectoroption);
-            unmount(parent, this.numberInputs[key].parent);
-			mount(vectorContainer, this.numberInputs[key].el);
-            setAttr(this.numberInputs[key].el, {class:'vector-input'});
+			this[key] = new NumberInput(parent, '', vectoroption);
+            unmount(parent, this[key].parent);
+			mount(vectorContainer, this[key].el);
+            setAttr(this[key].el, {class:'vector-input'});
           i++;
         }
     }
 
     on (event:string, funct:Function) {
-        for (let key in this.numberInputs) {
+        for (let key in {x:0, y:0, z:0}) {
             ((key)=>{
-                this.numberInputs[key].on(event, (number) => {
+                this[key].on(event, (number) => {
                     let change = {};
                     change[key] = number;
                     funct(change);
@@ -186,5 +196,12 @@ export class VectorInput extends Input {
             })(key)
         }
         return this;
-    }
+	}
+	
+	setValue(value: vectorvalue) {
+		if (value.x !== undefined) this.x.setValue(value.x);
+		if (value.y !== undefined) this.y.setValue(value.y);
+		if (value.z !== undefined) this.z.setValue(value.z);
+	}
+	}
 }

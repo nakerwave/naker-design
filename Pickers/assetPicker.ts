@@ -151,7 +151,7 @@ export class ImageAssetButton extends BaseAssetButton {
 
 	constructor(parent:HTMLElement, label:string, assetoption:asset) {
         super(parent, label, assetoption);
-		this.el = el('div.input-asset-image.input-parameter', {class:'', onclick:()=>{this.focus()}},
+		this.el = el('div.input-asset-image', {class:'', onclick:()=>{this.focus()}},
 			[
 				this.hover = el('div.image-hover', el('div.image-hover-text', 'Replace '+this.type)),
 				this.image = el('img', { src: '', style: {width:defaultwithinput+'px', 'background-size': 'contain', display:'none'} }),
@@ -253,8 +253,9 @@ export class TextAssetButton extends BaseAssetButton {
   +------------------------------------------------------------------------+
 */
 
+export let assetTypes: Array<string> = ['image', 'particle', 'albedo', 'ambient', 'specular', 'emissive', 'reflectivity', 'reflection', 'refraction', 'heightmap', 'cubetexture', 'bump', 'opacity', 'model', 'video', 'sound'];
 // Texture which are images
-export let overlayImages:Array<string> = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
+export let overlayImages: Array<string> = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
 export let overlayAlpha = {'albedo':false, 'ambient':false, 'specular':false, 'emissive':false, 'bump':false, 'opacity':true, 'reflectivity':false, 'reflection':false, 'particle':false, 'image':true, 'heightmap':false};
 
 export class AssetPicker extends UI {
@@ -263,25 +264,32 @@ export class AssetPicker extends UI {
 
 	constructor () {
 		super();
+		this.el = el('div', {id:'assetpicker', class:'picker asset-picker editor-scroll'});
+		this.hide();
 		window.addEventListener('load', () => {
-			this.el = el('div', {id:'assetpicker', class:'picker asset-picker editor-scroll'});
 			mount(document.body, this.el);
-			this.hide();
-		})
+		});
 	}
 
 	currentInput:BaseAssetButton;
 	setCurrentInput (input:BaseAssetButton) {
 		this.currentInput = input;
 		this.setAssetList(input.type);
-		this.showPicker();
 		this.addAssetMode = false;
+		this.type = input.type;
 		this.waitingAsset = this.type;
 		this.waitingInput = this.currentInput;
+		this.showPicker();
 	}
 
 	assetButtons:any = {};
 	assetImages:any = {};
+	initAssetImages (assetimage:any) {
+		// Make sure we have correct type saved
+		for (let key in assetimage) {
+			if (assetTypes.indexOf(key) != -1) this.assetImages[key] = assetimage[key];
+		}
+	}
 
 	assetperline = 2;
 	type:string;
@@ -414,14 +422,14 @@ export class AssetPicker extends UI {
 	onShow:Function;
 	showPicker() {
 		this.show();
-		if (this.onShow) this.onShow();
+		if (this.onShow) this.onShow(this.type);
 	}
 
 	onHide: Function;
 	hidePicker () {
 		this.hide();
 		this.currentInput = undefined;
-		if (this.onHide) this.onHide();
+		if (this.onHide) this.onHide(this.type);
 	}
 }
 

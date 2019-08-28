@@ -10,7 +10,7 @@ import { el, mount, setAttr, setStyle } from 'redom';
 */
 
 export class TextInput extends Input {
-	label:HTMLElement;
+	
 	value:string;
 
   constructor(parent:HTMLElement, label:string, text:string, className?:string) {
@@ -24,13 +24,15 @@ export class TextInput extends Input {
 		return this;
 	}
 
+	valueChangedTimeout:any;
 	setValue (value:string) {
 		if (value == undefined) return setAttr(this.el, {value: ''});
 		if (value == this.el.value) return this;
 		this.value = value.toString();
 		setAttr(this.el, {value: value});
+		if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
 		setAttr(this.el, {changed:true});
-		setTimeout(()=>{setAttr(this.el, {changed:false})}, 200);
+		this.valueChangedTimeout = setTimeout(()=>{setAttr(this.el, {changed:false})}, 100);
 		return this;
 	}
 
@@ -93,7 +95,7 @@ export class ParagraphInput extends Input {
 
   constructor(parent:HTMLElement, label:string, text:string, className?:string) {
 		super(parent, label);
-		setAttr(this.label, {class:'input-label input-label-paragraph'});
+		if (this.label) setAttr(this.label, {class:'input-label input-label-paragraph'});
 		if (!className) className = 'input-paragraph editor-scroll';
 		this.el = el('textarea', {class:'siimple-input '+className, maxlength:this.max});
 		mount(this.parent, this.el);

@@ -1,5 +1,6 @@
 
 import { Undo } from '../Services/undo';
+import { Input } from '../Inputs/input';
 import { textnode, Button } from '../Inputs/button';
 import { TextInput, ParagraphInput } from '../Inputs/text';
 import { NumberInput, numberoption, VectorInput } from '../Inputs/number';
@@ -9,7 +10,9 @@ import { RadioInput, radiooption, RadioIconInput, radioiconoption } from '../Inp
 import { SelectInput, selectoption } from '../Inputs/select';
 import { ColorButton, coloroption } from '../Pickers/colorPicker';
 import { AssetButton, ImageAssetButton, TextAssetButton } from '../Pickers/assetPicker';
+import { ColorAssetInput } from '../Pickers/colorassetInput';
 import { asset } from '../Pickers/assetPicker';
+import { UI } from './common';
 
 import { el, mount, unmount, setStyle, setAttr } from 'redom';
 
@@ -29,11 +32,12 @@ export interface manageroption {
   +------------------------------------------------------------------------+
 */
 
-export class InputGroup {
+export class InputGroup extends UI {
 
     el: HTMLElement;
     undo:Undo;
     constructor (parent?:HTMLElement, undo?:Undo) {
+      super();
         this.el = el('div.parameter-group');
         if (parent) mount(parent, this.el);
         if (undo) this.undo = undo;
@@ -134,22 +138,14 @@ export class InputGroup {
     }
 
   addColorAndAssetInput (label:string, coloroption:coloroption, asset:asset, callback:Function) {
-    let colorInput = new ColorButton(this.el, label, coloroption);
-    setAttr(colorInput, {class:'input-parameter-first'})
-    colorInput.on('change', (rgba) => {
+    let colorassetInput = new ColorAssetInput(this.el, label, coloroption, asset);
+    colorassetInput.on('change', (rgba) => {
       callback('color', rgba);
     });
-    // colorInput.on('blur', (rgba) => {
-    //   undo.pushState();
-    // });
-    // let assetInput = inputContainer.addAssetButton(asset, 'input-parameter-second');
-    // assetInput.on('change', (url) => {
-    //   callback('asset', url);
-    // });
-    // assetInput.on('blur', (url) => {
-    //   undo.pushState();
-    // });
-    // return {color:colorInput, asset:assetInput};
+    colorassetInput.on('blur', (rgba) => {
+      if (this.undo) this.undo.pushState();
+    });
+    return colorassetInput;
   }
 
   addCheckBox (label:string, checked:boolean, callback:Function) {
@@ -273,7 +269,7 @@ export class InputGroupSwitch extends InputGroup {
         }
     }
 
-    freezeInput (input:any, bool:boolean) {
+    freezeInput (input:Input, bool:boolean) {
       if (bool) setStyle(input.el, {display:'none'});
       else setStyle(input.el, {display:'block'});
       if (input.unit) {
@@ -297,8 +293,3 @@ export let layerLeft = el('div.layer-left.presets-container.editor-scroll');
 */
 
 export let layerRight = el('div.layer-right.parameter-container.editor-scroll');
-
-window.addEventListener('load', () => {
-  mount(document.body, layerLeft);
-  mount(document.body, layerRight);
-});
