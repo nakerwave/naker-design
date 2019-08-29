@@ -153,7 +153,9 @@ export class ImageAssetButton extends BaseAssetButton {
         super(parent, label, assetoption);
 		this.el = el('div.input-asset-image', {class:'', onclick:()=>{this.focus()}},
 			[
-				this.hover = el('div.image-hover', el('div.image-hover-text', 'Replace '+this.type)),
+				el('div.image-hover', 
+					this.hover = el('div.image-hover-text', 'Replace '+this.type)
+				),
 				this.image = el('img', { src: '', style: {width:defaultwithinput+'px', 'background-size': 'contain', display:'none'} }),
 				this.text = el('div.image-hover-text', '')
 			]
@@ -236,12 +238,10 @@ export class TextAssetButton extends BaseAssetButton {
 			if (!thumbnail) text = url.substr(url.lastIndexOf('/') + 1);
 			else text = thumbnail;
 			this.text.textContent = text;
-			this.hover.textContent = 'Replace';
-			// setStyle(this.asseticon, {'color':colormain});
+			this.hover.textContent = 'Replace ' + this.type;
 		} else {
 			this.text.textContent = 'No '+this.type;
 			this.hover.textContent = 'Add '+this.type;
-			// setStyle(this.asseticon, {'color':colorthirdgrey});
 		}
 		return this;
 	}
