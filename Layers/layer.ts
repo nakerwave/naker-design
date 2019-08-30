@@ -233,8 +233,10 @@ export class InputGroupSwitch extends InputGroup {
       super(layerRight, undo);
       if (title) this.addTitle(title);
       if (expandable === false) {
-          unmount(this.titleParent, this.expand);
-          if (title) setStyle(this.title, {left:'3px'});
+        if (title) {
+            unmount(this.titleParent, this.expand);
+            setStyle(this.title, {left:'3px'});
+          }
       }
 
       return this;

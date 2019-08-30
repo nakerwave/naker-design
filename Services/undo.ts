@@ -9,8 +9,8 @@ import transform from 'lodash/transform';
 import isObject from 'lodash/isObject';
 
 interface change {
-  back:any
-  forward:any
+  back:Object
+  forward:Object
 }
 
 export class Undo {
@@ -41,9 +41,7 @@ export class Undo {
     this.presentState = projectJson;
   }
 
-  getProjectJson () {
-
-  }
+  getProjectJson () {}
 
   _back () {
     if (this.pastChange.length != 0) {
