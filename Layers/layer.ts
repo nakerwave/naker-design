@@ -139,8 +139,8 @@ export class InputGroup extends UI {
 
   addColorAndAssetInput (label:string, coloroption:coloroption, asset:asset, callback:Function) {
     let colorassetInput = new ColorAssetInput(this.el, label, coloroption, asset);
-    colorassetInput.on('change', (rgba) => {
-      callback('color', rgba);
+    colorassetInput.on('change', (type, value) => {
+      callback(type, value);
     });
     colorassetInput.on('blur', (rgba) => {
       if (this.undo) this.undo.pushState();

@@ -65,6 +65,7 @@ export class ColorButton extends Input {
 	setValue (rgba:Array<number>, frompicker?:any) {
 		if (rgba == undefined) return this.erase(frompicker);
 		if (rgba[0] == null) return this.erase(frompicker); // history change
+		if (typeof rgba !== 'object') return console.error('Bad color value sent to ColorButton');
 		this.rgba = clone(rgba);
 		let stringRgba = clone(rgba);
 		if (rgba[3] == undefined || !this.opacity) stringRgba[3] = 1;
