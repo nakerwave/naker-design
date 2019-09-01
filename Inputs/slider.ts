@@ -30,7 +30,7 @@ export class SliderInput extends Input {
 
 	noUiSlider:noUiSlider;
 
-  constructor(parent:HTMLElement, label:string, slideroption:slideroption) {
+  	constructor(parent:HTMLElement, label:string, slideroption:slideroption) {
 		super(parent, label);
 	  	setAttr(this.parent, { class:'input-container input-container-big' });
 		this.el = parent;
@@ -59,6 +59,7 @@ export class SliderInput extends Input {
 	setValue (value:number) {
 		if (value == undefined) {
 			setAttr(this.number, {value:this.defaultValue});
+			this.formerValue = value; // To avoid slider to send new value in change callback
 			this.noUiSlider.set([this.defaultValue]);
 		} else {
 			value = this.checkAccuracy(value);
