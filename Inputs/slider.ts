@@ -109,7 +109,7 @@ export class SliderInput extends Input {
 	}
 
 	inputEvent:inputEvents = {
-		change:'update',
+		change:'slide',
 		focus:'start',
 		blur:'end',
 	};

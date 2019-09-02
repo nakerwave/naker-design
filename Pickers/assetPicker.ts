@@ -8,7 +8,7 @@ import remove from 'lodash/remove';
 
 export interface asset {
   type:string,
-  url:string
+  url:string,
 };
 
 export interface assetEvents {
@@ -99,7 +99,7 @@ export class AssetButton extends BaseAssetButton {
 		);
 		mount(this.parent, this.el);
 		if (assetoption.url) this.setValue(assetoption.url);
-	}
+    }
 
 	setValue (url:string, frompicker?:any) {
 		let thumbnail = this._setValue(url, frompicker);
@@ -279,8 +279,20 @@ export class AssetPicker extends UI {
 		this.type = input.type;
 		this.waitingAsset = this.type;
 		this.waitingInput = this.currentInput;
-		this.showPicker();
-	}
+        this.showPicker();
+        this.sendToFocusListener();
+    }
+    
+    focusListeners: Array<Function> = [];
+    addFocusListener (listener:Function) {
+        this.focusListeners.push(listener);
+    }
+
+    sendToFocusListener () {
+        for (let i = 0; i < this.focusListeners.length; i++) {
+            this.focusListeners[i](this.type);
+        }
+    }
 
 	assetButtons:any = {};
 	assetImages:any = {};
@@ -351,9 +363,10 @@ export class AssetPicker extends UI {
 
 	waitingAsset:string = null;
 	waitingInput: BaseAssetButton;
-	addWaitedAssetButton (url:string, image:string) {
+	addWaitedAssetButton (url:string, image?:string) {
 		if (this.waitingAsset == null) return;
-		this.checkTypeButton(this.waitingAsset);
+        this.checkTypeButton(this.waitingAsset);
+        if (!image) image = url;
 		let asset = find(this.assetImages[this.waitingAsset], (o) => { return o.url == url; });
 		if (asset == undefined) {
 			this.assetButtons[this.waitingAsset].push(this.addButton(this.waitingAsset, url, image));
