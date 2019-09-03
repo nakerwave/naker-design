@@ -123,7 +123,7 @@ export class ColorPicker extends UI {
 		this.el = el('div', {id:'colorpicker', class:'picker color-picker'},
 			[
 				el('div.picker-title',
-					this.title = el('div.title-text')
+                    this.title = el('div.picker-title-text')
 				),
 				el('div.a-color-picker-palette-background')
 			]
