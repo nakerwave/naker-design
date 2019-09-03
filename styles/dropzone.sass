@@ -3,7 +3,7 @@
 
 .modal-close
     position: absolute
-    top: 60px
+    top: 20px
     right: 20px
     font-size: 30px
     cursor: pointer
@@ -20,6 +20,26 @@
   top: 0px
   left: 0px
   background-color: transparentize($colorsecondmain, .1)
+
+  .upload_title
+    top: calc(50% - 200px)
+    width: 100%
+    text-align: center
+    position: fixed
+    pointer-events: none
+    color: $colortext
+    font-family: 'Raleway'
+    font-size: 20px
+    transform: translate(-50%, -50%)
+
+  .upload_title1
+    left: calc(50% - 200px)
+
+  .upload_title2
+    left: 50%
+
+  .upload_title3
+    left: calc(50% + 200px)
 
   .download
     position: fixed
@@ -63,3 +83,16 @@
   cursor: pointer
   .dz-preview
     display: none
+
+.asset-picker
+  border: 2px solid $colormain
+
+.left_overlay
+  left: calc(50% - 200px) !important
+
+.right_overlay
+  left: calc(50% + 200px) !important
+
+.beside_overlay
+  height: 330px !important
+  width: 315px !important

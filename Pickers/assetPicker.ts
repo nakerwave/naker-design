@@ -28,7 +28,7 @@ export class BaseAssetButton extends Input {
 	}
 
 	getThumbnail (url:string) {
-		let asset = find(assetPicker.assetImages[this.type], (o:asset) => { return o.url == url; });
+		let asset = find(assetPicker.thumbnails[this.type], (o:asset) => { return o.url == url; });
 		if (asset) return asset.thumbnail;
 		else return url;
 	}
@@ -294,12 +294,12 @@ export class AssetPicker extends UI {
         }
     }
 
-	assetButtons:any = {};
-	assetImages:any = {};
-	initAssetImages (assetimage:any) {
+	buttons:any = {};
+	thumbnails:any = {};
+	initthumbnails (assetimage:any) {
 		// Make sure we have correct type saved
 		for (let key in assetimage) {
-			if (assetTypes.indexOf(key) != -1) this.assetImages[key] = assetimage[key];
+			if (assetTypes.indexOf(key) != -1) this.thumbnails[key] = assetimage[key];
 		}
 	}
 
@@ -308,47 +308,47 @@ export class AssetPicker extends UI {
 	setAssetList (type:string) {
 		this.type = type;
 		this.hideAsset();
-		this.checkTypeButton(type);
+		this.checkTypeInitialized(type);
 		// Show all assets image only if overlayImages,
 		// models, videos and sounds stays appart because you can't replace a model by an image
 		if (overlayImages.indexOf(type) == -1) {
-			for (let i = 0; i < this.assetButtons[type].length; i++) {
-				setStyle(this.assetButtons[type][i], { display: 'block' });
+			for (let i = 0; i < this.buttons[type].length; i++) {
+				setStyle(this.buttons[type][i], { display: 'block' });
 			}
 		} else {
 			for (let i = 0; i < overlayImages.length; i++) {
 		    let keytype = overlayImages[i];
-				for (let i = 0; i < this.assetButtons[keytype].length; i++) {
-					setStyle(this.assetButtons[keytype][i], { display: 'block' });
+				for (let i = 0; i < this.buttons[keytype].length; i++) {
+					setStyle(this.buttons[keytype][i], { display: 'block' });
 				}
 			}
 		}
 		return this;
 	}
 
-	checkTypeButton (type:string) {
+	checkTypeInitialized (type:string) {
 		if (overlayImages.indexOf(type) == -1) {
-			if (!this.assetButtons[type]) this.initAssetType(type);
+			if (!this.buttons[type]) this.initAssetType(type);
 		} else {
 			for (let i = 0; i < overlayImages.length; i++) {
-				if (!this.assetButtons[overlayImages[i]]) this.initAssetType(overlayImages[i]);
+				if (!this.buttons[overlayImages[i]]) this.initAssetType(overlayImages[i]);
 			}
 		}
 	}
 
 	initAssetType (type:string) {
-		this.assetButtons[type] = [];
-		if (this.assetImages[type] == undefined) this.assetImages[type] = [];
-		for (let i = 0; i < this.assetImages[type].length; i++) {
-			let asset = this.assetImages[type][i];
-			this.assetButtons[type].push(this.addButton(type, asset.url, asset.thumbnail));
-		}
+		this.buttons[type] = [];
+		if (this.thumbnails[type] == undefined) this.thumbnails[type] = [];
+		for (let i = 0; i < this.thumbnails[type].length; i++) {
+			let asset = this.thumbnails[type][i];
+			this.buttons[type].push(this.addButton(type, asset.url, asset.thumbnail));
+        }
 	}
 
 	hideAsset () {
-		for (let key in this.assetButtons) {
-			for (let i = 0; i < this.assetButtons[key].length; i++) {
-			   setStyle(this.assetButtons[key][i], {display:'none'});
+		for (let key in this.buttons) {
+			for (let i = 0; i < this.buttons[key].length; i++) {
+			   setStyle(this.buttons[key][i], {display:'none'});
 			}
 		}
 	}
@@ -363,21 +363,26 @@ export class AssetPicker extends UI {
 
 	waitingAsset:string = null;
 	waitingInput: BaseAssetButton;
-	addWaitedAssetButton (url:string, image?:string) {
+	addWaitedAssetButton (url:string, thumbnail?:string) {
 		if (this.waitingAsset == null) return;
-        this.checkTypeButton(this.waitingAsset);
-        if (!image) image = url;
-		let asset = find(this.assetImages[this.waitingAsset], (o) => { return o.url == url; });
+        this.checkTypeInitialized(this.waitingAsset);
+        if (!thumbnail) thumbnail = url;
+		let asset = find(this.thumbnails[this.waitingAsset], (o) => { return o.url == url; });
 		if (asset == undefined) {
-			this.assetButtons[this.waitingAsset].push(this.addButton(this.waitingAsset, url, image));
-			this.assetImages[this.waitingAsset].push({url:url, thumbnail:image});
+            this.addAsset(this.waitingAsset, url, thumbnail);
 		}
 		if (this.waitingInput) {
 			this.waitingInput.setValue(url, true);
 			this.waitingInput.blurEvent(); // Blur event to force push state
 		}
 		this.eraseCurrent();
-	}
+    }
+    
+    addAsset(type:string, url:string, thumbnail:string) {
+        this.checkTypeInitialized(type);
+        this.buttons[type].push(this.addButton(type, url, thumbnail));
+        this.thumbnails[type].push({ url: url, thumbnail: thumbnail });
+    }
 
 	addAssetMode = false;
 	addAssetFunction:Function;
@@ -387,11 +392,14 @@ export class AssetPicker extends UI {
 			let remove:HTMLElement;
 			button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
 					el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
-					remove = el('div.delete-asset-button.icon-delete', {
+                    remove = el('div.delete-asset-button.icon-close', {
 						onclick: (e) => {
 							e.stopPropagation();
 							this.deleteAsset(button, type, image);
-						}
+                        },
+                        onmouseover: (e) => {
+                            e.stopPropagation(); // Not working
+                        }
 					}, [el('span.path1'), el('span.path2'), el('span.path3')])
 				]
 
@@ -413,13 +421,13 @@ export class AssetPicker extends UI {
 
 	onAssetDeleted:Function;
 	deleteAsset (button:HTMLElement, type:string, key:string) {
-		let index = this.assetButtons[type].indexOf(button);
-		if (index != -1) this.assetButtons[type].splice(index, 1);
+		let index = this.buttons[type].indexOf(button);
+		if (index != -1) this.buttons[type].splice(index, 1);
 		if (this.onAssetDeleted) this.onAssetDeleted(key)
 		if (this.currentInput) {
 			if (key == this.currentInput.url) this.currentInput.setValue(undefined, true);
 		}
-		remove(this.assetImages[type], (n) => {
+		remove(this.thumbnails[type], (n) => {
 		  return n.url == key;
 		});
 		unmount(button.parentNode, button);
