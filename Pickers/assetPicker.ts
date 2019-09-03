@@ -296,44 +296,31 @@ export class AssetPicker extends UI {
 
 	buttons:any = {};
 	thumbnails:any = {};
-	initthumbnails (assetimage:any) {
+	initThumbnails (assetThumbnails:any) {
 		// Make sure we have correct type saved
-		for (let key in assetimage) {
-			if (assetTypes.indexOf(key) != -1) this.thumbnails[key] = assetimage[key];
+		for (let key in assetThumbnails) {
+			if (assetTypes.indexOf(key) != -1) this.thumbnails[key] = assetThumbnails[key];
 		}
 	}
 
 	assetperline = 2;
 	type:string;
 	setAssetList (type:string) {
-		this.type = type;
+        this.type = type;
 		this.hideAsset();
 		this.checkTypeInitialized(type);
 		// Show all assets image only if overlayImages,
 		// models, videos and sounds stays appart because you can't replace a model by an image
-		if (overlayImages.indexOf(type) == -1) {
-			for (let i = 0; i < this.buttons[type].length; i++) {
-				setStyle(this.buttons[type][i], { display: 'block' });
-			}
-		} else {
-			for (let i = 0; i < overlayImages.length; i++) {
-		    let keytype = overlayImages[i];
-				for (let i = 0; i < this.buttons[keytype].length; i++) {
-					setStyle(this.buttons[keytype][i], { display: 'block' });
-				}
-			}
-		}
+        if (overlayImages.indexOf(type) != -1) type = 'image';
+        console.log(this.buttons);
+        for (let i = 0; i < this.buttons[type].length; i++) {
+            setStyle(this.buttons[type][i], { display: 'block' });
+        }
 		return this;
 	}
 
 	checkTypeInitialized (type:string) {
-		if (overlayImages.indexOf(type) == -1) {
-			if (!this.buttons[type]) this.initAssetType(type);
-		} else {
-			for (let i = 0; i < overlayImages.length; i++) {
-				if (!this.buttons[overlayImages[i]]) this.initAssetType(overlayImages[i]);
-			}
-		}
+		if (!this.buttons[type]) this.initAssetType(type);
 	}
 
 	initAssetType (type:string) {

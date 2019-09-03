@@ -115,7 +115,7 @@ export class NakerDropzone {
         });
 
         this.dropzone.on('success', (file, response) => {
-            this.success(response, callback);
+            this.success(response);
         });
 
         this.dropzone.on('error', (file, response: any) => {
