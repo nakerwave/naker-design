@@ -264,7 +264,7 @@ export class AssetPicker extends UI {
 
 	constructor () {
 		super();
-		this.el = el('div', {id:'assetpicker', class:'picker asset-picker editor-scroll'});
+        this.el = el('div.picker.asset-picker.editor-scroll', { id: 'assetpicker', onclick: () => { this.hidePicker(); }});
 		this.hide();
 		window.addEventListener('load', () => {
 			mount(document.body, this.el);
@@ -312,7 +312,6 @@ export class AssetPicker extends UI {
 		// Show all assets image only if overlayImages,
 		// models, videos and sounds stays appart because you can't replace a model by an image
         if (overlayImages.indexOf(type) != -1) type = 'image';
-        console.log(this.buttons);
         for (let i = 0; i < this.buttons[type].length; i++) {
             setStyle(this.buttons[type][i], { display: 'block' });
         }
@@ -365,9 +364,9 @@ export class AssetPicker extends UI {
 		this.eraseCurrent();
     }
     
-    addAsset(type:string, url:string, thumbnail:string) {
+    addAsset(type: string, url: string, thumbnail: string, removable?: boolean) {
         this.checkTypeInitialized(type);
-        this.buttons[type].push(this.addButton(type, url, thumbnail));
+        this.buttons[type].push(this.addButton(type, url, thumbnail, removable));
         this.thumbnails[type].push({ url: url, thumbnail: thumbnail });
     }
 
@@ -402,7 +401,6 @@ export class AssetPicker extends UI {
 	selectAsset (url:string) {
 		if (this.addAssetMode) this.addAssetFunction(url);
 		else this.currentInput.setValue(url, true);
-		this.hidePicker();
 		this.eraseCurrent();
 	}
 
