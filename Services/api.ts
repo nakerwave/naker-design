@@ -21,12 +21,19 @@ export class Api {
 	currentcheck = false;
 
 	constructor() {
-		let tokenCookie = Cookies.get('token');
-		if (tokenCookie) {
-			let tokenObject = JSON.parse(tokenCookie);
-			this.setToken(tokenObject);
-		}
-	}
+        this.isConnected();
+    }
+    
+    isConnected ():boolean {
+        let tokenCookie = Cookies.get('token');
+        if (tokenCookie) {
+            let tokenObject = JSON.parse(tokenCookie);
+            this.setToken(tokenObject);
+        } else {
+            this.connected = false
+        }
+        return this.connected;
+    }
 
 	setHost (host:string) {
 		this.host = host;
@@ -41,7 +48,9 @@ export class Api {
 		return str;
 	}
 
+    connected = false;
 	setToken(token:token) {
+        this.connected = true;
 		this.access_token = token.access_token;
 		this.refresh_token = token.refresh_token;
 		// Can't set it in common because some request like cloudinary doesn't allow Authorization headers
@@ -54,7 +63,6 @@ export class Api {
 	}
 
 	get(path: string, arg: Object, callback: Function) {
-		console.log('Je get', + path);
 		let query = arg ? this.ObjecToQuery(arg) : '';
 		let url = this.host + path + '?' + query;
 		this.send('GET', url, '', {}, (data) => {
@@ -78,14 +86,12 @@ export class Api {
 			axios.post(url, body, { headers: headers })
 				.then((response) => { callback(response.data) })
 				.catch((error) => {
-					console.log(error);
 					this.checkError(error, method, url, body, headers, callback)
 				});
 		} else if (method == 'GET') {
 			axios.get(url, { headers: headers })
 				.then((response) => { callback(response.data) })
 				.catch((error) => {
-					console.log(error);
 					this.checkError(error, method, url, body, headers, callback)
 				}
 				);
@@ -128,6 +134,7 @@ export class Api {
 				this.saveToken(data);
 				callback(true);
 			} else {
+                callback(false);
 				this.disconnect();
 			}
 		});
@@ -135,6 +142,7 @@ export class Api {
 
 	onDisconnected:Function;
 	disconnect() {
+        this.connected = false;
 		Cookies.remove('token');
 		if (this.onDisconnected) this.onDisconnected();
 	}
