@@ -11,7 +11,7 @@ import { el, mount, setAttr, setStyle, setChildren, RedomElement } from 'redom';
 
 export interface radiooption {
 	value:string;
-	list:Array<string>;
+    list:Array<string>;
 }
 
 export class RadioInput extends Input {
@@ -85,11 +85,13 @@ export class RadioInput extends Input {
 export interface radioiconoption {
 	value:string;
 	iconperline:number;
-	list:Array<string>;
+    list:Array<string>;
+    iconLink?: Object;
 }
 
 export class RadioIconInput extends Input {
-	option:Array<string>;
+    option: Array<string>;
+    iconLink:Object;
 	iconperline:number;
 	label:HTMLElement;
 	linenumber:number;
@@ -98,7 +100,8 @@ export class RadioIconInput extends Input {
   constructor(parent:HTMLElement, label:string, radiooption:radioiconoption) {
 		super(parent, label)
 		this.option = radiooption.list;
-		this.iconperline = radiooption.iconperline;
+        this.iconperline = radiooption.iconperline;
+		this.iconLink = radiooption.iconLink;
 		this.linenumber = Math.ceil(radiooption.list.length/radiooption.iconperline);
 		this.el = el('div.radio.input-parameter')
 		mount(this.parent, this.el);
@@ -113,8 +116,12 @@ export class RadioIconInput extends Input {
 	setInput (label:string, radiooption:radioiconoption) {
 		let width = defaultwithinput/this.iconperline;
 		for (let i = 0; i < this.option.length; i++) {
-			let value = this.option[i];
-			let radiobutton = el('div.radio-icon-button.icon-'+value,
+            let value = this.option[i];
+            let icon = (radiooption.iconLink) ? radiooption.iconLink[value] : value;
+            console.log(radiooption.iconLink, value);
+            console.log(icon);
+            
+            let radiobutton = el('div.radio-icon-button.icon-' + icon,
 				{
 					id:value,
 					style:{width:width+'px'},
@@ -133,8 +140,9 @@ export class RadioIconInput extends Input {
 		if (value == undefined) value = this.option[0];
 		for (let i = 0; i < this.option.length; i++) {
 			let label = this.option[i];
-			if (value == this.option[i]) setAttr(this.radiobuttons[i], {class:'radio-icon-button radio-selected icon-'+label});
-			else setAttr(this.radiobuttons[i], {class:'radio-icon-button icon-'+label});
+            let icon = (this.iconLink) ? this.iconLink[label] : label;
+			if (value == this.option[i]) setAttr(this.radiobuttons[i], {class:'radio-icon-button radio-selected icon-'+icon});
+			else setAttr(this.radiobuttons[i], {class:'radio-icon-button icon-'+icon});
 		}
 	}
 

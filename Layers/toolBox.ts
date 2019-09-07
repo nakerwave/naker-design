@@ -14,8 +14,6 @@ export class ToolBox {
 
     constructor(parent:HTMLElement) {
         this.control = el('div.tool-box');
-        console.log(this.control);
-        
         mount(parent, this.control);
     }
 
@@ -33,13 +31,6 @@ export class ToolBox {
     }
 
     addUndo (undo:Undo) {
-        // this.backbutton = el('div.siimple-btn.siimple-btn--primary.undobar-button.leftbutton', { onclick: (() => { this.undo() }), 'aria-label': 'Undo (Ctrl + Z)', 'data-microtip-position': 'top', 'role': 'tooltip' },
-        //     el('i.icon-back', [el('span.path1'), el('span.path2'), el('span.path3')])
-        // ),
-        //     this.forwardbutton = el('div.siimple-btn.siimple-btn--primary.undobar-button.leftbutton', { onclick: (() => { this.redo() }), 'aria-label': 'Redo (Ctrl + Maj + Z)', 'data-microtip-position': 'top', 'role': 'tooltip' },
-        //         el('i.icon-forward', [el('span.path1'), el('span.path2'), el('span.path3')])
-        //     ),
-
         this.addTool('back', 'Undo (Ctrl + Z)', () => {
             undo._back();
         });
