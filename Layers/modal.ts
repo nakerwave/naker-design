@@ -35,7 +35,6 @@ export class Modal {
         );
         mount(document.body, this.back);
         modalList.push(this);
-        return this;
     }
 
     back: HTMLElement;
