@@ -14,21 +14,11 @@ import { ColorAssetInput } from '../Pickers/colorassetInput';
 import { asset } from '../Pickers/assetPicker';
 import { UI } from './common';
 
-import { el, mount, unmount, setStyle, setAttr } from 'redom';
-
-export interface manageroption {
-  title:string;
-  text?:boolean;
-  textcolor?:boolean;
-  backcolor?:boolean;
-  pickercolor?:boolean;
-  opacity?:boolean;
-  fixed?:boolean;
-}
+import { el, mount, unmount, setStyle } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
-  | MAIN MANAGER                                                           |
+  | INPUT GROUP                                                            |
   +------------------------------------------------------------------------+
 */
 
@@ -283,14 +273,7 @@ export class InputGroupSwitch extends InputGroup {
 
 /*
   +------------------------------------------------------------------------+
-  | PARENT DESIGN MANAGER                                                  |
-  +------------------------------------------------------------------------+
-*/
-export let layerLeft = el('div.layer-left.presets-container.editor-scroll');
-
-/*
-  +------------------------------------------------------------------------+
-  | PARENT PARAMETER MANAGER                                               |
+  | PARENT INPUT MANAGER                                                   |
   +------------------------------------------------------------------------+
 */
 
