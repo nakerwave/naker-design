@@ -53,11 +53,10 @@ export class TagManager {
     focustag: string;
     createTagInput() {
         this.tagInput = new TextInput(this.el, '', '', 'tag-input');
-        setAttr(this.tagInput.el, { maxlength: 30 });
-        setAttr(this.tagInput.el, { focus: "false"  });
+        setAttr(this.tagInput.el, { maxlength: 30, active: "false" });
         this.tagInput.on('focus', (text) => {
             this.focustag = text;
-            setAttr(this.tagInput.el, { focus: "true" });
+            setAttr(this.tagInput.el, { active: "true" });
             if (text == '') this.tagInput.setPlaceholder('');
         });
         let timeout: any;
@@ -72,27 +71,28 @@ export class TagManager {
             this.tagInput.el.blur();
         });
         this.tagInput.on('blur', (text) => {
-            if (text != this.focustag) this.onChangeName(text)
-            setAttr(this.tagInput.el, { focus: "false" });
+            if (text != this.focustag) this.onTagChange(text)
+            setAttr(this.tagInput.el, { active: "false" });
         });
     }
 
     border: '0px'
 
-    changeNameListeners: Array<Function> = [];
+    tagChangeListeners: Array<Function> = [];
     duplicateListeners: Array<Function> = [];
     deleteListeners: Array<Function> = [];
     unselectListeners: Array<Function> = [];
-    on(event: 'changeName' | 'duplicate' | 'delete' | 'unselect', callback: Function) {
-        if (event == 'changeName') this.changeNameListeners.push(callback);
+    on(event: 'tagChange' | 'duplicate' | 'delete' | 'unselect', callback: Function) {
+        if (event == 'tagChange') this.tagChangeListeners.push(callback);
         if (event == 'duplicate') this.duplicateListeners.push(callback);
         if (event == 'delete') this.deleteListeners.push(callback);
         if (event == 'unselect') this.unselectListeners.push(callback);
     }
 
-    onChangeName(name:string) {
-        for (let i = 0; i < this.changeNameListeners.length; i++) {
-            this.changeNameListeners[i](this.content, name);
+    onTagChange(tag:string) {
+        this.content.tag = tag;
+        for (let i = 0; i < this.tagChangeListeners.length; i++) {
+            this.tagChangeListeners[i](this.content, tag);
         }
     }
 

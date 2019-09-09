@@ -12,7 +12,8 @@ import find from 'lodash/find';
 export interface sortableObject {
     tag: string;
     type: string;
-    el?: HTMLElement;
+    sortElement?: HTMLElement;
+    sortTitle?: HTMLElement;
 }
 
 export class SortableGroup {
@@ -57,17 +58,19 @@ export class SortableGroup {
     }
 
     addSortable(sortable: sortableObject) {
+        let title:HTMLElement;
         let sortableEl = el('div.sortable-button.panel.draggable.icon-' + sortable.type, {
             onclick: (evt) => { this.onClick(sortable.tag, evt) },
             onmouseenter: (evt) => { this.onEnter(sortable.tag, evt) },
             onmouseleave: (evt) => { this.onLeave(sortable.tag, evt) },
             id: sortable.tag,
         }, [
-                el('span.path1'), el('span.path2'), el('span.path3'),
-                el('div.sortable-tag', sortable.tag)
-            ]);
-        sortable.el = sortableEl;
-        this.sortableObjects.push(sortable);
+            el('span.path1'), el('span.path2'), el('span.path3'),
+            title = el('div.sortable-tag', sortable.tag)
+        ]);
+        sortable.sortElement = sortableEl;
+        sortable.sortTitle = title;
+        // this.sortableObjects.push(sortable);
         mount(this.sortableContainer, sortableEl);
     }
 
@@ -99,8 +102,8 @@ export class SortableGroup {
         let el = this.sortableList.el;
         let newSortable = [];
         for (let j = 0; j < el.childNodes.length; j++) {
-            let tag = el.childNodes[j].textContent;
-            let sortable: sortableObject = find(this.sortableObjects, (o) => { return tag === o.tag; });
+            let sortElement = el.childNodes[j];
+            let sortable: sortableObject = find(this.sortableObjects, (o) => { return sortElement === o.sortElement; });
             if (sortable) newSortable.push(sortable);
         }
         this.sortableObjects = newSortable;
@@ -108,17 +111,15 @@ export class SortableGroup {
     }
 
     select(tag: string) {
-        console.log(tag);
-        console.log(this.sortableObjects);
-        
+        this.unselect();        
         let sortable: sortableObject = find(this.sortableObjects, (o) => { return tag === o.tag; });
-        if (sortable) setAttr(sortable.el, { selected: true });
+        if (sortable) setAttr(sortable.sortElement, { selected: true });
     }
 
     unselect() {
         for (let i = 0; i < this.sortableObjects.length; i++) {
             const sortable: sortableObject = this.sortableObjects[i];
-            setAttr(sortable.el, { selected: false });
+            setAttr(sortable.sortElement, { selected: false });
         }
     }
 
