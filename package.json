@@ -26,6 +26,7 @@
     "lodash": "^4.17.11",
     "nouislider": "^13.1.5",
     "redom": "^3.16.1",
+    "sortablejs": "^1.10.0-rc3",
     "suggestions": "^1.6.0",
     "toastr": "^2.1.4"
   },

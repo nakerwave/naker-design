@@ -1,0 +1,92 @@
+@import '_colors'
+
+.sortable-panel-title
+  width: 150px !important
+  .title-text
+      left: 3px
+
+.sortable-container
+  position: relative
+  width: 100%
+  top: 0px
+  height: calc(100% - 35px)
+
+.sortable-title
+    left: 3px
+
+.sortable-tag
+  position: absolute
+  display: block
+  top: 3px
+  left: 28px
+  height: 20px
+  width: 190px
+  line-height: 18px
+  font-family: 'Raleway'
+  font-size: 16px
+  font-weight: 600
+  text-overflow: ellipsis
+  white-space: nowrap
+  overflow: hidden
+
+.right-group
+  right: 0px
+  position: relative
+  display: inline-block
+  width: 20px
+  height: 20px
+  font-size: 15px
+  color: $colormain
+
+.right-icon
+  float: right
+  position: relative
+  display: inline-block
+  width: 20px
+  height: 20px
+  cursor: pointer
+
+.sortable-main-icon-container
+  position: absolute
+  top: 10px
+  right: 0px
+
+.sortable-main-icon
+  font-size: 15px
+  right: 1px
+
+.sortable-button
+  position: relative
+  box-sizing: border-box
+  left: 0px
+  top: 0px
+  width: 100%
+  height: 25px
+  font-size: 16px
+  padding-top: 4px
+  padding-left: 5px
+  float: left
+  color: $colortext
+  cursor: pointer
+  &:hover
+    background: rgba($colortext, 0.4) !important
+  &[selected="true"]
+    background: rgba($colortext, 0.4) !important
+
+.sortable-option-button
+  top: 4px
+  height: 9px
+  width: 9px
+  margin-right: 10px
+  // margin-top: 2px
+  border-radius: 10px
+
+.sortable-chosen
+  // box-shadow: 0px 0px 8px 2px $colordarkblue
+  z-index: 10
+
+.panel
+  &:nth-child(odd)
+    background: $colorsecondgrey
+  &:nth-child(even)
+    background: $colorgrey
