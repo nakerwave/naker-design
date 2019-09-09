@@ -14,7 +14,7 @@ import { ColorAssetInput } from '../Pickers/colorassetInput';
 import { asset } from '../Pickers/assetPicker';
 import { UI } from './common';
 
-import { el, mount, unmount, setStyle } from 'redom';
+import { el, mount, unmount, setStyle, setAttr } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
@@ -225,17 +225,15 @@ export class InputGroupSwitch extends InputGroup {
       if (expandable === false) {
         if (title) {
             unmount(this.titleParent, this.expand);
-            setStyle(this.title, {left:'3px'});
+            setAttr(this.title, { class:'title-text'});
           }
       }
-
-      return this;
     }
 
     titleParent:HTMLElement;
     addTitle (title:string) {
       this.titleParent = el('div.parameter-title',
-        this.title = el('div.title-text', title),
+          this.title = el('div.title-text.swith-title', title),
         this.expand = el('div.title-expand.icon-expand', {onclick:()=>{this.switch()}},
             [el('span.path1'),el('span.path2'),el('span.path3')]
         ),
@@ -253,11 +251,11 @@ export class InputGroupSwitch extends InputGroup {
         if (this.expanded) {
             this.expanded = false;
             setStyle(this.el, {height:'25px'});
-            setStyle(this.expand, {transform:'rotateZ(0deg)'});
+            setStyle(this.expand, {transform:'rotateZ(90deg)'});
         } else {
             this.expanded = true;
             setStyle(this.el, {height:'auto'});
-            setStyle(this.expand, {transform:'rotateZ(90deg)'});
+            setStyle(this.expand, {transform:'rotateZ(0deg)'});
         }
     }
 

@@ -21,7 +21,7 @@ export class Undo {
     pastChange: Array < Change > = [];
     futureChange: Array < Change > = [];
 
-    constructor () {
+    listenShortcut () {
         hotkeys('command+z,ctrl+z', (event, param) => {
             this._back();
         });

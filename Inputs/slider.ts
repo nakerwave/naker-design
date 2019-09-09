@@ -109,10 +109,11 @@ export class SliderInput extends Input {
 	}
 
     // See page https://refreshless.com/nouislider/events-callbacks/ to understand nouislider events
+    // Be careful because event are very sensitive and it can break a lot of things like undo
 	inputEvent:inputEvents = {
 		change:'slide',
 		focus:'start',
-		blur:'set',
+		blur:'change',
 	};
 	numberInputEvent:inputEvents = {
 		change:'input',
@@ -125,7 +126,7 @@ export class SliderInput extends Input {
 			let value = values[0];
             value = this.checkAccuracy(value);
             // Allow focus and blur event where the value hasn't changed
-			if (value == this.formerValue && event == 'change') return;
+            if (value == this.formerValue && event == 'change') return;
 			this.formerValue = value;
 			value = this.checkSliderCurve(value);
 			setAttr(this.number, {value:value});
