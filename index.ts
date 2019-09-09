@@ -1,2 +1,2 @@
 
-import { InputGroupSwitch } from './Layers/inputLayer';
+import { InputGroupSwitch } from './Layers/actionPanel';

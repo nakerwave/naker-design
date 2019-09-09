@@ -1,5 +1,5 @@
 
-import { InputGroup } from './inputLayer';
+import { InputGroup } from './actionPanel';
 
 import { el, setAttr, mount, unmount, setChildren, setStyle } from 'redom';
 import cloneDeep from 'lodash/cloneDeep';

@@ -275,4 +275,4 @@ export class InputGroupSwitch extends InputGroup {
   +------------------------------------------------------------------------+
 */
 
-export let layerRight = el('div.layer-right.parameter-container.editor-scroll');
+export let actionPanel = el('div.layer-right.parameter-container.editor-scroll');

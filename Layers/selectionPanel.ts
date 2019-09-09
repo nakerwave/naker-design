@@ -163,4 +163,4 @@ export class SortableGroup {
   | PARENT SORTABLE MANAGER                                                |
   +------------------------------------------------------------------------+
 */
-export let layerLeft = el('div.layer-left.presets-container.editor-scroll');
+export let selectionPanel = el('div.layer-left.presets-container.editor-scroll');
