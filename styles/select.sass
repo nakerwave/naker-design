@@ -4,65 +4,65 @@
 
 /***************************************** SELECT ****************************************
 .select
-  color: $colortext
-  background: $colorthirdgrey
-  border: 0px
-  border-radius: 3px
-  font-size: 12px
-  width: $defaultwithinput - 4
-  height: 22px
-  line-height: 22px
-  padding-left: 4px
-  cursor: pointer
-  transition: all 200ms ease
-  z-index: 2
-  &::first-letter
-    text-transform: uppercase
-  &:hover
-    background: $colormain
-  &:focus
-    background: $colormain
-  &::after
-    content: ""
-    width: 0
-    height: 0
-    border: 4px solid transparent
-    border-color: #fff transparent transparent transparent
-    position: absolute
-    top: 10px
-    right: 8px
+    color: $colortext
+    background: $colorthirdgrey
+    border: 0px
+    border-radius: 3px
+    font-size: 12px
+    width: $defaultwithinput - 4
+    height: 22px
+    line-height: 22px
+    padding-left: 4px
+    cursor: pointer
+    transition: all 200ms ease
+    z-index: 2
+    &::first-letter
+        text-transform: uppercase
+    &:hover
+        background: $colormain
+    &:focus
+        background: $colormain
+    &::after
+        content: ""
+        width: 0
+        height: 0
+        border: 4px solid transparent
+        border-color: #fff transparent transparent transparent
+        position: absolute
+        top: 10px
+        right: 8px
 
 .suggestions
-  background-color: $colordarkgrey
-  font-size: 12px
-  box-shadow: 0px 3px 6px $colordarkgrey
-  left: $defaultleftinput
-  list-style: none
-  margin: 0
-  padding: 0
-  position: absolute
-  text-align: left
-  width: $defaultwithinput
-  top: 80%
-  z-index: 1000
-  > li
-    > a
-      clear: both
-      cursor: pointer
-      display: block
-      padding: 4px 5px
-      white-space: nowrap
-      overflow: hidden
-      text-overflow: ellipsis
-      white-space: nowrap
-      text-decoration: none
-      border: 0
-      color: $colortext
-      font-weight: normal
-    &:hover
-      background-color: $colormain
-      color: $colortext
-      text-decoration: none
-      cursor: pointer
-    &::first-letter
-      text-transform: uppercase
+    background-color: $colordarkgrey
+    font-size: 12px
+    box-shadow: 0px 3px 6px $colordarkgrey
+    left: $defaultleftinput
+    list-style: none
+    margin: 0
+    padding: 0
+    position: absolute
+    text-align: left
+    width: $defaultwithinput
+    top: 80%
+    z-index: 1000
+    > li
+        > a
+            clear: both
+            cursor: pointer
+            display: block
+            padding: 4px 5px
+            white-space: nowrap
+            overflow: hidden
+            text-overflow: ellipsis
+            white-space: nowrap
+            text-decoration: none
+            border: 0
+            color: $colortext
+            font-weight: normal
+        &:hover
+            background-color: $colormain
+            color: $colortext
+            text-decoration: none
+            cursor: pointer
+        &::first-letter
+            text-transform: uppercase

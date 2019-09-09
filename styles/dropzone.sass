@@ -12,87 +12,87 @@
 /***************************************** DROPZONE ****************************************
 
 .upload_overlay
-  z-index: 25
-  position: absolute
-  display: none
-  height: 100%
-  width: 100%
-  top: 0px
-  left: 0px
-  background-color: transparentize($colorsecondmain, .1)
-
-  .upload_title
-    top: calc(50% - 200px)
+    z-index: 25
+    position: absolute
+    display: none
+    height: 100%
     width: 100%
-    text-align: center
-    position: fixed
-    pointer-events: none
-    color: $colortext
-    font-family: 'Raleway'
-    font-size: 20px
-    transform: translate(-50%, -50%)
+    top: 0px
+    left: 0px
+    background-color: transparentize($colorsecondmain, .1)
 
-  .upload_title1
-    left: calc(50% - 200px)
+    .upload_title
+        top: calc(50% - 200px)
+        width: 100%
+        text-align: center
+        position: fixed
+        pointer-events: none
+        color: $colortext
+        font-family: 'Raleway'
+        font-size: 20px
+        transform: translate(-50%, -50%)
 
-  .upload_title2
-    left: 50%
+    .upload_title1
+        left: calc(50% - 200px)
 
-  .upload_title3
-    left: calc(50% + 200px)
+    .upload_title2
+        left: 50%
 
-  .download
-    position: fixed
-    width: 300px
-    pointer-events: none
-    color: $colortext
-    font-family: 'Raleway'
-    font-weight: 600
-    font-size: 20px
+    .upload_title3
+        left: calc(50% + 200px)
+
+    .download
+        position: fixed
+        width: 300px
+        pointer-events: none
+        color: $colortext
+        font-family: 'Raleway'
+        font-weight: 600
+        font-size: 20px
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        cursor: pointer
+        text-align: center
+        color: $colortext
+
+        &[error="true"]
+            color: $colorerror
+
+    .cross
+        color: $colorsecondtext
+        font-family: 'Raleway'
+        font-weight: 600
+        font-size: 20px
+        cursor: pointer
+        position: fixed
+        top: calc(50% - 180px)
+        left: calc(50% + 250px)
+
+.upload_dropzone
+    position: absolute
+    width: 315px
+    height: 330px
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
+    border: 2px dashed $colormain
+    border-radius: 5px
+    background: $colorsecondgrey
+    z-index: -1
     cursor: pointer
-    text-align: center
-    color: $colortext
-
-    &[error="true"]
-        color: $colorerror
-
-  .cross
-    color: $colorsecondtext
-    font-family: 'Raleway'
-    font-weight: 600
-    font-size: 20px
-    cursor: pointer
-    position: fixed
-    top: calc(50% - 180px)
-    left: calc(50% + 250px)
-
-.upload_dropzone
-  position: absolute
-  width: 315px
-  height: 330px
-  top: 50%
-  left: 50% 
-  transform: translate(-50%, -50%)
-  border: 2px dashed $colormain
-  border-radius: 5px
-  background: $colorsecondgrey
-  z-index: -1
-  cursor: pointer
-  .dz-preview
-    display: none
+    .dz-preview
+        display: none
 
 .asset-picker
-  border: 2px solid $colormain
+    border: 2px solid $colormain
 
 .left_overlay
-  left: calc(50% - 200px) !important
+    left: calc(50% - 200px) !important
 
 .right_overlay
-  left: calc(50% + 200px) !important
+    left: calc(50% + 200px) !important
 
 .beside_overlay
-  height: 330px !important
-  width: 315px !important
+    height: 330px !important
+    width: 315px !important

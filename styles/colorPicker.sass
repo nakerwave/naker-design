@@ -1,134 +1,131 @@
 
 @import '_colors'
 
-
-
 /***************************************** PICKERS ****************************************
 
 .picker
-  border-radius: 10px
-  z-index: 200
+    border-radius: 10px
+    z-index: 200
 
 .picker-title
-  left: 0px
-  top: 0px
-  width: 100%
-  height: 20px
-  line-height: 20px
-  padding-left: 5px
-  font-size: 15px
-  text-transform: capitalize
-  color: $colortext
-  border-radius: 5px 5px 0px 0px
-  background-color: $colormain
+    left: 0px
+    top: 0px
+    width: calc(100% - 5px)
+    height: 20px
+    line-height: 20px
+    padding-left: 5px
+    font-size: 15px
+    text-transform: capitalize
+    color: $colortext
+    border-radius: 5px 5px 0px 0px
+    background-color: $colormain
 
 .picker-title-text
     position:  absolute
     left: 10px
 
 .erase-icon
-  display: inline-block
-  position: relative
-  cursor: pointer
-  font-size: 16px
-  top: 2px
-  left: 46px
-  color:$colorthirdgrey
+    display: inline-block
+    position: relative
+    cursor: pointer
+    font-size: 16px
+    top: 2px
+    left: 46px
+    color:$colorthirdgrey
 .erase-icon[active='true']
     color:$colormain
 
 .picker-button
-  position: absolute
-  left: 66px
-  border: 2px solid $colorthirdgrey
-  width: 36px
-  height: 16px
-  border-radius: $defaultborderradius
-  border-color: $colorthirdgrey
-  cursor: pointer
+    position: absolute
+    left: 66px
+    border: 2px solid $colorthirdgrey
+    width: 36px
+    height: 16px
+    border-radius: $defaultborderradius
+    border-color: $colorthirdgrey
+    cursor: pointer
 
 .picker-button[active='true']
     border-color: $colormain
 
-
 /***************************************** COLOR BUTTON ****************************************
 
 .color-picker
-  box-shadow: 0px 0px 10px 2px $colordarkgrey
-  position: absolute
-  width: 350px
-  height: 270px
-  display: inline-block
+    box-shadow: 0px 0px 10px 2px $colordarkgrey
+    position: absolute
+    width: 350px
+    height: 270px
+    display: inline-block
 
 .a-color-picker
-  position: absolute
-  top: 20px
-  width: 245px !important
-  margin: 0px
-  padding: 4px !important
-  background-color: #FFFFFF !important
-  box-shadow: none !important
-  border-radius: 0px 0px 0px 3px !important
-  height: calc(100% - 20px)
-  input
-    width: 35px
-    position: relative !important
+    position: absolute
+    top: 20px
+    width: 245px !important
+    margin: 0px
+    padding: 4px !important
+    background-color: #FFFFFF !important
+    box-shadow: none !important
+    border-radius: 0px 0px 0px 3px !important
+    height: calc(100% - 20px)
+    input
+        width: 35px
+        position: relative !important
 
 .a-color-picker-row
-  padding: 2px !important
-  border-top: none !important
+    padding: 2px !important
+    border-top: none !important
 
 .a-color-picker-transparent
-  background-size: auto !important
-  background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
+    background-size: auto !important
+    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
 
 .a-color-picker-alpha
-  background-size: auto !important
-  background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
+    background-size: auto !important
+    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
 
 .a-color-picker-palette-background
-  position: absolute
-  right: 0px
-  top: 20px
-  width: 105px
-  height: calc(100% - 20px)
-  background: $colortext
-  border-radius: 0px 0px 5px 0px
+    position: absolute
+    right: 0px
+    top: 20px
+    width: 105px
+    height: calc(100% - 20px)
+    background: $colortext
+    border-radius: 0px 0px 5px 0px
 
 .a-color-picker-palette
-  position: absolute
-  left: 245px
-  width: 100px !important
-  top: 0px
+    position: absolute
+    left: 245px
+    width: 100px !important
+    top: 0px
 
 .a-color-picker-palette-color
-  width: 25px !important
-  height: 25px !important
-  line-height: 25px !important
-  flex: 0 1 25px !important
-  font-size: 22px !important
-  background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==)
-  &::after
-    content: ""
-    height: 100%
-    width: 100%
-    background-size: auto
-    display: block
-    background-color: inherit
-    border-radius: $defaultborderradius
+    width: 25px !important
+    height: 25px !important
+    line-height: 25px !important
+    flex: 0 1 25px !important
+    font-size: 22px !important
+    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==)
+    &::after
+        content: ""
+        height: 100%
+        width: 100%
+        background-size: auto
+        display: block
+        background-color: inherit
+        border-radius: $defaultborderradius
 
 .a-color-picker-palette-add
-  background-image: none
+    background-image: none
 
 .a-color-picker-hsl>label, .a-color-picker-rgb>label, .a-color-picker-single-input>label
-  color: $colorgrey !important
-  font-family: 'Raleway'
-  font-weight: 600
+    color: $colorgrey !important
+    font-family: 'Raleway'
+    font-weight: 600
 
 .color-background
-  width: 100%
-  height: 100%
+    width: 100%
+    height: 100%
 
 .color-default-background
-  background-size: auto !important
-  background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
+    background-size: auto !important
+    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important

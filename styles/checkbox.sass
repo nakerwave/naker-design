@@ -46,21 +46,19 @@ $siimple-checkbox-height: 18px
             border: 2px solid $colorlight
             border-top: 0px
             border-right: 0px
-        
+
         &:hover::after
             opacity: 1
-        
-    
+
     //Input style
     input[type=checkbox]
-        visibility: hidden
-    
+            visibility: hidden
+
     //Checked -> change tick
     input[type=checkbox]:checked + label:after
-        opacity: 1
-        border-color: $colorlight
-    
+            opacity: 1
+            border-color: $colorlight
+
     //Checked -> change background
     input[type=checkbox]:checked + label
-        background-color: $colormain
-
+            background-color: $colormain

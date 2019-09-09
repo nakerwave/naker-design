@@ -5,105 +5,98 @@
 /***************************************** INPUT ****************************************
 
 input:focus, select:focus
-  outline: 0px
-
+    outline: 0px
 \::placeholder
-  color: $colortext
-  opacity: 1
-
+    color: $colortext
+    opacity: 1
 \::-webkit-input-placeholder
-  color: $colortext
-
+    color: $colortext
 \::-moz-placeholder
-  color: $colortext
-
+    color: $colortext
 \:-ms-input-placeholder
-  color: $colortext
-
+    color: $colortext
 \:-moz-placeholder
-  color: $colortext
+    color: $colortext
 
 .title
-  color: $colorsecondtext
-  background: $colormain
-  position: relative
-  padding: 10px
-  
+    color: $colorsecondtext
+    background: $colormain
+    position: relative
+    padding: 10px
+
 .title-text::first-letter
     text-transform: uppercase
 
 label
-  color: $colorsecondtext
-  font-size: 12px
-  z-index: 0
-  text-transform: capitalize
-  position: relative
+    color: $colorsecondtext
+    font-size: 12px
+    z-index: 0
+    text-transform: capitalize
+    position: relative
 
 .input-container
-  position: relative
-  width: 250px
-  right: 6px
-  min-height: 25px
-  margin: 0px 0px 2px 0px
+    position: relative
+    width: 250px
+    right: 6px
+    min-height: 25px
+    margin: 0px 0px 2px 0px
 
 .input-container-big
-  min-height: 45px
+    min-height: 45px
 
 .container-height-auto
-  height: auto
+    height: auto
 
 .input-parameter
-  position: absolute
-  height: 22px
-  left: $defaultleftinput
+    position: absolute
+    height: 22px
+    left: $defaultleftinput
 
 .input-parameter-first
-  position: absolute
-  height: 22px
-  left: $defaultleftinput + 6px
+    position: absolute
+    height: 22px
+    left: $defaultleftinput + 6px
 
 .input-parameter-second
-  position: absolute
-  height: 22px
-  left: $defaultleftinput - 60px
+    position: absolute
+    height: 22px
+    left: $defaultleftinput - 60px
 
 .input-paragraph
-  position: relative
-  top: 0px
-  height: 250px
-  left: 15px
-  width: 230px
-  font-size: 12px
-  line-height: 20px
-  padding-left: 5px
+    position: relative
+    top: 0px
+    height: 250px
+    left: 15px
+    width: 230px
+    font-size: 12px
+    line-height: 20px
+    padding-left: 5px
 
 .input-count
-  position: absolute
-  bottom: 5px
-  right: 10px
-  z-index: 10
+    position: absolute
+    bottom: 5px
+    right: 10px
+    z-index: 10
 
 .input-label
-  position: absolute
-  left: 12px
-  top: 4px
-  height: 25px
-  color: $colortext
-  font-size: 13px
-  // text-transform: capitalize
-  &::first-letter
-    text-transform: uppercase
+    position: absolute
+    left: 12px
+    top: 4px
+    height: 25px
+    color: $colortext
+    font-size: 13px
+    &::first-letter
+        text-transform: uppercase
 
 .input-label-paragraph
-  position: relative !important
+    position: relative !important
 
 .vector-container
-  position: relative
-  width: 150px
-  height: 22px
-  left: $defaultleftinput - 52px
-  top: 1px
-
+    position: relative
+    width: 150px
+    height: 22px
+    left: $defaultleftinput - 52px
+    top: 1px
 
 /***************************************** TEXT/NUMBER ****************************************
 
@@ -117,60 +110,57 @@ textarea
     padding-left: 5px
     padding-right: 0px
     z-index: 2
+    
+input
+    &[type="text"], &[type="number"]
+        font-size: 12px
+        color: $colortext
+        background: $colorthirdgrey
+        border: 2px solid $colorthirdgrey
+        border-radius: $defaultborderradius
+        height: 22px
+        padding-left: 5px
+        padding-right: 0px
+        z-index: 2
+        position: absolute
+        top: 0px
+        // transition: all 200ms ease
+        &:focus
+            background: $colormain
 
 input
-  &[type="text"], &[type="number"]
-    font-size: 12px
-    color: $colortext
-    background: $colorthirdgrey
-    border: 2px solid $colorthirdgrey
-    border-radius: $defaultborderradius
-    height: 22px
-    padding-left: 5px
-    padding-right: 0px
-    z-index: 2
-    position: absolute
-    top: 0px
-    // transition: all 200ms ease
-    &:focus
-      background: $colormain
-
-input
-  &[changed="true"]
-      border: 2px solid $colormain
-
+    &[changed="true"]
+        border: 2px solid $colormain
 
 .input-text
-  max-width: 200px
-  left: $defaultleftinput
-  width: $defaultwithinput
-
+    max-width: 200px
+    left: $defaultleftinput
+    width: $defaultwithinput
 textarea
-  resize: none
-  outline: none
-
+    resize: none
+    outline: none
 input
-  &[type="number"]
-    -moz-appearance: textfield
-    &:hover, &:focus
-      -moz-appearance: number-input
-    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
-      -webkit-appearance: none
-      width: 5px
-      margin: 0
-    &:focus
-      &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
-        -webkit-appearance: inner-spin-button
+    &[type="number"]
+        -moz-appearance: textfield
+        &:hover, &:focus
+            -moz-appearance: number-input
+        &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+            -webkit-appearance: none
+            width: 5px
+            margin: 0
+        &:focus
+            &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+                -webkit-appearance: inner-spin-button
 
 .input-unit
-  position: absolute
-  top: 4px
-  font-size: 12px
-  z-index: 50
-  background: $colorthirdgrey
-  text-align: center
-  color: $colorlightgrey
+    position: absolute
+    top: 4px
+    font-size: 12px
+    z-index: 50
+    background: $colorthirdgrey
+    text-align: center
+    color: $colorlightgrey
 
 .vector-input
-  margin-right: 5px
-  position: absolute
+    margin-right: 5px
+    position: absolute
