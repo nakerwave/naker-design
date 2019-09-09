@@ -56,11 +56,11 @@ export class Session {
     redirect: boolean;
     intercom: boolean;
     sentry: boolean;
-    
-    constructor(api:Api, spy:Spy) {
+
+    constructor(api: Api, spy: Spy) {
         this.api = api;
         this.spy = spy;
-        
+
         let subDomain = api.getSubdomain();
         if (!subDomain) this.subDomain = 'development';
         else this.subDomain = subDomain;
@@ -91,7 +91,7 @@ export class Session {
         back: 'NB',
         form: 'NF'
     };
-    getEngineAndId () {
+    getEngineAndId() {
         let url = window.location.href;
         let urlArray = url.split('/');
         for (let i = 0; i < urlArray.length; i++) {
@@ -102,7 +102,7 @@ export class Session {
                 this.projectid = next;
             }
         }
-        
+
         if (this.engine) {
             this.spy.setEngine(this.spyPrefix[this.engine]);
             if (this.sentry) this.spy.startSentry(this.sentryIds[this.engine]);
@@ -114,12 +114,12 @@ export class Session {
         }
     }
 
-    setProjectId (projectid) {
+    setProjectId(projectid) {
         this.projectid = projectid;
         history.pushState({}, null, '/' + this.engine + '/' + this.projectid);
     }
 
-    getProject (callback:Function) {
+    getProject(callback: Function) {
         let cookie = Cookies.get('naker_' + this.engine);
         let cookieParsed;
         if (cookie) cookieParsed = JSON.parse(cookie);
@@ -143,9 +143,9 @@ export class Session {
         } else {
             callback(cookieParsed);
         }
-    } 
+    }
 
-    createNew(callback?:Function) {
+    createNew(callback?: Function) {
         if (!this.engine) return;
         this.api.post(this.engine + '/new', {}, {}, (data) => {
             if (data.success) {
@@ -173,10 +173,10 @@ export class Session {
 
     lastsave: any;
     lastlocalsave: any;
-    startAutoSave(getProjectJson:Function, frequency:number, localfrequency?:number) {
+    startAutoSave(getProjectJson: Function, frequency: number, localfrequency?: number) {
         this.lastsave = new Date().getTime();
         this.getProjectJson = getProjectJson;
-        
+
         setInterval(() => {
             if (document.hasFocus() && this.saving) {
                 if (!this.projectid || !this.engine) {
@@ -229,9 +229,9 @@ export class Session {
         this.lastexport = cloneDeep(projectJson);
     }
 
-    saveLocal () {
+    saveLocal() {
         let projectJson = this.getProjectJson();
-        let project:any = {};
+        let project: any = {};
         project.json = projectJson;
         if (this.projectid) project.id = this.projectid;
         Cookies.set('naker_' + this.engine, JSON.stringify(project), { expires: 7 });

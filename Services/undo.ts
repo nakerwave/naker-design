@@ -18,10 +18,10 @@ interface Change {
 export class Undo {
 
     presentState: any = {};
-    pastChange: Array < Change > = [];
-    futureChange: Array < Change > = [];
+    pastChange: Array<Change> = [];
+    futureChange: Array<Change> = [];
 
-    listenShortcut () {
+    listenShortcut() {
         hotkeys('command+z,ctrl+z', (event, param) => {
             this._back();
         });
@@ -43,7 +43,7 @@ export class Undo {
         let backChange = this.getDifference(this.presentState, projectJson);
         let forwardChange = this.getDifference(projectJson, this.presentState);
         // Set default value to null in case new values added so that we can go back to null/undefined value
-        
+
         let backDefault = this.setNullValues(backChange);
         let forwardDefault = this.setNullValues(forwardChange);
         // clone otherwise back object will match with forward object
@@ -56,7 +56,7 @@ export class Undo {
         this.presentState = projectJson;
     }
 
-    getProjectJson() {}
+    getProjectJson() { }
 
     _back() {
         if (this.pastChange.length != 0) {
@@ -118,7 +118,7 @@ export class Undo {
     /**
      * Send progress Change data to listeners
      */
-    sendToListsteners(change:any, newState:any) {
+    sendToListsteners(change: any, newState: any) {
         for (let i = 0; i < this._listeners.length; i++) {
             this._listeners[i](change, newState);
         }
@@ -128,7 +128,7 @@ export class Undo {
      * List of all functions following the progress position
      * @ignore
      */
-    _listeners: Array < Function > = [];
+    _listeners: Array<Function> = [];
 
     /**
      * Add a new listener which will get the catching progress position

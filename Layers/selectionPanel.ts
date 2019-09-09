@@ -36,8 +36,8 @@ export class SortableGroup {
 
     iconElements: Array<HTMLElement> = [];
     iconList: Array<string> = [];
-    addIcon (icon:string, callback:Function):HTMLElement {
-        let newIcon = el('div.right-icon.sortable-main-icon.icon-'+icon,
+    addIcon(icon: string, callback: Function): HTMLElement {
+        let newIcon = el('div.right-icon.sortable-main-icon.icon-' + icon,
             { onclick: () => { callback() } },
             [el('span.path1'), el('span.path2'), el('span.path3')]
         );
@@ -57,15 +57,15 @@ export class SortableGroup {
     }
 
     addSortable(sortable: sortableObject) {
-        let sortableEl = el('div.sortable-button.panel.draggable.icon-' +sortable.type, {
-            onclick: (evt) => { this.onClick(sortable.name, evt)},
+        let sortableEl = el('div.sortable-button.panel.draggable.icon-' + sortable.type, {
+            onclick: (evt) => { this.onClick(sortable.name, evt) },
             onmouseenter: (evt) => { this.onEnter(sortable.name, evt) },
             onmouseleave: (evt) => { this.onLeave(sortable.name, evt) },
             id: sortable.name,
         }, [
                 el('span.path1'), el('span.path2'), el('span.path3'),
                 el('div.sortable-tag', sortable.name)
-        ]);
+            ]);
         sortable.el = sortableEl;
         mount(this.sortableContainer, sortableEl);
     }
@@ -93,7 +93,7 @@ export class SortableGroup {
         if (this.sortableList) this.sortableList.destroy();
         setChildren(this.sortableContainer, []);
     }
-    
+
     setAllSortableIndex() {
         let el = this.sortableList.el;
         let newSortable = [];
@@ -106,9 +106,9 @@ export class SortableGroup {
         this.onSort();
     }
 
-    select (name:string) {
+    select(name: string) {
         let sortable: sortableObject = find(this.sortableObjects, (o) => { return name === o.name; });
-        setAttr(sortable.el, {selected : true});
+        setAttr(sortable.el, { selected: true });
     }
 
     unselect() {
@@ -122,7 +122,7 @@ export class SortableGroup {
     clickListeners: Array<Function> = [];
     enterListeners: Array<Function> = [];
     leaveListeners: Array<Function> = [];
-    on (event:'sort'|'click'|'enter'|'leave', callback:Function) {
+    on(event: 'sort' | 'click' | 'enter' | 'leave', callback: Function) {
         if (event == 'sort') this.sortListeners.push(callback);
         if (event == 'click') this.clickListeners.push(callback);
         if (event == 'enter') this.enterListeners.push(callback);
@@ -135,9 +135,9 @@ export class SortableGroup {
         }
     }
 
-    onClick (name:string, evt:Event) {
+    onClick(name: string, evt: Event) {
         this.select(name);
-        for (let i = 0; i  < this.clickListeners.length; i++) {
+        for (let i = 0; i < this.clickListeners.length; i++) {
             this.clickListeners[i](name, evt);
         }
     }

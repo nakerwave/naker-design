@@ -28,7 +28,7 @@ export class ColorAssetInput extends Input {
         setAttr(this.assetButton.el, { class: 'input-parameter-second' });
     }
 
-    on(event: 'change'|'focus'|'blur', funct: Function) {
+    on(event: 'change' | 'focus' | 'blur', funct: Function) {
         this.colorButton.on(event, (rgba) => {
             funct('color', rgba);
         });
@@ -38,7 +38,7 @@ export class ColorAssetInput extends Input {
         return this;
     }
 
-    setValue(type: 'color'|'asset' , value: any) {
+    setValue(type: 'color' | 'asset', value: any) {
         if (type == 'color') this.colorButton.setValue(value);
         if (type == 'asset') this.assetButton.setValue(value);
         return this;

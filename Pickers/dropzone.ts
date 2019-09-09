@@ -18,16 +18,16 @@ export class NakerDropzone {
     text: HTMLElement;
 
     type: string;
-    formats: Array < string > ;
+    formats: Array<string>;
     maxWeight: number;
     callback: Function;
 
-    constructor(type: string, formats: Array < string > , maxWeight: number, callback ? : Function) {
+    constructor(type: string, formats: Array<string>, maxWeight: number, callback?: Function) {
         this.type = type;
         this.formats = formats;
         this.maxWeight = maxWeight;
         this.callback = callback;
-        
+
         let formattext = this.getFormatText(formats);
         this.el = el('div.upload_overlay', { onclick: (evt) => { this.checkHide(evt) } },
             [
@@ -41,7 +41,7 @@ export class NakerDropzone {
         mount(document.body, this.el);
         setStyle(this.el, { display: 'none' });
 
-        assetPicker.addFocusListener((type:string) => {
+        assetPicker.addFocusListener((type: string) => {
             if (type == this.type) this.show();
         });
 
@@ -49,7 +49,7 @@ export class NakerDropzone {
         dropzoneList[type] = this;
     }
 
-    addTitle () {
+    addTitle() {
         let title1 = el('div.upload_title.upload_title1', 'Upload new ' + this.type);
         mount(this.el, title1);
         let title2 = el('div.upload_title.upload_title2', 'or');
@@ -58,11 +58,11 @@ export class NakerDropzone {
         mount(this.el, title3);
     }
 
-    setBesidePicker () {
+    setBesidePicker() {
         this.addTitle();
         setAttr(this.text, { class: 'download left_overlay' });
         setAttr(this.dropzoneElement, { class: 'upload_dropzone left_overlay beside_overlay' });
-        setAttr(assetPicker.el, { class:'picker asset-picker editor-scroll right_overlay beside_overlay'});
+        setAttr(assetPicker.el, { class: 'picker asset-picker editor-scroll right_overlay beside_overlay' });
     }
 
     getFormatText(formats: Array<string>) {
@@ -82,7 +82,7 @@ export class NakerDropzone {
         let uploadUrl = 'https://api.cloudinary.com/v1_1/naker-io/' + type + '/upload';
         this._addDropZone(uploadUrl, formats, maxWeight)
     }
-    _addDropZone(uploadUrl: string, formats: Array < string > , maxWeight: number) {
+    _addDropZone(uploadUrl: string, formats: Array<string>, maxWeight: number) {
         var that = this;
         this.dropzone = new Dropzone(this.dropzoneElement, {
             uploadMultiple: false,
@@ -92,10 +92,10 @@ export class NakerDropzone {
             parallelUploads: 1,
             createImageThumbnails: false,
             // NOTE Keep "function" to have access to that
-            init: function() {
+            init: function () {
                 this.on("error", (file, errorMessage) => {
                     this.uploading = false;
-                    if (typeof(errorMessage) === 'string')
+                    if (typeof (errorMessage) === 'string')
                         that.errorDropzone(errorMessage);
                 });
             },
@@ -108,7 +108,7 @@ export class NakerDropzone {
             },
             url: uploadUrl,
         });
-        
+
 
         this.dropzone.on('sending', (file, xhr, formData) => {
             this.sending(formData)
@@ -123,11 +123,11 @@ export class NakerDropzone {
         });
     }
 
-    checkFileBeforeAccept (file) {
+    checkFileBeforeAccept(file) {
         return this._checkFileBeforeAccept(file);
     }
 
-    _checkFileBeforeAccept (file):boolean {
+    _checkFileBeforeAccept(file): boolean {
         if (file.size > this.maxWeight * 1024 * 1024) {
             this.errorDropzone("Your file is too large, " + this.maxWeight + "MB is the maximum.");
             return false;

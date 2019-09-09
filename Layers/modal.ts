@@ -17,7 +17,7 @@ export class Modal {
     description: HTMLElement;
     icon: HTMLElement;
 
-    constructor(title: string, description ? : string) {
+    constructor(title: string, description?: string) {
         this.control = el('div.modal',
             this.header = el('div.modal-title-background',
                 [
@@ -47,7 +47,7 @@ export class Modal {
     }
 
     animInterval: any;
-    animate(funct1:Function, funct2:Function) {
+    animate(funct1: Function, funct2: Function) {
         clearInterval(this.animInterval);
         let i = 0;
         this.animInterval = setInterval(() => {
