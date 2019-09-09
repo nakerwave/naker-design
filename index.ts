@@ -1,2 +1,2 @@
 
-import { InputGroupSwitch } from './Layers/layer';
+import { InputGroupSwitch } from './Layers/inputLayer';

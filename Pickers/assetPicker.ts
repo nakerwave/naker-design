@@ -104,6 +104,7 @@ export class AssetButton extends BaseAssetButton {
 	setValue (url:string, frompicker?:any) {
 		let thumbnail = this._setValue(url, frompicker);
 		if (url !== undefined && url !== null) {
+            setAttr(this.asseticon, {active:"true"});
 			let image = url;
 			if (thumbnail) image = thumbnail;
 			if (image.indexOf('http') != -1) {
@@ -116,6 +117,7 @@ export class AssetButton extends BaseAssetButton {
 				this.text.textContent = image;
 			}
 		} else {
+            setAttr(this.asseticon, { active: "false" });
 			setStyle(this.image, {display:'none'});
 			setStyle(this.text, {display:'none'});
 		}
@@ -171,7 +173,7 @@ export class ImageAssetButton extends BaseAssetButton {
 			// Asset not loaded before or not currently loading
 			let image:string;
 			if (!thumbnail) image = url;
-			else image = thumbnail;
+            else image = thumbnail;
 			if (image.indexOf('http') != -1) {
 				setStyle(this.image, {display:'block'});
 				setStyle(this.text, {display:'none'});
@@ -253,10 +255,11 @@ export class TextAssetButton extends BaseAssetButton {
   +------------------------------------------------------------------------+
 */
 
-export let assetTypes: Array<string> = ['image', 'particle', 'albedo', 'ambient', 'specular', 'emissive', 'reflectivity', 'reflection', 'refraction', 'heightmap', 'cubetexture', 'bump', 'opacity', 'model', 'video', 'sound'];
+// export let assetTypes: Array<string> = ['image', 'particle', 'albedo', 'ambient', 'specular', 'emissive', 'reflectivity', 'reflection', 'refraction', 'heightmap', 'cubetexture', 'bump', 'opacity', 'model', 'video', 'sound'];
+// export let overlayAlpha = {'albedo':false, 'ambient':false, 'specular':false, 'emissive':false, 'bump':false, 'opacity':true, 'reflectivity':false, 'reflection':false, 'particle':false, 'image':true, 'heightmap':false};
+export let assetTypes: Array<string> = ['image', 'cubetexture', 'model', 'video', 'sound'];
 // Texture which are images
 export let overlayImages: Array<string> = ['albedo', 'ambient', 'specular', 'emissive', 'bump', 'opacity', 'reflectivity', 'reflection', 'particle', 'image', 'heightmap'];
-export let overlayAlpha = {'albedo':false, 'ambient':false, 'specular':false, 'emissive':false, 'bump':false, 'opacity':true, 'reflectivity':false, 'reflection':false, 'particle':false, 'image':true, 'heightmap':false};
 
 export class AssetPicker extends UI {
 	back:HTMLElement;
@@ -306,12 +309,12 @@ export class AssetPicker extends UI {
 	assetperline = 2;
 	type:string;
 	setAssetList (type:string) {
+        if (overlayImages.indexOf(type) != -1) type = 'image';
         this.type = type;
-		this.hideAsset();
+        this.hideAsset();
 		this.checkTypeInitialized(type);
 		// Show all assets image only if overlayImages,
 		// models, videos and sounds stays appart because you can't replace a model by an image
-        if (overlayImages.indexOf(type) != -1) type = 'image';
         for (let i = 0; i < this.buttons[type].length; i++) {
             setStyle(this.buttons[type][i], { display: 'block' });
         }
@@ -366,8 +369,11 @@ export class AssetPicker extends UI {
     
     addAsset(type: string, url: string, thumbnail: string, removable?: boolean) {
         this.checkTypeInitialized(type);
-        this.buttons[type].push(this.addButton(type, url, thumbnail, removable));
-        this.thumbnails[type].push({ url: url, thumbnail: thumbnail });
+        let asset = find(this.thumbnails[type], (a) => { return a.url == url });
+        if (!asset) {
+            this.buttons[type].push(this.addButton(type, url, thumbnail, removable));
+            this.thumbnails[type].push({ url: url, thumbnail: thumbnail });
+        }
     }
 
 	addAssetMode = false;

@@ -118,9 +118,6 @@ export class RadioIconInput extends Input {
 		for (let i = 0; i < this.option.length; i++) {
             let value = this.option[i];
             let icon = (radiooption.iconLink) ? radiooption.iconLink[value] : value;
-            console.log(radiooption.iconLink, value);
-            console.log(icon);
-            
             let radiobutton = el('div.radio-icon-button.icon-' + icon,
 				{
 					id:value,
