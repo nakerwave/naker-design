@@ -31,7 +31,7 @@ export class SortableGroup {
                 this.sortableContainer = el('div.list-group.editor-scroll.sortable-panel')
             ]
         );
-        mount(layerLeft, this.container);
+        mount(selectionPanel, this.container);
     }
 
     iconElements: Array<HTMLElement> = [];
@@ -57,8 +57,6 @@ export class SortableGroup {
     }
 
     addSortable(sortable: sortableObject) {
-        console.log(sortable);
-        
         let sortableEl = el('div.sortable-button.panel.draggable.icon-' +sortable.type, {
             onclick: (evt) => { this.onClick(sortable.name, evt)},
             onmouseenter: (evt) => { this.onEnter(sortable.name, evt) },

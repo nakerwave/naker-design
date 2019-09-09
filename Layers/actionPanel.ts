@@ -220,7 +220,7 @@ export class InputGroupSwitch extends InputGroup {
     expand:HTMLElement;
 
     constructor (title?:string, expandable?:boolean, undo?:Undo) {
-      super(layerRight, undo);
+      super(actionPanel, undo);
       if (title) this.addTitle(title);
       if (expandable === false) {
         if (title) {
