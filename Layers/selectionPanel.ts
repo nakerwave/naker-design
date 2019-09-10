@@ -26,7 +26,7 @@ export class SortableGroup {
         this.container = el('div.preset-group',
             [
                 el('div.parameter-title.sortable-title',
-                    el('div.title-text', 'sortable Panel')
+                    el('div.title-text', 'Selection Panel')
                 ),
                 this.iconsContainer = el('div.sortable-main-icon-container'),
                 this.sortableContainer = el('div.list-group.editor-scroll.sortable-panel')
@@ -60,9 +60,9 @@ export class SortableGroup {
     addSortable(sortable: sortableObject) {
         let title:HTMLElement;
         let sortableEl = el('div.sortable-button.panel.draggable.icon-' + sortable.type, {
-            onclick: (evt) => { this.onClick(sortable.tag, evt) },
-            onmouseenter: (evt) => { this.onEnter(sortable.tag, evt) },
-            onmouseleave: (evt) => { this.onLeave(sortable.tag, evt) },
+            onclick: (evt) => { this.onClick(sortable, evt) },
+            onmouseenter: (evt) => { this.onEnter(sortable, evt) },
+            onmouseleave: (evt) => { this.onLeave(sortable, evt) },
             id: sortable.tag,
         }, [
             el('span.path1'), el('span.path2'), el('span.path3'),
@@ -110,10 +110,9 @@ export class SortableGroup {
         this.onSort();
     }
 
-    select(tag: string) {
+    select(sortable: sortableObject) {
         this.unselect();        
-        let sortable: sortableObject = find(this.sortableObjects, (o) => { return tag === o.tag; });
-        if (sortable) setAttr(sortable.sortElement, { selected: true });
+        setAttr(sortable.sortElement, { selected: true });
     }
 
     unselect() {
@@ -140,22 +139,22 @@ export class SortableGroup {
         }
     }
 
-    onClick(tag: string, evt: Event) {
-        this.select(tag);
+    onClick(sortable: sortableObject, evt: Event) {
+        this.select(sortable);
         for (let i = 0; i < this.clickListeners.length; i++) {
-            this.clickListeners[i](tag, evt);
+            this.clickListeners[i](sortable, evt);
         }
     }
 
-    onEnter(tag: string, evt: Event) {
+    onEnter(sortable: sortableObject, evt: Event) {
         for (let i = 0; i < this.enterListeners.length; i++) {
-            this.enterListeners[i](tag, evt);
+            this.enterListeners[i](sortable, evt);
         }
     }
 
-    onLeave(tag: string, evt: Event) {
+    onLeave(sortable: sortableObject, evt: Event) {
         for (let i = 0; i < this.leaveListeners.length; i++) {
-            this.leaveListeners[i](tag, evt);
+            this.leaveListeners[i](sortable, evt);
         }
     }
 
