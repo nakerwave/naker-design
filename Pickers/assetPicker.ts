@@ -147,6 +147,7 @@ export class ImageAssetButton extends BaseAssetButton {
 
     image: HTMLElement;
     text: HTMLElement;
+    textDisplay: HTMLElement;
     hover: HTMLElement;
     label: HTMLElement;
     container: HTMLElement;
@@ -155,11 +156,13 @@ export class ImageAssetButton extends BaseAssetButton {
         super(parent, label, assetoption);
         this.el = el('div.input-asset-image', { class: '', onclick: () => { this.focus() } },
             [
-                el('div.image-hover',
+                el('div.image-text-container.image-hover',
                     this.hover = el('div.image-hover-text', 'Replace ' + this.type)
                 ),
                 this.image = el('img', { src: '', style: { width: defaultwithinput + 'px', 'background-size': 'contain', display: 'none' } }),
-                this.text = el('div.image-hover-text', '')
+                this.textDisplay = el('div.image-text-container',
+                    this.text = el('div.image-hover-text', '')
+                ),
             ]
         );
         mount(this.parent, this.el);
@@ -176,16 +179,17 @@ export class ImageAssetButton extends BaseAssetButton {
             else image = thumbnail;
             if (image.indexOf('http') != -1) {
                 setStyle(this.image, { display: 'block' });
-                setStyle(this.text, { display: 'none' });
+                setStyle(this.textDisplay, { display: 'none' });
                 setAttr(this.image, { src: image });
             } else {
-                setStyle(this.text, { display: 'block' });
+                setStyle(this.textDisplay, { display: 'block' });
                 setStyle(this.image, { display: 'none' });
                 this.text.textContent = url.substr(url.lastIndexOf('/') + 1);
             }
             this.hover.textContent = 'Replace ' + this.type;
         } else {
-            setStyle(this.text, { display: 'block' });
+            setStyle(this.textDisplay, { display: 'block' });
+            setStyle(this.image, { display: 'none' });
             this.text.textContent = 'No ' + this.type;
             this.hover.textContent = 'Add ' + this.type;
         }
@@ -272,6 +276,15 @@ export class AssetPicker extends UI {
         window.addEventListener('load', () => {
             mount(document.body, this.el);
         });
+    }
+
+    addNoAssetButton () {
+        let button = el('div.no-asset-button.asset-button', { onclick: () => { this.selectAsset(null) } },
+            el('div.no-asset-icon.icon-none',
+                [el('span.path1'), el('span.path2'), el('span.path3')]
+            )
+        );
+        mount(this.el, button);
     }
 
     currentInput: BaseAssetButton;
@@ -382,19 +395,19 @@ export class AssetPicker extends UI {
         let button: HTMLElement;
         if (image.indexOf('http') != -1) {
             let remove: HTMLElement;
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
-                el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
-                remove = el('div.delete-asset-button.icon-close', {
-                    onclick: (e) => {
-                        e.stopPropagation();
-                        this.deleteAsset(button, type, image);
-                    },
-                    onmouseover: (e) => {
-                        e.stopPropagation(); // Not working
-                    }
-                }, [el('span.path1'), el('span.path2'), el('span.path3')])
-            ]
-
+            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
+                [
+                    el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
+                    remove = el('div.delete-asset-button.icon-close', {
+                        onclick: (e) => {
+                            e.stopPropagation();
+                            this.deleteAsset(button, type, image);
+                        },
+                        onmouseover: (e) => {
+                            e.stopPropagation(); // Not working
+                        }
+                    }, [el('span.path1'), el('span.path2'), el('span.path3')])
+                ]
             );
             if (removable === false) unmount(button, remove);
         } else {
