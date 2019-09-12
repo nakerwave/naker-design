@@ -2,25 +2,6 @@
 @import '_colors'
 @import '_variables'
 
-/***************************************** PICKERS ****************************************
-
-.picker
-    border-radius: 10px
-    z-index: 200
-
-.picker-title
-    left: 0px
-    top: 0px
-    width: calc(100% - 5px)
-    height: 20px
-    line-height: 20px
-    padding-left: 5px
-    font-size: 15px
-    text-transform: capitalize
-    color: $colortext
-    border-radius: 5px 5px 0px 0px
-    background-color: $colormain
-
 .erase-icon
     display: inline-block
     position: relative
@@ -32,20 +13,32 @@
 .erase-icon[active='true']
     color:$colormain
 
+.modal-close
+    position: absolute
+    top: 20px
+    right: 20px
+    font-size: 30px
+    cursor: pointer
+    color: $colortext
+    z-index: 1
+
 /***************************************** ASSET PICKERS ****************************************
 
 .asset-picker
     position: absolute
-    top: 50%
-    left: 50%
-    height: 50%
-    width: 50%
-    transform: translate(-50%, -50%)
+    top: 0px
+    left: 0px
+    width: 100%
     display: block
-    background: $colorgrey
+    background: $colordarkgrey
     color: $colormain
     overflow: hidden auto
-    z-index: 200
+    background: $colordarkgrey
+    z-index: 5
+
+.picker-with-dropzone
+    height: calc(100% - 110px)
+    padding-bottom: 110px
 
 .asset-button
     position: relative

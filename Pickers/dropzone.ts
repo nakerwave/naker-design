@@ -31,38 +31,42 @@ export class NakerDropzone {
         let formattext = this.getFormatText(formats);
         this.el = el('div.upload_overlay', { onclick: (evt) => { this.checkHide(evt) } },
             [
-                el('div.modal-close.icon-close', { onclick: (evt) => { this.checkHide(evt); } },
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
-                ),
                 this.text = el('div.download', formattext),
                 this.dropzoneElement = el('div.upload_dropzone'),
             ]
         );
-        mount(document.body, this.el);
         setStyle(this.el, { display: 'none' });
 
-        assetPicker.addFocusListener((type: string) => {
+        assetPicker.on('focus', (type: string) => {
             if (type == this.type) this.show();
+        });
+
+        assetPicker.on('blur', (type: string) => {
+            this.hide();
         });
 
         this.addDropZone(type, formats, maxWeight);
         dropzoneList[type] = this;
     }
 
+    setParent(parent: HTMLElement) {
+        mount(parent, this.el);
+    }
+
     addTitle() {
         let title1 = el('div.upload_title.upload_title1', 'Upload new ' + this.type);
         mount(this.el, title1);
-        let title2 = el('div.upload_title.upload_title2', 'or');
-        mount(this.el, title2);
-        let title3 = el('div.upload_title.upload_title3', 'Select one');
-        mount(this.el, title3);
+        // let title2 = el('div.upload_title.upload_title2', 'or');
+        // mount(this.el, title2);
+        // let title3 = el('div.upload_title.upload_title3', 'Select one');
+        // mount(this.el, title3);
     }
 
     setBesidePicker() {
         this.addTitle();
         setAttr(this.text, { class: 'download left_overlay' });
-        setAttr(this.dropzoneElement, { class: 'upload_dropzone left_overlay beside_overlay' });
-        setAttr(assetPicker.el, { class: 'picker asset-picker editor-scroll right_overlay beside_overlay' });
+        setAttr(this.dropzoneElement, { class: 'upload_dropzone' });
+        setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker editor-scroll' });
     }
 
     getFormatText(formats: Array<string>) {

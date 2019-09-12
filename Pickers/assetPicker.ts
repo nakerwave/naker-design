@@ -267,11 +267,16 @@ export class AssetPicker extends UI {
 
     constructor() {
         super();
-        this.el = el('div.picker.asset-picker.editor-scroll', { id: 'assetpicker', onclick: () => { this.hidePicker(); } });
+        this.el = el('div.asset-picker.editor-scroll', { id: 'assetpicker', onclick: () => { this.hidePicker(); } }, 
+            el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
+                [el('span.path1'), el('span.path2'), el('span.path3')]
+            )
+        );
         this.hide();
-        window.addEventListener('load', () => {
-            mount(document.body, this.el);
-        });
+    }
+    
+    setParent(parent: HTMLElement) {
+        mount(parent, this.el);
     }
 
     currentInput: BaseAssetButton;
@@ -283,17 +288,25 @@ export class AssetPicker extends UI {
         this.waitingAsset = this.type;
         this.waitingInput = this.currentInput;
         this.showPicker();
-        this.sendToFocusListener();
     }
 
     focusListeners: Array<Function> = [];
-    addFocusListener(listener: Function) {
-        this.focusListeners.push(listener);
+    blurListeners: Array<Function> = [];
+    on(event:'focus'|'blur', listener: Function) {
+        if (event == 'focus') this.focusListeners.push(listener);
+        if (event == 'blur') this.blurListeners.push(listener);
+        return this;
     }
 
     sendToFocusListener() {
         for (let i = 0; i < this.focusListeners.length; i++) {
             this.focusListeners[i](this.type);
+        }
+    }
+
+    sendToBlurListener() {
+        for (let i = 0; i < this.blurListeners.length; i++) {
+            this.blurListeners[i](this.type);
         }
     }
 
@@ -431,17 +444,15 @@ export class AssetPicker extends UI {
         this.waitingAsset = null;
     }
 
-    onShow: Function;
     showPicker() {
         this.show();
-        if (this.onShow) this.onShow(this.type);
+        this.sendToFocusListener();
     }
 
-    onHide: Function;
     hidePicker() {
         this.hide();
         this.currentInput = undefined;
-        if (this.onHide) this.onHide(this.type);
+        this.sendToBlurListener();
     }
 }
 
