@@ -4,11 +4,19 @@ import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle, unmount } from 'redom';
 import find from 'lodash/find';
+import isPlainObject from 'lodash/isPlainObject';
 import remove from 'lodash/remove';
+import filter from 'lodash/filter';
+import pick from 'lodash/pick';
+import keys from 'lodash/keys';
 
 export interface asset {
     type: string,
     url: string,
+    thumbnail?: string,
+    removable?: boolean,
+    saved?: boolean,
+    button?: HTMLElement,
 };
 
 export interface assetEvents {
@@ -28,7 +36,7 @@ export class BaseAssetButton extends Input {
     }
 
     getThumbnail(url: string) {
-        let asset = find(assetPicker.thumbnails[this.type], (o: asset) => { return o.url == url; });
+        let asset = find(assetPicker.thumbnails, (o: asset) => { return o.type == this.type && o.url == url; });
         if (asset) return asset.thumbnail;
         else return url;
     }
@@ -323,13 +331,52 @@ export class AssetPicker extends UI {
         }
     }
 
-    buttons: any = {};
-    thumbnails: any = {};
-    initThumbnails(assetThumbnails: any) {
-        // Make sure we have correct type saved
-        for (let key in assetThumbnails) {
-            if (assetTypes.indexOf(key) != -1) this.thumbnails[key] = assetThumbnails[key];
+    thumbnails: Array<asset> = [];
+    initThumbnails(assetThumbnails: Array<asset>) {
+        if (!assetThumbnails) return;
+        // In previus version, we had object of arrays
+        // So this is a check to correct it
+        if (isPlainObject(assetThumbnails)) {
+            for (let key in assetThumbnails) {
+                if (assetTypes.indexOf(key) != -1) {
+                    for (let i = 0; i < assetThumbnails[key].length; i++) {
+                        const asset = assetThumbnails[key][i];
+                        asset.type = key;
+                        if (assetTypes.indexOf(asset.type) != -1 && asset.url && asset.url.indexOf('http') != -1) {
+                            asset.saved = true;
+                            this.thumbnails.push(asset);
+                        }
+                    }
+                }
+            }
+        } else {
+            // Make sure we have correct type saved
+            for (let i = 0; i < assetThumbnails.length; i++) {
+                const asset = assetThumbnails[i];
+                if (assetTypes.indexOf(asset.type) != -1 && asset.url && asset.url.indexOf('http') != -1) {
+                    asset.saved = true;
+                    this.thumbnails.push(asset);
+                }
+            }
         }
+    }
+
+    getSavedAssets() {
+        let exportAssetKeys:asset = {
+            type: null,
+            url: null,
+            thumbnail: null
+        };
+
+        let savedAssets: Array < asset > = [];
+        for (let i = 0; i < this.thumbnails.length; i++) {
+            let asset = this.thumbnails[i];
+            if (asset.saved && asset.url.indexOf('http') != -1) {
+                let exportAsset = pick(asset, keys(exportAssetKeys));
+                savedAssets.push(exportAsset);
+            }
+        }
+        return savedAssets;
     }
 
     assetperline = 2;
@@ -339,32 +386,26 @@ export class AssetPicker extends UI {
         this.type = type;
         this.hideAsset();
         this.checkTypeInitialized(type);
-        // Show all assets image only if overlayImages,
-        // models, videos and sounds stays appart because you can't replace a model by an image
-        for (let i = 0; i < this.buttons[type].length; i++) {
-            setStyle(this.buttons[type][i], { display: 'block' });
+        let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
+        for (let i = 0; i < assetsType.length; i++) {
+            let button = assetsType[i].button;
+            setStyle(button, { display: 'block' });
         }
         return this;
     }
 
     checkTypeInitialized(type: string) {
-        if (!this.buttons[type]) this.initAssetType(type);
-    }
-
-    initAssetType(type: string) {
-        this.buttons[type] = [];
-        if (this.thumbnails[type] == undefined) this.thumbnails[type] = [];
-        for (let i = 0; i < this.thumbnails[type].length; i++) {
-            let asset = this.thumbnails[type][i];
-            this.buttons[type].push(this.addButton(type, asset.url, asset.thumbnail));
+        let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
+        for (let i = 0; i < assetsType.length; i++) {
+            let asset = assetsType[i];
+            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail);
         }
     }
 
     hideAsset() {
-        for (let key in this.buttons) {
-            for (let i = 0; i < this.buttons[key].length; i++) {
-                setStyle(this.buttons[key][i], { display: 'none' });
-            }
+        for (let i = 0; i < this.thumbnails.length; i++) {
+            let button = this.thumbnails[i].button;
+            if (button) setStyle(button, { display: 'none' });
         }
     }
 
@@ -382,7 +423,7 @@ export class AssetPicker extends UI {
         if (this.waitingAsset == null) return;
         this.checkTypeInitialized(this.waitingAsset);
         if (!thumbnail) thumbnail = url;
-        let asset = find(this.thumbnails[this.waitingAsset], (o) => { return o.url == url; });
+        let asset = find(this.thumbnails, (o) => { return o.type == this.waitingAsset && o.url == url; });
         if (asset == undefined) {
             this.addAsset(this.waitingAsset, url, thumbnail);
         }
@@ -393,12 +434,16 @@ export class AssetPicker extends UI {
         this.eraseCurrent();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, removable?: boolean) {
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
+        if (saved === undefined) saved = true;
+        if (removable === undefined) removable = true;
         this.checkTypeInitialized(type);
-        let asset = find(this.thumbnails[type], (a) => { return a.url == url });
+        let asset = find(this.thumbnails, (a) => { return a.type == type && a.url == url });
         if (!asset) {
-            this.buttons[type].push(this.addButton(type, url, thumbnail, removable));
-            this.thumbnails[type].push({ url: url, thumbnail: thumbnail });
+            if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
+                let button = this.addButton(type, url, thumbnail, removable);
+                this.thumbnails.push({ type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable, button: button });
+            }
         }
     }
 
@@ -414,7 +459,7 @@ export class AssetPicker extends UI {
                     remove = el('div.delete-asset-button.icon-close', {
                         onclick: (e) => {
                             e.stopPropagation();
-                            this.deleteAsset(button, type, image);
+                            this.deleteAsset(type, url);
                         },
                         onmouseover: (e) => {
                             e.stopPropagation(); // Not working
@@ -437,17 +482,17 @@ export class AssetPicker extends UI {
     }
 
     onAssetDeleted: Function;
-    deleteAsset(button: HTMLElement, type: string, key: string) {
-        let index = this.buttons[type].indexOf(button);
-        if (index != -1) this.buttons[type].splice(index, 1);
-        if (this.onAssetDeleted) this.onAssetDeleted(key)
-        if (this.currentInput) {
-            if (key == this.currentInput.url) this.currentInput.setValue(undefined, true);
+    deleteAsset(type: string, url: string) {
+        let asset = find(this.thumbnails, (o) => { return o.type == type && o.url == url; });
+        if (asset) {
+            let button = asset.button;
+            unmount(button.parentNode, button);
         }
-        remove(this.thumbnails[type], (n) => {
-            return n.url == key;
-        });
-        unmount(button.parentNode, button);
+        if (this.onAssetDeleted) this.onAssetDeleted(url)
+        if (this.currentInput) {
+            if (url == this.currentInput.url) this.currentInput.setValue(undefined, true);
+        }
+        remove(this.thumbnails, (n) => { return n.type == type && n.url == url; });
         this.setAssetList(type);
     }
 

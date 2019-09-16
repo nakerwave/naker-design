@@ -116,10 +116,9 @@ export class ColorPicker extends UI {
     title: HTMLElement;
     picker: any;
     opacityPicker: HTMLElement;
-    palette: Array<string> = [];
 
-    set(palette?: Array<string>) {
-        if (typeof palette === 'object') this.palette = palette;
+    constructor() {
+        super();
         this.el = el('div', { id: 'colorpicker', class: 'picker color-picker' },
             [
                 el('div.picker-title',
@@ -136,13 +135,38 @@ export class ColorPicker extends UI {
             showHSL: false,
             showAlpha: true,
             paletteEditable: true,
-            palette: palette,
+            // palette: palette,
         });
+        
         this.opacityPicker = document.querySelector('.a-color-picker-alpha');
         this.setEvent();
         this.setBack();
         this.hide();
-        return this;
+    }
+
+    setPalette (palette?: Array<string>) {
+        this.picker.destroy();
+        this.picker = AColorPicker.createPicker({
+            attachTo: '#colorpicker',
+            color: 'green',
+            showHSL: false,
+            showAlpha: true,
+            paletteEditable: true,
+            palette: palette,
+        });
+        // this.picker.setPalette(palette);
+        // this.picker.palette = palette;
+    }
+
+    getPalette () {
+        let palette = [];
+        let pickerPal = this.picker.palette;
+        for (let i = 0; i < pickerPal.length; i++) {
+            const color = pickerPal[i];
+            let ar = AColorPicker.parseColor(color);
+            palette.push(ar);
+        }
+        return palette;
     }
 
     setBack() {
@@ -165,13 +189,6 @@ export class ColorPicker extends UI {
         this.picker.onchange = (picker) => {
             if (this.currentInput) this.currentInput.setValue(picker.rgba, true);
         };
-        this.picker.oncoloradd = (picker, color) => {
-            this.palette.push(color);
-        }
-        this.picker.oncolorremove = (picker, color) => {
-            let index = this.palette.indexOf(color);
-            this.palette.splice(index, 1);
-        }
 
         window.addEventListener("resize", () => {
             if (this.currentInput) this.setPickerPosition();
