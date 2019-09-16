@@ -154,6 +154,7 @@ export class ColorPicker extends UI {
             paletteEditable: true,
             palette: palette,
         });
+        this.setEvent();
         // this.picker.setPalette(palette);
         // this.picker.palette = palette;
     }

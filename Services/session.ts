@@ -165,8 +165,6 @@ export class Session {
         this.api.post(this.engine + '/name', { id: this.projectid, name: name }, {}, (data) => {
             if (!data.success) {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
-            } else {
-                toastr.success('Name updated 👍');
             }
         });
     }
