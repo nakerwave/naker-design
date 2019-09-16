@@ -359,8 +359,6 @@ export class AssetPicker extends UI {
             let asset = this.thumbnails[i];
             if (asset.saved && asset.url.indexOf('http') != -1) {
                 let exportAsset = pick(asset, keys(exportAssetKeys));
-                console.log(exportAsset);
-                
                 savedAssets.push(exportAsset);
             }
         }
