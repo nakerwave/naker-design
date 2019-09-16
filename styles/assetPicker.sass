@@ -14,13 +14,15 @@
     color:$colormain
 
 .modal-close
-    position: absolute
-    top: 20px
-    right: 20px
-    font-size: 30px
-    cursor: pointer
+    position: sticky
     color: $colortext
     z-index: 1
+    top: 10px
+    height: 0px
+    text-align: right
+    font-size: 30px
+    cursor: pointer
+    width: calc(100% - 10px)
 
 /***************************************** ASSET PICKERS ****************************************
 
@@ -57,6 +59,14 @@
     background-size: cover
     &:hover
         background: $colordarkgrey
+
+.no-asset-button
+    font-size: 60px
+    color: $colortext
+    background: $colordarkgrey
+
+.no-asset-icon
+    margin: 10px
 
 .delete-asset-button
     position: absolute
@@ -98,18 +108,23 @@
         .image-hover
             opacity: 1
 
-.image-hover
+.image-text-container
     position: absolute
-    background: transparentize($colormain, .2)
+    background: transparentize($colordarkgrey, .2)
     width: 100%
     height: 100%
-    opacity: 0
+    opacity: 1
     z-index: 10
     text-align: center
     line-height: 20px
     color: $colortext
     font-size: 16px
     transition: opacity 200ms ease
+
+.image-hover
+    background: transparentize($colormain, .2)
+    opacity: 0
+    z-index: 100
 
 .image-hover-text
     position: absolute

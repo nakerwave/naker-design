@@ -33,6 +33,9 @@ export class NakerDropzone {
             [
                 this.text = el('div.download', formattext),
                 this.dropzoneElement = el('div.upload_dropzone'),
+                el('div.icon-add',
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                )
             ]
         );
         setStyle(this.el, { display: 'none' });
