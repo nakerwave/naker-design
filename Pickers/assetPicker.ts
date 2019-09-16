@@ -320,6 +320,7 @@ export class AssetPicker extends UI {
 
     thumbnails: Array<asset> = [];
     initThumbnails(assetThumbnails: Array<asset>) {
+        if (!assetThumbnails) return;
         // In previus version, we had object of arrays
         // So this is a check to correct it
         if (isPlainObject(assetThumbnails)) {
