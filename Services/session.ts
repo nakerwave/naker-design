@@ -131,6 +131,7 @@ export class Session {
             }
         }
 
+        // We make sure project exist in the base
         if (this.projectid) {
             this.api.get(this.engine, { id: this.projectid }, (data) => {
                 if (data.success !== false) {
@@ -147,7 +148,7 @@ export class Session {
 
     createNew(callback?: Function) {
         if (!this.engine) return;
-        this.api.post(this.engine + '/new', {}, {}, (data) => {
+        this.api.post(this.engine + '/new', {name:'New '+ this.engine}, {}, (data) => {
             if (data.success) {
                 this.setProjectId(data.id);
                 this.saving = true;
@@ -202,6 +203,26 @@ export class Session {
         }
     }
 
+    lastimagesave: any;
+    startImageSave(getImage: Function, frequency: number) {
+        this.lastimagesave = new Date().getTime();
+        setInterval(() => {
+            if (document.hasFocus() && this.saving) {
+                if (!this.projectid || !this.engine) {
+                    this.saving = false;
+                    return console.error("You can't update image online without a projectid and engine");
+                }
+                let now = new Date().getTime();
+                // Avoid sending a lot of request when focus is back on window for instance
+                if (now - this.lastimagesave < frequency * 800) return;
+                this.lastimagesave = now;
+                getImage((image) => {
+                    this.uploadImage(image);
+                });
+            }
+        }, frequency * 1000);
+    }
+
     errorshown = false;
     save() {
         this.saveOnlineAndLocal((saved) => {
@@ -249,6 +270,15 @@ export class Session {
         });
     }
 
+    uploadImage(image: string, callback?: Function) {
+        var fd = new FormData();
+        fd.append("image", image);
+        const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };
+        this.api.post(this.engine + '/image', { id: this.projectid }, { body: fd, header: header }, (data) => {
+            if (callback) callback(data.success, data.image);
+        });
+    }
+
     error(text: string) {
         toastr.error('🤷 ' + text + ', you will be redirected to your dashboard');
         setTimeout(() => {
@@ -266,6 +296,10 @@ export class Session {
 
     getSentry() {
         return this.sentry;
+    }
+
+    isProjectSaved () {
+        return (this.projectid)? true : false;
     }
 
     getProjectId() {
