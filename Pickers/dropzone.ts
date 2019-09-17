@@ -33,7 +33,7 @@ export class NakerDropzone {
             [
                 this.text = el('div.download', formattext),
                 this.dropzoneElement = el('div.upload_dropzone'),
-                el('div.icon-add',
+                el('div.icon-add', { style: { 'pointer-events': 'none' } },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
             ]

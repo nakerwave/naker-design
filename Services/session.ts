@@ -153,7 +153,6 @@ export class Session {
                 this.setProjectId(data.id);
                 this.saving = true;
                 this.save();
-                toastr.success('👍 Project created! For now on, we will automatically save it for you');
             } else {
                 toastr.error('🤷 Oups, there was an error while saving your project');
             }

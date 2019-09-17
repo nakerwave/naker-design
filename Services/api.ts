@@ -65,9 +65,7 @@ export class Api {
     get(path: string, arg: Object, callback: Function) {
         let query = arg ? this.ObjecToQuery(arg) : '';
         let url = this.host + path + '?' + query;
-        this.send('GET', url, '', {}, (data) => {
-            callback(data);
-        });
+        this.send('GET', url, '', {}, callback);
     }
 
     post(path: string, arg: Object, options: postOption, callback: Function) {
@@ -75,9 +73,7 @@ export class Api {
         let header = options.header ? options.header : {};
         let query = arg ? this.ObjecToQuery(arg) : '';
         let url = this.host + path + '?' + query;
-        this.send('POST', url, bodystring, header, (data) => {
-            callback(data);
-        });
+        this.send('POST', url, bodystring, header, callback);
     }
 
     send(method: string, url: string, body: any, headers: any, callback: Function) {
@@ -134,8 +130,9 @@ export class Api {
                 this.saveToken(data);
                 callback(true);
             } else {
-                callback(false);
+                // Make sure to disconnect before the callback
                 this.disconnect();
+                callback(false);
             }
         });
     }
