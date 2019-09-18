@@ -67,6 +67,7 @@ export class NakerDropzone {
 
     setBesidePicker() {
         this.addTitle();
+        this.setParent(assetPicker.el);
         setAttr(this.text, { class: 'download left_overlay' });
         setAttr(this.dropzoneElement, { class: 'upload_dropzone' });
         setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker editor-scroll' });
@@ -76,7 +77,8 @@ export class NakerDropzone {
         return 'Supported formats: ' + formats.join(', ');
     }
 
-    checkHide(evt) {
+    checkHide(evt:Event) {
+        evt.stopPropagation();
         let elclass = evt.target.className;
         // If click outside then hide
         if (elclass.indexOf('upload_dropzone') == -1 && elclass.indexOf('download') == -1) this.hide();

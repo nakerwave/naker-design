@@ -279,12 +279,20 @@ export class AssetPicker extends UI {
 
     constructor() {
         super();
-        this.el = el('div.asset-picker.editor-scroll', { id: 'assetpicker', onclick: () => { this.hidePicker(); } }, 
+        this.el = el('div.asset-picker.editor-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
             el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         );
         this.hide();
+
+        // Click outside asset picker will always hide it
+        window.addEventListener("click", (e) => {
+            // Is it a click outside and not on a dropzone input
+            if (!this.el.contains(e.target) && !(e.target.type == 'file')) {
+                if (this.shown) this.hidePicker();
+            }
+        });
     }
     
     setParent(parent: HTMLElement) {
@@ -386,7 +394,7 @@ export class AssetPicker extends UI {
         this.type = type;
         this.hideAsset();
         this.checkTypeInitialized(type);
-        
+
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let button = assetsType[i].button;
@@ -503,12 +511,19 @@ export class AssetPicker extends UI {
         this.waitingAsset = null;
     }
 
+    shown = false;
     showPicker() {
+        // For click outside
+        // If no timeout, window click is triggered and picker is always hidden
+        setTimeout(() => {
+            this.shown = true;
+        }, 100);
         this.show();
         this.sendToFocusListener();
     }
 
     hidePicker() {
+        this.shown = false;
         this.hide();
         this.currentInput = undefined;
         this.sendToBlurListener();
