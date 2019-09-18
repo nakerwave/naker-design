@@ -103,7 +103,7 @@ export class NakerDropzone {
                 this.on("error", (file, errorMessage) => {
                     this.uploading = false;
                     if (typeof (errorMessage) === 'string')
-                        that.errorDropzone(errorMessage);
+                        that.errorBeforeUpload(errorMessage);
                 });
             },
             accept: (file, done) => {
@@ -118,15 +118,15 @@ export class NakerDropzone {
 
 
         this.dropzone.on('sending', (file, xhr, formData) => {
-            this.sending(formData)
+            this.sending(file, xhr, formData)
         });
 
         this.dropzone.on('success', (file, response) => {
-            this.success(response);
+            this.success(file, response);
         });
 
         this.dropzone.on('error', (file, response: any) => {
-            this.uploading = false;
+            this.error(file, response);
         });
     }
 
@@ -136,16 +136,27 @@ export class NakerDropzone {
 
     _checkFileBeforeAccept(file): boolean {
         if (file.size > this.maxWeight * 1024 * 1024) {
-            this.errorDropzone("Your file is too large, " + this.maxWeight + "MB is the maximum.");
+            this.errorBeforeUpload("Your file is too large, " + this.maxWeight + "MB is the maximum.");
             return false;
         } else if (this.uploading == true) {
-            this.errorDropzone("A " + this.type + " is already being uploaded, please wait");
+            this.errorBeforeUpload("A " + this.type + " is already being uploaded, please wait");
             return false;
         }
         return true;
     }
 
-    sending(formData) {
+    errorBeforeUpload(error: string) {
+        this.text.textContent = error;
+        setAttr(this.text, { error: true });
+        toastr.error(error);
+        setTimeout(() => {
+            setAttr(this.text, { error: false });
+            let formattext = this.getFormatText(this.formats);
+            this.text.textContent = formattext;
+        }, 3000);
+    }
+
+    sending(file, xhr, formData) {
         // Add naker key for cloudinary
         formData.append('timestamp', Date.now() / 1000 | 0);
         formData.append('upload_preset', 'hdtmkzvn');
@@ -153,7 +164,7 @@ export class NakerDropzone {
         this.hide();
     }
 
-    success(response) {
+    success(file, response) {
         this._success(response);
     }
     _success(response) {
@@ -164,15 +175,8 @@ export class NakerDropzone {
         if (this.callback) this.callback(url, name);
     }
 
-    errorDropzone(error: string) {
-        this.text.textContent = error;
-        setAttr(this.text, { error: true });
-        toastr.error(error);
-        setTimeout(() => {
-            setAttr(this.text, { error: false });
-            let formattext = this.getFormatText(this.formats);
-            this.text.textContent = formattext;
-        }, 3000);
+    error(file, response) {
+        this.uploading = false;
     }
 
     show() {

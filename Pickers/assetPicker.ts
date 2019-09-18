@@ -302,7 +302,7 @@ export class AssetPicker extends UI {
 
     currentInput: BaseAssetButton;
     setCurrentInput(input: BaseAssetButton) {
-        this.currentInput = input;
+        this.currentInput = input;        
         this.setAssetList(input.type);
         this.addAssetMode = false;
         this.type = input.type;
@@ -386,6 +386,7 @@ export class AssetPicker extends UI {
         this.type = type;
         this.hideAsset();
         this.checkTypeInitialized(type);
+        
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let button = assetsType[i].button;
