@@ -422,8 +422,8 @@ export class AssetPicker extends UI {
         this.addAssetFunction = callback;
         this.addAssetMode = true;
         this.type = type;
-        this.showPicker();
         this.setAssetList(type);
+        this.showPicker();
     }
 
     waitingAsset: string = null;
@@ -517,9 +517,9 @@ export class AssetPicker extends UI {
         // If no timeout, window click is triggered and picker is always hidden
         setTimeout(() => {
             this.shown = true;
-        }, 100);
-        this.show();
-        this.sendToFocusListener();
+            this.show();
+            this.sendToFocusListener();
+        }, 10);
     }
 
     hidePicker() {
