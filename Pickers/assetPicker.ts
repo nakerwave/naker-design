@@ -407,7 +407,7 @@ export class AssetPicker extends UI {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let asset = assetsType[i];
-            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail);
+            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail, true);
         }
     }
 
@@ -458,27 +458,33 @@ export class AssetPicker extends UI {
 
     addAssetMode = false;
     addAssetFunction: Function;
-    addButton(type: string, url: string, image: string, removable?: boolean) {
+    addButton(type: string, url: string, image: string, removable: boolean) {
         let button: HTMLElement;
         if (image.indexOf('http') != -1) {
-            let remove: HTMLElement;
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
-                [
-                    el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
-                    remove = el('div.delete-asset-button.icon-close', {
-                        onclick: (e) => {
-                            e.stopPropagation();
-                            this.deleteAsset(type, url);
-                        },
-                        onmouseover: (e) => {
-                            e.stopPropagation(); // Not working
-                        }
-                    }, [el('span.path1'), el('span.path2'), el('span.path3')])
-                ]
+                el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
             );
-            if (removable === false) unmount(button, remove);
         } else {
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, image);
+            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
+                el('div.asset-text', image),
+                el('div.backicon.icon-' + type,
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
+            ]);
+        }
+        console.log(removable);
+        
+        if (removable) {
+            let removebutton = el('div.delete-asset-button.icon-close', {
+                onclick: (e) => {
+                    e.stopPropagation();
+                    this.deleteAsset(type, url);
+                },
+                onmouseover: (e) => {
+                    e.stopPropagation(); // Not working
+                }
+            }, [el('span.path1'), el('span.path2'), el('span.path3')])
+            mount(button, removebutton);
         }
         mount(this.el, button);
         return button;
