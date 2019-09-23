@@ -157,7 +157,7 @@ export class Api {
 
     getAllUrlParams() {
         var queryString = window.location.search.slice(1);
-        var obj = {};
+        var obj:any = {};
 
         if (queryString) {
             queryString = queryString.split('#')[0];

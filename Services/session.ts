@@ -1,6 +1,7 @@
 
 import { Api } from './api';
 import { Spy } from './spy';
+import { Undo } from './undo';
 
 import toastr from 'toastr';
 import isEqual from 'lodash/isEqual';
@@ -57,7 +58,7 @@ export class Session {
     intercom: boolean;
     sentry: boolean;
 
-    constructor(api: Api, spy: Spy) {
+    constructor(api: Api, spy: Spy, undo?:Undo) {
         this.api = api;
         this.spy = spy;
 
@@ -78,6 +79,12 @@ export class Session {
         window.addEventListener('beforeunload', () => {
             if (this.saveBeforeUnload) this.save();
         });
+
+        if (undo) {
+            undo.addSaveListener(() => {
+                this.saveLocal();
+            });
+        }
     }
 
     engineList = ['back', 'form', 'story'];
@@ -102,8 +109,15 @@ export class Session {
                 this.projectid = next;
             }
         }
-
+        
         if (this.engine) {
+            // If new project asked, remove stored data
+            let query = this.api.getAllUrlParams();
+            if (query.new) {
+                Cookies.remove('naker_' + this.engine);
+                this.setProjectId('');
+            }
+
             this.spy.setEngine(this.spyPrefix[this.engine]);
             if (this.sentry) this.spy.startSentry(this.sentryIds[this.engine]);
 
@@ -125,17 +139,21 @@ export class Session {
         if (cookie) cookieParsed = JSON.parse(cookie);
 
         // If no id in url but one in cookie saved, we take it
-        if (cookieParsed && cookieParsed.id) {
-            if (!this.projectid) {
+        if (!this.projectid) {
+            if (cookieParsed && cookieParsed.id) {
                 this.setProjectId(cookieParsed.id);
             }
+        } else if (this.projectid != cookieParsed.id) {
+            cookieParsed = null;
         }
 
         // We make sure project exist in the base
         if (this.projectid) {
             this.api.get(this.engine, { id: this.projectid }, (data) => {
                 if (data.success !== false) {
-                    callback(data);
+                    // Cookie will always have the most recent data
+                    if (cookieParsed) callback(cookieParsed);
+                    else callback(data);
                 } else {
                     this.setProjectId('');
                     callback(cookieParsed);

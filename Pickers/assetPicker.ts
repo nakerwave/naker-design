@@ -472,7 +472,6 @@ export class AssetPicker extends UI {
                 ),
             ]);
         }
-        console.log(removable);
         
         if (removable) {
             let removebutton = el('div.delete-asset-button.icon-close', {
