@@ -3,13 +3,17 @@
 
 /***************************************** DROPZONE ****************************************
 
+.dropzone-container
+    position: sticky
+    bottom: 4px
+
 .upload_overlay
     z-index: 6
-    position: absolute
+    position: sticky
     display: none
     height: 100px
     width: calc(100% - 4px)
-    bottom: 4px
+    top: 100%
     left: 0px
 
     .upload_title

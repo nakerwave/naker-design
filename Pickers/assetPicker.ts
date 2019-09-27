@@ -276,14 +276,19 @@ export let overlayImages: Array<string> = ['albedo', 'ambient', 'specular', 'emi
 export class AssetPicker extends UI {
     back: HTMLElement;
     title: HTMLElement;
+    dropel: HTMLElement;
+    assetlist: HTMLElement;
 
     constructor() {
         super();
-        this.el = el('div.asset-picker.editor-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
-            el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            )
-        );
+        this.el = el('div.asset-picker', [
+            this.assetlist = el('div.editor-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
+                el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                )
+            ),
+            this.dropel = el('div.dropzone-container') 
+        ]);
         this.hide();
 
         // Click outside asset picker will always hide it
@@ -305,7 +310,7 @@ export class AssetPicker extends UI {
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         );
-        mount(this.el, button);
+        mount(this.assetlist, button);
     }
 
     currentInput: BaseAssetButton;
@@ -485,7 +490,7 @@ export class AssetPicker extends UI {
             }, [el('span.path1'), el('span.path2'), el('span.path3')])
             mount(button, removebutton);
         }
-        mount(this.el, button);
+        mount(this.assetlist, button);
         return button;
     }
 

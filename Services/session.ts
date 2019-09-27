@@ -183,6 +183,9 @@ export class Session {
         this.api.post(this.engine + '/name', { id: this.projectid, name: name }, {}, (data) => {
             if (!data.success) {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
+            } else {
+                this.name = name;
+                this.saveLocal();
             }
         });
     }
@@ -269,6 +272,7 @@ export class Session {
         let projectJson = this.getProjectJson();
         let project: any = {};
         project.json = projectJson;
+        project.name = this.name;
         if (this.projectid) project.id = this.projectid;
         Cookies.set('naker_' + this.engine, JSON.stringify(project), { expires: 7 });
     }
