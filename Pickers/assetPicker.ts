@@ -9,6 +9,7 @@ import remove from 'lodash/remove';
 import filter from 'lodash/filter';
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
+import { assetOptions } from '../Layers/inventory';
 
 export interface asset {
     type: string,
@@ -276,18 +277,19 @@ export let overlayImages: Array<string> = ['albedo', 'ambient', 'specular', 'emi
 export class AssetPicker extends UI {
     back: HTMLElement;
     title: HTMLElement;
-    dropel: HTMLElement;
+    fixedel: HTMLElement;
     assetlist: HTMLElement;
 
     constructor() {
         super();
         this.el = el('div.asset-picker', [
-            this.assetlist = el('div.editor-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
+            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
+            ),
+            this.fixedel = el('div.fixed-asset-part', 
                 el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
-            ),
-            this.dropel = el('div.dropzone-container') 
+            ) 
         ]);
         this.hide();
 
@@ -356,7 +358,7 @@ export class AssetPicker extends UI {
                         const asset = assetThumbnails[key][i];
                         asset.type = key;
                         if (assetTypes.indexOf(asset.type) != -1 && asset.url && asset.url.indexOf('http') != -1) {
-                            asset.saved = true;
+                            if (asset.saved === undefined) asset.saved = true;
                             this.thumbnails.push(asset);
                         }
                     }
@@ -367,7 +369,7 @@ export class AssetPicker extends UI {
             for (let i = 0; i < assetThumbnails.length; i++) {
                 const asset = assetThumbnails[i];
                 if (assetTypes.indexOf(asset.type) != -1 && asset.url && asset.url.indexOf('http') != -1) {
-                    asset.saved = true;
+                    if (asset.saved === undefined) asset.saved = true;
                     this.thumbnails.push(asset);
                 }
             }
@@ -398,7 +400,7 @@ export class AssetPicker extends UI {
         if (overlayImages.indexOf(type) != -1) type = 'image';
         this.type = type;
         this.hideAsset();
-        this.checkTypeInitialized(type);
+        this.checkAddButtonsType(type);
 
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
@@ -408,11 +410,11 @@ export class AssetPicker extends UI {
         return this;
     }
 
-    checkTypeInitialized(type: string) {
+    checkAddButtonsType(type: string) {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let asset = assetsType[i];
-            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail, true);
+            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail, asset.removable);
         }
     }
 
@@ -435,7 +437,7 @@ export class AssetPicker extends UI {
     waitingInput: BaseAssetButton;
     addWaitedAssetButton(url: string, thumbnail?: string) {
         if (this.waitingAsset == null) return;
-        this.checkTypeInitialized(this.waitingAsset);
+        this.checkAddButtonsType(this.waitingAsset);
         if (!thumbnail) thumbnail = url;
         let asset = find(this.thumbnails, (o) => { return o.type == this.waitingAsset && o.url == url; });
         if (asset == undefined) {
@@ -448,15 +450,19 @@ export class AssetPicker extends UI {
         this.eraseCurrent();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean, button?:boolean) {
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
-        this.checkTypeInitialized(type);
+        // this.checkAddButtonsType(type);
         let asset = find(this.thumbnails, (a) => { return a.type == type && a.url == url });
         if (!asset) {
             if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
-                let button = this.addButton(type, url, thumbnail, removable);
-                this.thumbnails.push({ type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable, button: button });
+                let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable, button: button };
+                if (this.shown) {
+                    let button = this.addButton(type, url, thumbnail, removable);
+                    newAsset.button = button;
+                }
+                this.thumbnails.push(newAsset);
             }
         }
     }

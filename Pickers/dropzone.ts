@@ -67,7 +67,7 @@ export class NakerDropzone {
 
     setBesidePicker() {
         this.addTitle();
-        this.setParent(assetPicker.dropel);
+        this.setParent(assetPicker.fixedel);
         setAttr(this.text, { class: 'download left_overlay' });
         setAttr(this.dropzoneElement, { class: 'upload_dropzone' });
         setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker editor-scroll' });
