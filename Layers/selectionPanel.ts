@@ -22,11 +22,12 @@ export class SortableGroup {
     sortableContainer: HTMLElement;
     iconsContainer: HTMLElement;
 
-    constructor() {
+    constructor(title?:string) {
+        if (!title) title = 'Selection Panel';
         this.container = el('div.preset-group',
             [
                 el('div.parameter-title.sortable-title',
-                    el('div.title-text', 'Selection Panel')
+                    el('div.title-text', title)
                 ),
                 this.iconsContainer = el('div.sortable-main-icon-container'),
                 this.sortableContainer = el('div.list-group.editor-scroll.sortable-panel')

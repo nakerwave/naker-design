@@ -145,17 +145,7 @@ export class ColorPicker extends UI {
     }
 
     setPalette (palette?: Array<string>) {
-        this.picker.destroy();
-        this.picker = AColorPicker.createPicker({
-            attachTo: '#colorpicker',
-            color: 'green',
-            showHSL: false,
-            showAlpha: true,
-            paletteEditable: true,
-            palette: palette,
-        });
-        // this.picker.setPalette(palette);
-        // this.picker.palette = palette;
+        this.picker.palette = palette;
     }
 
     getPalette () {

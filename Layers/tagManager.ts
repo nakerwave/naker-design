@@ -97,21 +97,30 @@ export class TagManager {
     }
 
     onDuplicate() {
+        this.unSelect();
         for (let i = 0; i < this.duplicateListeners.length; i++) {
             this.duplicateListeners[i](this.content);
         }
     }
 
     onDelete() {
+        this.unSelect();
         for (let i = 0; i < this.deleteListeners.length; i++) {
             this.deleteListeners[i](this.content);
         }
     }
 
     onUnselect() {
+        this.unSelect();
         for (let i = 0; i < this.unselectListeners.length; i++) {
             this.unselectListeners[i](this.content);
         }
+    }
+    
+    unSelect () {
+        setChildren(actionPanelWithTag, []);
+        // Do not set content to null as some listeners needs it like in duplicate
+        // this.content = null;
     }
 
     content: tagableObject;
@@ -119,8 +128,6 @@ export class TagManager {
         this.content = content;
         if (content.tag) this.tagInput.setValue(content.tag);
         else this.tagInput.setPlaceholder('Enter tag');
-      
         setChildren(actionPanelWithTag, [this.el, actionPanel]);
-        // setChildren(actionPanel, [actionPanelWithTag]);
     }
 }

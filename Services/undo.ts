@@ -54,6 +54,7 @@ export class Undo {
         this.pastChange.push({ back: backChange, forward: forwardChange });
         this.futureChange = [];
         this.presentState = projectJson;
+        this.sendToSaveListeners(this.presentState);
     }
 
     getProjectJson() { }
@@ -66,7 +67,7 @@ export class Undo {
             let newState = merge(this.presentState, past.back);
             let backState = this.getDifference(newState, past.forward);
             this.presentState = backState;
-            this.sendToListsteners(past.back, this.presentState)
+            this.sendToChangeListeners(past.back, this.presentState)
             return true;
         } else {
             return false;
@@ -81,7 +82,7 @@ export class Undo {
             let newState = merge(this.presentState, future.forward);
             let forwardState = this.getDifference(newState, future.back);
             this.presentState = forwardState;
-            this.sendToListsteners(future.forward, this.presentState)
+            this.sendToChangeListeners(future.forward, this.presentState)
             return true;
         } else {
             return false;
@@ -116,11 +117,24 @@ export class Undo {
     }
 
     /**
+     * List of all functions following the progress position
+     * @ignore
+     */
+    _changeListeners: Array<Function> = [];
+
+    /**
+     * Add a new listener which will get the catching progress position
+     */
+    addChangeListener(callback: Function) {
+        this._changeListeners.push(callback);
+    }
+
+    /**
      * Send progress Change data to listeners
      */
-    sendToListsteners(change: any, newState: any) {
-        for (let i = 0; i < this._listeners.length; i++) {
-            this._listeners[i](change, newState);
+    sendToChangeListeners(change: any, newState: any) {
+        for (let i = 0; i < this._changeListeners.length; i++) {
+            this._changeListeners[i](change, newState);
         }
     }
 
@@ -128,19 +142,22 @@ export class Undo {
      * List of all functions following the progress position
      * @ignore
      */
-    _listeners: Array<Function> = [];
+    _saveListeners: Array<Function> = [];
+
 
     /**
      * Add a new listener which will get the catching progress position
      */
-    addListener(callback: Function) {
-        this._listeners.push(callback);
+    addSaveListener(callback: Function) {
+        this._saveListeners.push(callback);
     }
 
     /**
-     * Remove a listener to stop following progress
+     * Send progress Change data to listeners
      */
-    removeListener(callback: Function) {
-        remove(this._listeners, (c) => { c == callback });
+    sendToSaveListeners(newState: any) {
+        for (let i = 0; i < this._saveListeners.length; i++) {
+            this._saveListeners[i](newState);
+        }
     }
 }

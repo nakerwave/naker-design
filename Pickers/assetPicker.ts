@@ -9,6 +9,7 @@ import remove from 'lodash/remove';
 import filter from 'lodash/filter';
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
+import { assetOptions } from '../Layers/inventory';
 
 export interface asset {
     type: string,
@@ -276,14 +277,33 @@ export let overlayImages: Array<string> = ['albedo', 'ambient', 'specular', 'emi
 export class AssetPicker extends UI {
     back: HTMLElement;
     title: HTMLElement;
+    fixedel: HTMLElement;
+    assetlist: HTMLElement;
 
     constructor() {
         super();
-        this.el = el('div.picker.asset-picker.editor-scroll', { id: 'assetpicker', onclick: () => { this.hidePicker(); } });
+        this.el = el('div.asset-picker', [
+            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
+            ),
+            this.fixedel = el('div.fixed-asset-part', 
+                el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                )
+            ) 
+        ]);
         this.hide();
-        window.addEventListener('load', () => {
-            mount(document.body, this.el);
+
+        // Click outside asset picker will always hide it
+        window.addEventListener("click", (e) => {
+            // Is it a click outside and not on a dropzone input
+            if (!this.el.contains(e.target) && !(e.target.type == 'file')) {
+                if (this.shown) this.hidePicker();
+            }
         });
+    }
+    
+    setParent(parent: HTMLElement) {
+        mount(parent, this.el);
     }
 
     addNoAssetButton () {
@@ -292,29 +312,37 @@ export class AssetPicker extends UI {
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         );
-        mount(this.el, button);
+        mount(this.assetlist, button);
     }
 
     currentInput: BaseAssetButton;
     setCurrentInput(input: BaseAssetButton) {
-        this.currentInput = input;
+        this.currentInput = input;        
         this.setAssetList(input.type);
         this.addAssetMode = false;
         this.type = input.type;
         this.waitingAsset = this.type;
         this.waitingInput = this.currentInput;
         this.showPicker();
-        this.sendToFocusListener();
     }
 
     focusListeners: Array<Function> = [];
-    addFocusListener(listener: Function) {
-        this.focusListeners.push(listener);
+    blurListeners: Array<Function> = [];
+    on(event:'focus'|'blur', listener: Function) {
+        if (event == 'focus') this.focusListeners.push(listener);
+        if (event == 'blur') this.blurListeners.push(listener);
+        return this;
     }
 
     sendToFocusListener() {
         for (let i = 0; i < this.focusListeners.length; i++) {
             this.focusListeners[i](this.type);
+        }
+    }
+
+    sendToBlurListener() {
+        for (let i = 0; i < this.blurListeners.length; i++) {
+            this.blurListeners[i](this.type);
         }
     }
 
@@ -330,7 +358,7 @@ export class AssetPicker extends UI {
                         const asset = assetThumbnails[key][i];
                         asset.type = key;
                         if (assetTypes.indexOf(asset.type) != -1 && asset.url && asset.url.indexOf('http') != -1) {
-                            asset.saved = true;
+                            if (asset.saved === undefined) asset.saved = true;
                             this.thumbnails.push(asset);
                         }
                     }
@@ -341,7 +369,7 @@ export class AssetPicker extends UI {
             for (let i = 0; i < assetThumbnails.length; i++) {
                 const asset = assetThumbnails[i];
                 if (assetTypes.indexOf(asset.type) != -1 && asset.url && asset.url.indexOf('http') != -1) {
-                    asset.saved = true;
+                    if (asset.saved === undefined) asset.saved = true;
                     this.thumbnails.push(asset);
                 }
             }
@@ -372,7 +400,8 @@ export class AssetPicker extends UI {
         if (overlayImages.indexOf(type) != -1) type = 'image';
         this.type = type;
         this.hideAsset();
-        this.checkTypeInitialized(type);
+        this.checkAddButtonsType(type);
+
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let button = assetsType[i].button;
@@ -381,11 +410,11 @@ export class AssetPicker extends UI {
         return this;
     }
 
-    checkTypeInitialized(type: string) {
+    checkAddButtonsType(type: string) {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let asset = assetsType[i];
-            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail);
+            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail, asset.removable);
         }
     }
 
@@ -400,15 +429,15 @@ export class AssetPicker extends UI {
         this.addAssetFunction = callback;
         this.addAssetMode = true;
         this.type = type;
-        this.showPicker();
         this.setAssetList(type);
+        this.showPicker();
     }
 
     waitingAsset: string = null;
     waitingInput: BaseAssetButton;
     addWaitedAssetButton(url: string, thumbnail?: string) {
         if (this.waitingAsset == null) return;
-        this.checkTypeInitialized(this.waitingAsset);
+        this.checkAddButtonsType(this.waitingAsset);
         if (!thumbnail) thumbnail = url;
         let asset = find(this.thumbnails, (o) => { return o.type == this.waitingAsset && o.url == url; });
         if (asset == undefined) {
@@ -421,44 +450,53 @@ export class AssetPicker extends UI {
         this.eraseCurrent();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean, button?:boolean) {
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
-        this.checkTypeInitialized(type);
+        // this.checkAddButtonsType(type);
         let asset = find(this.thumbnails, (a) => { return a.type == type && a.url == url });
         if (!asset) {
             if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
-                let button = this.addButton(type, url, thumbnail, removable);
-                this.thumbnails.push({ type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable, button: button });
+                let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable, button: button };
+                if (this.shown) {
+                    let button = this.addButton(type, url, thumbnail, removable);
+                    newAsset.button = button;
+                }
+                this.thumbnails.push(newAsset);
             }
         }
     }
 
     addAssetMode = false;
     addAssetFunction: Function;
-    addButton(type: string, url: string, image: string, removable?: boolean) {
+    addButton(type: string, url: string, image: string, removable: boolean) {
         let button: HTMLElement;
         if (image.indexOf('http') != -1) {
-            let remove: HTMLElement;
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
-                [
-                    el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
-                    remove = el('div.delete-asset-button.icon-close', {
-                        onclick: (e) => {
-                            e.stopPropagation();
-                            this.deleteAsset(type, url);
-                        },
-                        onmouseover: (e) => {
-                            e.stopPropagation(); // Not working
-                        }
-                    }, [el('span.path1'), el('span.path2'), el('span.path3')])
-                ]
+                el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
             );
-            if (removable === false) unmount(button, remove);
         } else {
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, image);
+            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
+                el('div.asset-text', image),
+                el('div.backicon.icon-' + type,
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
+            ]);
         }
-        mount(this.el, button);
+        
+        if (removable) {
+            let removebutton = el('div.delete-asset-button.icon-close', {
+                onclick: (e) => {
+                    e.stopPropagation();
+                    this.deleteAsset(type, url);
+                },
+                onmouseover: (e) => {
+                    e.stopPropagation(); // Not working
+                }
+            }, [el('span.path1'), el('span.path2'), el('span.path3')])
+            mount(button, removebutton);
+        }
+        mount(this.assetlist, button);
         return button;
     }
 
@@ -489,17 +527,22 @@ export class AssetPicker extends UI {
         this.waitingAsset = null;
     }
 
-    onShow: Function;
+    shown = false;
     showPicker() {
-        this.show();
-        if (this.onShow) this.onShow(this.type);
+        // For click outside
+        // If no timeout, window click is triggered and picker is always hidden
+        setTimeout(() => {
+            this.shown = true;
+            this.show();
+            this.sendToFocusListener();
+        }, 10);
     }
 
-    onHide: Function;
     hidePicker() {
+        this.shown = false;
         this.hide();
         this.currentInput = undefined;
-        if (this.onHide) this.onHide(this.type);
+        this.sendToBlurListener();
     }
 }
 
