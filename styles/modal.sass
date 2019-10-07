@@ -4,13 +4,15 @@
 /***************************************** MODAL ****************************************
 .modal
     position: absolute
-    width: 600px
+    width: 550px
+    padding: 20px
     height: auto
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
-    border-radius: 5px
-    background: $colorlight
+    border-radius: 10px
+    background-color: $colorgrey
+    color: $colorlight
     z-index: 40
 
 .modal-background
@@ -26,38 +28,49 @@
     cursor: auto
 
 .modal-title
-    position: absolute
-    top: 5px
-    font-size: 20px
-    color: $colorlight
+    position: relative
+    top: 0px
+    left: 0px
+    font-size: 25px
+    font-weight: 600
     width: 100%
-    text-align: center
-    height: 15px
+    text-align: left
+    height: 40px
+    &:after
+        content: ""
+        position: absolute
+        top: 100%
+        left: 0px
+        width: 150px
+        height: 3px
+        border-radius: 2px
+        background: $colormain
 
 .modal-title-background
     position: relative
     left: 0px
     top: 0px
-    background-color: $colormain
     width: 100%
     height: 60px
     opacity: 1
     border-radius: 5px 5px 0px 0px
 
 .modal-description
-    position: absolute
-    top: 35px
-    font-size: 16px
-    color: $colorlight
+    position: relative
+    margin-top: 10px
+    font-size: 18px
     width: 100%
-    height: 30px
-    text-align: center
+    height: auto
+    text-align: left
+    line-height: 1.5
 
 .modal-explanation
-    color: $colordarkgrey
-    font-size: 16px
-    margin: 5px 20px
-    padding: 10px
+    font-size: 18px
+    padding-bottom: 10px
+    line-height: 1.5
+
+.modal-content
+    position: relative
 
 .modal-icon
     position: absolute
@@ -67,29 +80,29 @@
     height: 40px
     border: 0px
     z-index: 100
-    color: $colordarkgrey
+    color: $colormain
     float: center
     border-radius: 5px
     font-size: 30px
 
 .modal-icon
     .path1:before
-        color: $colordarkgrey
+        color: $colormain
     .path2:before
-        color: $colordarkgrey
+        color: $colormain
     .path3:before
-        color: $colordarkgrey
+        color: $colormain
 
 .modal-code
     position: relative
     width: auto
     height: auto
-    margin: 20px
     padding: 10px
+    margin-top: 10px
     border-radius: 5px
-    background: $colorgrey
+    background: $colordarkgrey
     color: $colorlight
-    text-align: center
+    text-align: left
     word-wrap: break-word
     cursor: pointer
 
@@ -101,6 +114,7 @@
     left: 0px
     border-radius: 5px
     line-height: 160px
+    text-align: center
     background: rgba($colorsuccess, 0.9)
 
 // .modal-close
@@ -111,6 +125,11 @@
 //     cursor: pointer
 
 .modal-input
-    left: 50%
-    transform: translateX(-50%)
+    left: 0px
     position: relative !important
+
+.modal-button
+    margin: 10px
+    float: right
+    width: auto
+    padding: 3px 20px

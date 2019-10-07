@@ -19,13 +19,12 @@ export class Modal {
 
     constructor(title: string, description?: string) {
         this.control = el('div.modal',
-            this.header = el('div.modal-title-background',
-                [
-                    this.title = el('div.modal-title', title),
-                    this.description = el('div.modal-description', description),
-                ]
-            )
+            [
+                this.title = el('div.modal-title'),
+                this.description = el('div.modal-description', description),
+            ]
         );
+        this.title.innerHTML = title;
         setStyle(this.control, { display: 'none' });
         mount(document.body, this.control);
         this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } },
