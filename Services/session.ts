@@ -15,7 +15,7 @@ export class Session {
     spy: Spy;
 
     subDomain: string;
-    engine: 'Story' | 'Back' | 'Form';
+    engine: 'story' | 'back' | 'form';
     projectid: string;
     designer: string;
     name: string;
@@ -58,7 +58,7 @@ export class Session {
     intercom: boolean;
     sentry: boolean;
 
-    constructor(engine: 'Story' | 'Back' | 'Form', api: Api, spy: Spy, undo?:Undo) {
+    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo?:Undo) {
         this.setEngine(engine);
         this.api = api;
         this.spy = spy;
@@ -134,7 +134,7 @@ export class Session {
         history.pushState({}, null, '/' + this.engine + '/' + this.projectid);
     }
 
-    setEngine(engine: 'Story' | 'Back' | 'Form') {
+    setEngine(engine: 'story' | 'back' | 'form') {
         this.engine = engine;
     }
 
