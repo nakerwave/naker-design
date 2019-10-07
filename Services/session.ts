@@ -45,7 +45,7 @@ export class Session {
         },
         development: {
             apiurl: 'http://localhost:3000/',
-            saving: true,
+            saving: false,
             redirect: true,
             intercom: false,
             sentry: false
@@ -58,7 +58,8 @@ export class Session {
     intercom: boolean;
     sentry: boolean;
 
-    constructor(api: Api, spy: Spy, undo?:Undo) {
+    constructor(engine: 'Story' | 'Back' | 'Form', api: Api, spy: Spy, undo?:Undo) {
+        this.setEngine(engine);
         this.api = api;
         this.spy = spy;
 
@@ -73,7 +74,7 @@ export class Session {
         this.sentry = this.environments[this.subDomain].sentry;
 
         api.setHost(this.apiurl);
-        this.getEngineAndId();
+        this.checkProjectId();
 
         // getSubDomain allows testing on localhost
         window.addEventListener('beforeunload', () => {
@@ -98,14 +99,14 @@ export class Session {
         back: 'NB',
         form: 'NF'
     };
-    getEngineAndId() {
+
+    checkProjectId() {
         let url = window.location.href;
         let urlArray = url.split('/');
         for (let i = 0; i < urlArray.length; i++) {
             let first = urlArray[i];
             let next = urlArray[i + 1];
             if (this.engineList.indexOf(first) != -1) {
-                this.engine = first;
                 this.projectid = next;
             }
         }
@@ -128,9 +129,13 @@ export class Session {
         }
     }
 
-    setProjectId(projectid) {
+    setProjectId(projectid:string) {
         this.projectid = projectid;
         history.pushState({}, null, '/' + this.engine + '/' + this.projectid);
+    }
+
+    setEngine(engine: 'Story' | 'Back' | 'Form') {
+        this.engine = engine;
     }
 
     getProject(callback: Function) {
@@ -143,7 +148,7 @@ export class Session {
             if (cookieParsed && cookieParsed.id) {
                 this.setProjectId(cookieParsed.id);
             }
-        } else if (this.projectid != cookieParsed.id) {
+        } else if (this.engine != cookieParsed.engine || this.projectid != cookieParsed.id) {
             cookieParsed = null;
         }
 
@@ -165,7 +170,7 @@ export class Session {
     }
 
     createNew(callback?: Function) {
-        if (!this.engine) return;
+        if (!this.saving) return;
         this.api.post(this.engine + '/new', {name:'New '+ this.engine}, {}, (data) => {
             if (data.success) {
                 this.setProjectId(data.id);
@@ -273,6 +278,7 @@ export class Session {
         let project: any = {};
         project.json = projectJson;
         project.name = this.name;
+        project.engine = this.engine;
         if (this.projectid) project.id = this.projectid;
         Cookies.set('naker_' + this.engine, JSON.stringify(project), { expires: 7 });
     }
