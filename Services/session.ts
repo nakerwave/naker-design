@@ -60,9 +60,11 @@ export class Session {
 
     constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo?:Undo) {
         this.setEngine(engine);
+        
         this.api = api;
         this.spy = spy;
-
+        this.spy.setEngine(this.spyPrefix[this.engine]);
+        
         let subDomain = api.getSubdomain();
         if (!subDomain) this.subDomain = 'development';
         else this.subDomain = subDomain;
@@ -119,7 +121,6 @@ export class Session {
                 this.setProjectId('');
             }
 
-            this.spy.setEngine(this.spyPrefix[this.engine]);
             if (this.sentry) this.spy.startSentry(this.sentryIds[this.engine]);
 
             var in10Minutes = 1 / (24 * 6);
@@ -148,7 +149,8 @@ export class Session {
             if (cookieParsed && cookieParsed.id) {
                 this.setProjectId(cookieParsed.id);
             }
-        } else if (this.engine != cookieParsed.engine || this.projectid != cookieParsed.id) {
+        // If id in url but do not match with cookie saved, we ignore bad cookie
+        } else if (cookieParsed && (this.engine != cookieParsed.engine || this.projectid != cookieParsed.id)) {
             cookieParsed = null;
         }
 
@@ -156,6 +158,8 @@ export class Session {
         if (this.projectid) {
             this.api.get(this.engine, { id: this.projectid }, (data) => {
                 if (data.success !== false) {
+                    // We don't save engine in database
+                    if (!data.engine) data.engine = this.engine;
                     // Cookie will always have the most recent data
                     if (cookieParsed) callback(cookieParsed);
                     else callback(data);
