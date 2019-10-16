@@ -9,7 +9,6 @@ import remove from 'lodash/remove';
 import filter from 'lodash/filter';
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
-import { assetOptions } from '../Layers/inventory';
 
 export interface asset {
     type: string,
@@ -450,14 +449,14 @@ export class AssetPicker extends UI {
         this.eraseCurrent();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean, button?:boolean) {
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
         // this.checkAddButtonsType(type);
         let asset = find(this.thumbnails, (a) => { return a.type == type && a.url == url });
         if (!asset) {
             if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
-                let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable, button: button };
+                let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
                 if (this.shown) {
                     let button = this.addButton(type, url, thumbnail, removable);
                     newAsset.button = button;

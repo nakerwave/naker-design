@@ -26,9 +26,13 @@ export class InputGroup extends UI {
 
     el: HTMLElement;
     undo: Undo;
-    constructor(parent?: HTMLElement, undo?: Undo) {
+    // Force name in order to be able to have analytics with heap
+    constructor(name:string, parent?: HTMLElement, undo?: Undo) {
         super();
-        this.el = el('div.parameter-group');
+        name = name.toLowerCase().replace(' ', '_');
+        console.log(name);
+        
+        this.el = el('div.parameter-group.' + name + '_block');
         if (parent) mount(parent, this.el);
         if (undo) this.undo = undo;
     }
@@ -219,8 +223,8 @@ export class InputGroupSwitch extends InputGroup {
     title: HTMLElement;
     expand: HTMLElement;
 
-    constructor(title?: string, expandable?: boolean, undo?: Undo) {
-        super(actionPanel, undo);
+    constructor(title: string, expandable?: boolean, undo?: Undo) {
+        super(title, actionPanel, undo);
         if (title) this.addTitle(title);
         if (expandable === false) {
             if (title) {

@@ -18,7 +18,7 @@ export class Button extends Input {
     textnode: textnode;
 
     constructor(parent: HTMLElement, textnode: textnode, className?: string) {
-        super(parent)
+        super(parent, textnode.text)
         if (!className) className = 'input-button button-primary';
         this.textnode = textnode;
         if (textnode.ui == 'text') {
@@ -49,8 +49,9 @@ export class Button extends Input {
 export class ImageButton extends Input {
     image: HTMLElement;
 
-    constructor(parent: HTMLElement, imageurl: string, className?: string) {
-        super(parent)
+    constructor(parent: HTMLElement, label:string, imageurl: string, className?: string) {
+        super(parent, label);
+        this.hideLabel();
         if (!className) className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
         this.el = el('div', { class: className });
         mount(this.parent, this.el);

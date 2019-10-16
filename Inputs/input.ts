@@ -1,7 +1,7 @@
 
 import { elementEvents, UI } from '../Layers/common';
 
-import { el, mount } from 'redom';
+import { el, mount, unmount } from 'redom';
 
 export let defaultwithinput = 108;
 export let defaultleftinput = 204;
@@ -19,13 +19,21 @@ export class Input extends UI {
     el: any;
     inputEvent: inputEvents;
 
-    constructor(container: HTMLElement, label?: string) {
-        super()
-        this.parent = el('div.input-container')
-        if (label) {
-            this.label = el('div.input-label', label);
-            mount(this.parent, this.label);
-        }
+    // Label mandatory to allow Heap analysis
+    constructor(container: HTMLElement, label: string) {
+        super();
+        let inputName = label.toLowerCase().replace(' ', '_');
+        this.parent = el('div.input-container.' + inputName + '_input');
         mount(container, this.parent);
+        this.label = el('div.input-label', label);
+        this.showLabel();
+    }
+
+    hideLabel() {
+        unmount(this.parent, this.label);
+    }
+
+    showLabel() {
+        mount(this.parent, this.label);
     }
 }
