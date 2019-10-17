@@ -19,6 +19,7 @@ export class Button extends Input {
 
     constructor(parent: HTMLElement, textnode: textnode, className?: string) {
         super(parent, textnode.text)
+        this.hideLabel();
         if (!className) className = 'input-button button-primary';
         this.textnode = textnode;
         if (textnode.ui == 'text') {

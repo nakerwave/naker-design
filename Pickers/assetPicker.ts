@@ -162,6 +162,7 @@ export class ImageAssetButton extends BaseAssetButton {
 
     constructor(parent: HTMLElement, label: string, assetoption: asset) {
         super(parent, label, assetoption);
+        this.hideLabel();
         this.el = el('div.input-asset-image', { class: '', onclick: () => { this.focus() } },
             [
                 el('div.image-text-container.image-hover',

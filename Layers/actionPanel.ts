@@ -235,7 +235,7 @@ export class InputGroupSwitch extends InputGroup {
     titleParent: HTMLElement;
     addTitle(title: string) {
         this.titleParent = el('div.parameter-title',
-            this.title = el('div.title-text.swith-title', title),
+            this.title = el('div.title-text.switch-title', title),
             this.expand = el('div.title-expand.icon-expand', { onclick: () => { this.switch() } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             ),

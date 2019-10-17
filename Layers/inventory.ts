@@ -29,8 +29,8 @@ export class Inventory extends InputGroup {
     currentname: string;
     placeholder: string;
 
-    constructor(parent: HTMLElement, assetName: string) {
-        super(parent);
+    constructor(assetName: string, parent: HTMLElement) {
+        super(assetName+' inventory', parent);
         setStyle(this.el, { border: '0px' });
         this.assetName = assetName;
         this.setSaveInputs(this.assetName);
