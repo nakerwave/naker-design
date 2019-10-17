@@ -99,7 +99,6 @@ export class Inventory extends InputGroup {
         for (let i = 0; i < this.assetList.length; i++) {
             if (this.assetList[i].name == name) this.assetList.splice(i, 1);
         }
-        console.log(this.assetList);
     }
 
     getAssetFromName(name: string) {

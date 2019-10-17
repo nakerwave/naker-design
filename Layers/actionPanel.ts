@@ -30,8 +30,6 @@ export class InputGroup extends UI {
     constructor(name:string, parent?: HTMLElement, undo?: Undo) {
         super();
         name = name.toLowerCase().replace(' ', '_');
-        console.log(name);
-        
         this.el = el('div.parameter-group.' + name + '_block');
         if (parent) mount(parent, this.el);
         if (undo) this.undo = undo;

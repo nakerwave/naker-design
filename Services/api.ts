@@ -92,7 +92,7 @@ export class Api {
                 }
                 );
         } else {
-            return console.log('Method must be GET or POST');
+            return console.error('Method must be GET or POST');
         }
     }
 

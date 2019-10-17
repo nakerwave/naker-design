@@ -35,11 +35,11 @@ export class SliderInput extends Input {
         setAttr(this.parent, { class: 'input-container input-container-big' });
         this.el = parent;
         this.defaultValue = slideroption.value;
-        this.min = slideroption.min;
-        this.max = slideroption.max;
         if (slideroption.step) this.step = slideroption.step;
         if (slideroption.curve) this.curve = slideroption.curve;
         let value = this.checkAccuracy(slideroption.value);
+        this.max = slideroption.max;
+        this.min = slideroption.min;
         this.formerValue = value;
         this.createSlider(this.parent, value);
         this.number = el('input.rangenumber.input-parameter', { type: 'number', value: value, min: this.min, max: this.max, step: this.step })
@@ -48,8 +48,11 @@ export class SliderInput extends Input {
     }
 
     createSlider(parent: HTMLElement, value: number) {
+        // Need to recalculate slider min when logarithmic curve
+        let min = this.checkNumberCurve(this.min);
+        let max = this.max;
         this.noUiSlider = noUiSlider.create(parent, {
-            range: { 'min': this.min, 'max': this.max },
+            range: { 'min': min, 'max': max },
             step: this.step,
             start: [value],
             connect: 'lower',
@@ -70,31 +73,28 @@ export class SliderInput extends Input {
         this.formerValue = value;
     }
 
-    checkSliderCurve(value: string | number) {
+    checkSliderCurve(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
-            let newvalue = parseFloat(value);
-            newvalue = Math.pow(newvalue, 2) / this.max;
+            let newvalue = Math.pow(value, 2) / this.max;
             newvalue = this.checkAccuracy(newvalue);
-            return newvalue.toString();
+            return newvalue;
         }
     }
 
-    checkNumberCurve(value: string | number) {
+    checkNumberCurve(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
-            let newvalue = parseFloat(value);
-            newvalue = Math.pow(newvalue * this.max, 1 / 2);
-            return newvalue.toString();
+            return Math.pow(value * this.max, 1 / 2);
         }
     }
 
-    checkMaxMin(value: string) {
-        let newvalue = parseFloat(value);
-        if (this.min) newvalue = Math.max(this.min, newvalue);
-        if (this.max) newvalue = Math.min(this.max, newvalue);
+    checkMaxMin(value: number): number {
+        let newvalue = value;
+        if (this.min) newvalue = Math.max(this.min, value);
+        if (this.max) value = Math.min(this.max, newvalue);
         // Make sure value is not empty which gives a NaN
         if (!newvalue && newvalue !== 0) newvalue = 0;
         // If decimal number, it can be very anoying to change the value we type
@@ -103,7 +103,7 @@ export class SliderInput extends Input {
         else return value;
     }
 
-    checkAccuracy(value) {
+    checkAccuracy(value: number): number {
         let accuracy = 1 / this.step;
         return Math.round(value * accuracy) / accuracy;
     }
@@ -130,7 +130,7 @@ export class SliderInput extends Input {
             this.formerValue = value;
             value = this.checkSliderCurve(value);
             setAttr(this.number, { value: value });
-            funct(parseFloat(value), this);
+            funct(value, this);
         });
         this.number.addEventListener(this.numberInputEvent[event], (evt) => {
             let value = this.checkMaxMin(evt.target.value);
@@ -140,7 +140,7 @@ export class SliderInput extends Input {
             setAttr(this.number, { value: value });
             let slidervalue = this.checkNumberCurve(value);
             this.noUiSlider.set([slidervalue]);
-            funct(parseFloat(value), this);
+            funct(value, this);
         });
         return this;
     }
