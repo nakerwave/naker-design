@@ -1,14 +1,13 @@
 
 import axios from 'axios';
 import Cookies from 'js-cookie';
-// import toastr from 'toastr'
 
 interface postOption {
     body?: any;
     header?: any;
 }
 
-interface token {
+export interface Token {
     access_token?: string;
     refresh_token?: string;
 }
@@ -49,7 +48,7 @@ export class Api {
     }
 
     connected = false;
-    setToken(token: token) {
+    setToken(token: Token) {
         this.connected = true;
         this.access_token = token.access_token;
         this.refresh_token = token.refresh_token;
@@ -57,7 +56,7 @@ export class Api {
         // axios.defaults.headers.common['Authorization'] = token.access_token;
     }
 
-    saveToken(token: token) {
+    saveToken(token: Token) {
         var cookie = { access_token: token.access_token, refresh_token: token.refresh_token };
         Cookies.set('token', JSON.stringify(cookie), { expires: 7 });
     }

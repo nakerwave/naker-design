@@ -27,28 +27,32 @@ export class Session {
             saving: true,
             redirect: true,
             intercom: true,
-            sentry: true
+            sentry: true,
+            admin: false, // Need to be admin to log and enter
         },
         staging: {
             apiurl: 'https://naker-backend-prod.herokuapp.com/',
             saving: true,
             redirect: true,
             intercom: false,
-            sentry: false
+            sentry: false,
+            admin: true,
         },
         test: {
             apiurl: 'https://naker-backend.herokuapp.com/',
             saving: true,
             redirect: false,
             intercom: false,
-            sentry: false
+            sentry: false,
+            admin: true,
         },
         development: {
             apiurl: 'http://localhost:3000/',
             saving: false,
             redirect: true,
             intercom: false,
-            sentry: false
+            sentry: false,
+            admin: false,
         },
     };
 
@@ -57,6 +61,7 @@ export class Session {
     redirect: boolean;
     intercom: boolean;
     sentry: boolean;
+    admin: boolean;
 
     constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo?:Undo) {
         this.setEngine(engine);
@@ -101,6 +106,11 @@ export class Session {
         back: 'NB',
         form: 'NF'
     };
+    engineColor = {
+        story: [0, 153, 255],
+        back: [255, 8, 114],
+        form: [0, 204, 102],
+    };
 
     checkProjectId() {
         let url = window.location.href;
@@ -137,6 +147,21 @@ export class Session {
 
     setEngine(engine: 'story' | 'back' | 'form') {
         this.engine = engine;
+    }
+
+    getUser(callback: Function) {
+        if (this.api.isConnected()) {
+            this.api.get('user', {}, (data) => {
+                if (data.success !== false) {
+                    this.spy.setUser(data);
+                    callback(data);
+                } else {
+                    callback(false);
+                }
+            });
+        } else {
+            callback(false);
+        }
     }
 
     getProject(callback: Function) {
