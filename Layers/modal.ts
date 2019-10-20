@@ -17,8 +17,9 @@ export class Modal {
     description: HTMLElement;
     icon: HTMLElement;
 
-    constructor(title: string, description?: string) {
-        this.control = el('div.modal',
+    constructor(title: string, description?: string, clas?: string) {
+        let modalclass = (clas) ? clas : '';
+        this.control = el('div.modal.' + modalclass,
             [
                 this.title = el('div.modal-title'),
                 this.description = el('div.modal-description', description),

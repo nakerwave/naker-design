@@ -1,0 +1,177 @@
+
+@import '_colors'
+
+.login-modal
+	width: 350px !important
+
+.customGPlusSignIn
+	display: inline-block
+	background: white
+	color: #444
+	width: 100%
+	border-radius: 5px
+	// border: thin solid #888
+	// box-shadow: 1px 1px 1px grey
+	white-space: nowrap
+	cursor: pointer
+	overflow: hidden
+	transition: all ease 200ms
+	&:hover
+		background: #4285f4
+		color: white
+
+	span.label
+		font-family: serif
+		font-weight: normal
+
+	span.icon
+		background: url('https://asset.naker.io/image/main/g-normal.png') transparent 5px 50% no-repeat
+		display: inline-block
+		vertical-align: middle
+		width: 42px
+		height: 42px
+		background-color: white
+
+	span.buttonText
+		display: inline-block
+		vertical-align: middle
+		padding-left: 42px
+		padding-right: 42px
+		font-size: 14px
+		font-weight: bold
+		/* Use the Roboto font that is loaded in the <head> */
+		font-family: 'Roboto', sans-serif
+
+.login-modal-content
+	width: 300px
+	left: 50px
+	margin: 25px
+
+	input
+		transition: all .15s ease
+		-webkit-appearance: none
+		width: 100%
+		border: 0
+		font-family: inherit
+		height: 35px
+		font-size: 15px
+		background: $colorthirdgrey !important
+		border-radius: 0
+		color: $colortext
+		transition: all .15s ease
+		border-radius: 5px
+		padding: 20px 15px
+		font-family: "Raleway"
+		border: 2px solid $colorthirdgrey
+
+		&:not(:placeholder-shown)
+			+ span
+				color: $colortext
+				transform: translateY(-38px) scale(1)
+		&:focus
+			outline: none
+			border: 2px solid $colormain
+			+ span
+				color: $colormain
+
+		&:disabled
+			background: $colorgrey
+
+	.or
+		left: 47%
+
+	::placeholder
+		color: $colortext
+		opacity: 1
+
+	:-ms-input-placeholder
+		color: $colortext
+
+	::-ms-input-placeholder
+		color: $colortext
+
+	.form-group
+		position: relative
+		// padding-top: 15px
+		margin-top: 10px
+
+	.form-with-label
+		padding-top: 15px
+		margin-top: 20px
+
+	label
+		position: absolute
+		top: 0
+		left: 0
+		opacity: 1
+		-webkit-transform: translateY(5px)
+		transform: translateY(5px)
+		color: $colortext
+		font-size: 14px
+		transition: all 0.2s ease-out
+
+	.error-message
+		display: none
+
+	.loader
+		top: 28px
+		right: 440px
+		opacity: 0
+		transition: all ease 200ms
+
+	.button
+		margin: 0px
+		margin-top: 10px
+		width: calc(100% - 20px)
+		padding: 10px
+		font-size: 15px
+
+	a
+		top: 20px
+		left: 121px
+		position: relative
+
+	
+// .btn
+// 	font-family: inherit
+// 	-webkit-appearance: none
+// 	-moz-appearance: none
+// 	background-color: transparent
+// 	border: none
+// 	border-radius: 5px
+// 	height: 40px
+// 	display: flex
+// 	padding: 0 10px
+// 	cursor: pointer
+// 	font-size: 16px
+// 	letter-spacing: -0.00933333em
+// 	font-weight: 600
+// 	display: inline-block
+// 	text-align: center
+
+// .btn-primary
+// 	color: $colortext
+// 	background-color: $colormain
+// 	background-image: linear-gradient( $colormain, rgba(255,255,255,0))
+// 	transition: background-color 0.4s
+// 	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1)
+// 	&:hover
+// 		background-color: $colordarkgrey
+
+// .btn-secondary
+// 	color: $colortext
+// 	border:	2px solid $colortext
+// 	font-size: 15px
+
+// .btn-third
+// 	background: rgba(255, 255, 255, 0.3)
+// 	color: $colortext
+// 	font-size: 15px
+// 	&:hover
+// 		background: rgba(255, 255, 255, 0.5)
+
+// .width80
+// 	width: 80px
+
+// .width100
+// 	width: 100px
