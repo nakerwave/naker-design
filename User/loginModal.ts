@@ -31,8 +31,8 @@ export class LoginModal extends Modal {
         this.userPearl = pearl;
 
         this.addContent();
-            this.loadGoogle();
-        }
+        this.loadGoogle();
+    }
     
     loadGoogle() {
         const script = document.createElement("script");
@@ -40,13 +40,13 @@ export class LoginModal extends Modal {
         script.async = true;
         document.body.appendChild(script);
         script.addEventListener('load', () => {
-        gapi.load('auth2', () => {
-            this.googleAuth = gapi.auth2.init({
-                client_id: '746660630463-71395qasohf6hsv4ns19ac7b3lcri1cm.apps.googleusercontent.com',
-                scope: 'profile email',
-                immediate: false
+            gapi.load('auth2', () => {
+                this.googleAuth = gapi.auth2.init({
+                    client_id: '746660630463-71395qasohf6hsv4ns19ac7b3lcri1cm.apps.googleusercontent.com',
+                    scope: 'profile email',
+                    immediate: false
+                });
             });
-        });
         });
 
     }
@@ -137,7 +137,7 @@ export class LoginModal extends Modal {
                 if (data.success) {
                     this.loginUser(data);
                     if (!data.pearl || (data.pearl && data.pearl.length == 0)) {
-                        this.signupUser(data);
+                        this.session.signupUser(data);
                         this.userPearl.updatePearl();
                         this.userPearl.savePearl(false);
                     }
@@ -150,34 +150,9 @@ export class LoginModal extends Modal {
     }
 
     loginUser(data: User) {
-        if(this.session.admin && !data.admin) return this.showError('You must be an admin to have access');
+        if (this.session.admin && !data.admin) return this.showError('You must be an admin to have access');
         toastr.success('Hey ! So nice to see you ' + data.name + ', Ready to make some magic? 🧙');
         this.hideModal();
-
-        this.api.setToken(data);
-        this.api.saveToken(data);
-        this.spy.setUser(data);
-        this.spy.startIntercom(data);
-        this.spy.track("Platform Login");
-        
-        this.sendConnectToListeners(data);
-    }
-    
-
-    signupUser(data: User) {
-		// this.spy.alias(data.email);
-        this.spy.track("Platform Signup");
-        this.spy.setUser(data);
-    }
-
-    connectListeners: Array<Function> = [];
-    on(event: 'connect', funct: Function) {
-        if (event == 'connect') this.connectListeners.push(funct);
-    }
-
-    sendConnectToListeners(data: User) {
-        for (let i = 0; i < this.connectListeners.length; i++) {
-            this.connectListeners[i](data);
-        }
+        this.session.loginUser(data);
     }
 }

@@ -1,6 +1,6 @@
 
 import { Api } from './api';
-import { Spy } from './spy';
+import { Spy, User } from './spy';
 import { Undo } from './undo';
 
 import toastr from 'toastr';
@@ -81,6 +81,7 @@ export class Session {
         this.sentry = this.environments[this.subDomain].sentry;
 
         api.setHost(this.apiurl);
+        api.onDisconnected = this.sendDisconnectToListeners;
         this.checkProjectId();
 
         // getSubDomain allows testing on localhost
@@ -112,6 +113,62 @@ export class Session {
         form: [0, 204, 102],
     };
 
+    setEngine(engine: 'story' | 'back' | 'form') {
+        this.engine = engine;
+    }
+
+    ///////////////////////// USER /////////////////////////
+    getUser(callback: Function) {
+        if (this.api.isConnected()) {
+            this.api.get('user', {}, (data) => {
+                if (data.success !== false) {
+                    this.spy.setUser(data);
+                    callback(data);
+                } else {
+                    callback(false);
+                }
+            });
+        } else {
+            callback(false);
+        }
+    }
+
+    loginUser(data: User) {
+        this.api.setToken(data);
+        this.api.saveToken(data);
+        this.spy.setUser(data);
+        this.spy.startIntercom(data);
+        this.spy.track("Platform Login");
+
+        this.sendConnectToListeners(data);
+    }
+
+    signupUser(data: User) {
+        // this.spy.alias(data.email);
+        this.spy.track("Platform Signup");
+        this.spy.setUser(data);
+    }
+
+    connectListeners: Array<Function> = [];
+    disconnectListeners: Array<Function> = [];
+    on(event: 'connect'|'disconnect', funct: Function) {
+        if (event == 'connect') this.connectListeners.push(funct);
+        if (event == 'disconnect') this.disconnectListeners.push(funct);
+    }
+
+    sendConnectToListeners(data: User) {
+        for (let i = 0; i < this.connectListeners.length; i++) {
+            this.connectListeners[i](data);
+        }
+    }
+
+    sendDisconnectToListeners() {
+        for (let i = 0; i < this.disconnectListeners.length; i++) {
+            this.disconnectListeners[i]();
+        }
+    }
+
+    ///////////////////////// PROJECT /////////////////////////
     checkProjectId() {
         let url = window.location.href;
         let urlArray = url.split('/');
@@ -143,25 +200,6 @@ export class Session {
     setProjectId(projectid:string) {
         this.projectid = projectid;
         history.pushState({}, null, '/' + this.engine + '/' + this.projectid);
-    }
-
-    setEngine(engine: 'story' | 'back' | 'form') {
-        this.engine = engine;
-    }
-
-    getUser(callback: Function) {
-        if (this.api.isConnected()) {
-            this.api.get('user', {}, (data) => {
-                if (data.success !== false) {
-                    this.spy.setUser(data);
-                    callback(data);
-                } else {
-                    callback(false);
-                }
-            });
-        } else {
-            callback(false);
-        }
     }
 
     getProject(callback: Function) {

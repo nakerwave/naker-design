@@ -30,6 +30,7 @@ export class Header {
         this.setContent()
         this.setEvents();
         this.addLoginModal();
+        this.checkUserAndProject();
 
         session.getUser((user: User) => {
             if (user) this.setUserPearl(user);
@@ -68,6 +69,16 @@ export class Header {
 
         this.undo.addChangeListener(() => {
             this.saveAnimation();
+        });
+
+        this.session.on('connect', (user) => {
+            this.checkUserAndProject();
+            this.setUserPearl(user);
+        });
+
+        this.session.on('disconnect', () => {
+            this.checkUserAndProject();
+            this.userPearl.setIcoSphere();
         });
 
         window.addEventListener('focus', () => {
@@ -128,11 +139,6 @@ export class Header {
     addLoginModal() {
         this.userPearl = new UserPearl(this.logoEl, this.session);
         this.loginModal = new LoginModal(this.session, this.userPearl);
-        this.loginModal.on('connect', (user) => {
-            console.log(user);
-            this.checkUserAndProject();
-            this.setUserPearl(user);
-        });
     }
 
     setUserPearl(data: User) {
