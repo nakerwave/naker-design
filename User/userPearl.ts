@@ -1,5 +1,4 @@
 import { Api } from '../Services/api';
-import { Spy } from '../Services/spy';
 import { Session } from '../Services/session';
 
 import toastr from 'toastr';
@@ -13,13 +12,11 @@ export class UserPearl {
     light: any;
     session: Session;
     api: Api;
-    spy: Spy;
     metallicroughness = 0.4;
 
     constructor(container:HTMLElement, session: Session) {
         this.session = session;
         this.api = session.api;
-        this.spy = session.spy;
 
         const script = document.createElement("script");
         script.src = "https://harbor-test.naker.io/pearl/v1.0.1/viewer.js";
@@ -35,7 +32,7 @@ export class UserPearl {
             this.model = pearl.model;
             this.light = pearl.light;
 
-            let user = this.spy.user;
+            let user = this.session.user;
             if (user && user.pearl != undefined) {
                 if (user.pearl.length != 0) {
                     pearl.model.pattern.mesh._setPositions(user.pearl);
@@ -54,6 +51,7 @@ export class UserPearl {
     }
 
     setIcoSphere() {
+        if (!this.model) return;
         this.model.pattern.mesh._setIcoSphere();
         this.setColor(this.session.engineColor[this.session.engine]);
     }
@@ -77,21 +75,28 @@ export class UserPearl {
         let pearlMesh = this.model.pattern.mesh;
         let newPoints = pearlMesh._getPositions();
         let pearlPoints = JSON.stringify(newPoints);
-        this.pearl._system.takeScreenshot({ width: 200, height: 200 }, (image) => {
+        
+        this.pearl.system.takeScreenshot({ width: 200, height: 200 }, (image) => {
             var fd = new FormData();
             fd.append("image", image);
             fd.append("points", pearlPoints);
+
+            let user = this.session.user;
             const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };
-            this.api.post('user/setpearl', { id: this.spy.user.id, color: this.spy.user.pearlcolor }, { body: fd, header: header }, (data) => {
-                if (!success) return;
-                if (data.success) {
-                    this.spy.user.pearl = newPoints;
-                    this.spy.user.pearlcolor = this.spy.user.pearlcolor;
-                    toastr.success('Good, your pearl has been updated 😍');
-                } else {
-                    toastr.error('Can not update your pearl for now 😕');
+
+            if (!user.pearlcolor || (user.pearlcolor && user.pearlcolor.length == 0)) user.pearlcolor = [0, 72, 255];
+            this.api.post('user/setpearl', { id: user.id, color: user.pearlcolor }, { body: fd, header: header }, (data) => {
+                this.setColor(user.pearlcolor);
+                if (success) {
+                    if (data.success) {
+                        this.session.user.pearl = newPoints;
+                        this.session.user.pearl = user.pearlcolor;
+                        toastr.success('Good, your pearl has been updated 😍');
+                    } else {
+                        toastr.error('Can not update your pearl for now 😕');
+                    }
                 }
-                if (callback) callback(this.spy.user);
+                if (callback) callback(this.session.user);
             });
         });
     }
