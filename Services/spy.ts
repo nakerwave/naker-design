@@ -1,39 +1,20 @@
 import * as Sentry from "@sentry/browser";
 
-import { Token } from './api';
 
 // Code to force typescript allow Intercom function
 declare global {
     interface Window { Intercom: any; }
 }
 
-export interface User extends Token {
-    id: string;
-    admin: boolean;
-    email: string;
-    name: string;
-    pearl: Array<number>;
-    pearlcolor: Array<number>;
-};
-
 export class Spy {
 
     engine: 'NB' | 'NF' | 'NS';
-    user: User;
-
-    setUser(user: User) {
-        this.user = user;
-    }
-
-    setId(id: string) {
-        this.user.id = id;
-    }
 
     setEngine(engine: 'NB' | 'NF' | 'NS') {
         this.engine = engine;
     }
 
-    startIntercom(user: User) {
+    startIntercom(user: any) {
         // We don't load intercom when local
         if (!window.Intercom) return;
         window.Intercom('boot', {

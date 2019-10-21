@@ -4,8 +4,7 @@ import { UserPearl } from '../User/userPearl';
 import { el, setStyle, mount, unmount } from 'redom';
 
 import { Undo } from '../Services/undo';
-import { Session } from '../Services/session';
-import { User } from '../Services/spy';
+import { Session, User } from '../Services/session';
 
 /*
   +------------------------------------------------------------------------+

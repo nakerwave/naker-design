@@ -1,12 +1,23 @@
 
-import { Api } from './api';
-import { Spy, User } from './spy';
+import { Api, Token } from './api';
+import { Spy } from './spy';
 import { Undo } from './undo';
 
 import toastr from 'toastr';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import Cookies from 'js-cookie';
+
+
+export interface User extends Token {
+    id: string;
+    admin: boolean;
+    email: string;
+    name: string;
+    pearl: Array<number>;
+    pearlcolor: Array<number>;
+};
+
 
 export class Session {
 
@@ -118,13 +129,19 @@ export class Session {
     }
 
     ///////////////////////// USER /////////////////////////
+    user: User;
+    setUser(user: User) {
+        this.user = user;
+    }
+
     getUser(callback: Function) {
         if (this.api.isConnected()) {
             this.api.get('user', {}, (data) => {
                 if (data.success !== false) {
-                    this.spy.setUser(data);
+                    this.setUser(data);
                     callback(data);
                 } else {
+                    this.api.disconnect();
                     callback(false);
                 }
             });
@@ -134,9 +151,9 @@ export class Session {
     }
 
     loginUser(data: User) {
+        this.setUser(data);
         this.api.setToken(data);
         this.api.saveToken(data);
-        this.spy.setUser(data);
         this.spy.startIntercom(data);
         this.spy.track("Platform Login");
 
@@ -144,9 +161,9 @@ export class Session {
     }
 
     signupUser(data: User) {
+        this.setUser(data);
         // this.spy.alias(data.email);
         this.spy.track("Platform Signup");
-        this.spy.setUser(data);
     }
 
     connectListeners: Array<Function> = [];
