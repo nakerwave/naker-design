@@ -20,12 +20,14 @@ export class UserPearl {
         this.session = session;
         this.api = session.api;
         this.spy = session.spy;
-        
-        if (document.readyState === 'complete') {
+
+        const script = document.createElement("script");
+        script.src = "https://harbor-test.naker.io/pearl/v1.0.1/viewer.js";
+        script.async = true;
+        document.body.appendChild(script);
+        script.addEventListener('load', () => {
             this.createPearl(container);
-        } else {
-            window.addEventListener("load", () => {this.createPearl(container)});
-        } 
+        });
     }
     
     createPearl(container: HTMLElement) {
@@ -42,14 +44,18 @@ export class UserPearl {
                     this.setColor(pearlColor);
                 }
             } else {
-                pearl.model.pattern.mesh._setIcoSphere();
-                this.setColor(this.session.engineColor[this.session.engine]);
+                this.setIcoSphere();
             }
             pearl.model.pattern.setMaterialProperties({ roughness: this.metallicroughness, metallic: this.metallicroughness });
         });
     
         this.model = this.pearl.model;
         this.light = this.pearl.light;
+    }
+
+    setIcoSphere() {
+        this.model.pattern.mesh._setIcoSphere();
+        this.setColor(this.session.engineColor[this.session.engine]);
     }
     
     setColor(color: Array<number>) {

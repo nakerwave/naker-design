@@ -31,14 +31,15 @@ export class LoginModal extends Modal {
         this.userPearl = pearl;
 
         this.addContent();
-        if (document.readyState === 'complete') {
             this.loadGoogle();
-        } else {
-            window.addEventListener("load", this.loadGoogle);
         }
-    }
     
     loadGoogle() {
+        const script = document.createElement("script");
+        script.src = "https://apis.google.com/js/platform.js";
+        script.async = true;
+        document.body.appendChild(script);
+        script.addEventListener('load', () => {
         gapi.load('auth2', () => {
             this.googleAuth = gapi.auth2.init({
                 client_id: '746660630463-71395qasohf6hsv4ns19ac7b3lcri1cm.apps.googleusercontent.com',
@@ -46,6 +47,8 @@ export class LoginModal extends Modal {
                 immediate: false
             });
         });
+        });
+
     }
 
     addContent() {
