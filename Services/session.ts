@@ -13,6 +13,7 @@ export class Session {
     saveBeforeUnload = false;
     api: Api;
     spy: Spy;
+    undo: Undo;
 
     subDomain: string;
     engine: 'story' | 'back' | 'form';
@@ -63,11 +64,12 @@ export class Session {
     sentry: boolean;
     admin: boolean;
 
-    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo?:Undo) {
+    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo) {
         this.setEngine(engine);
         
         this.api = api;
         this.spy = spy;
+        this.undo = undo;
         this.spy.setEngine(this.spyPrefix[this.engine]);
         
         let subDomain = api.getSubdomain();
@@ -81,7 +83,7 @@ export class Session {
         this.sentry = this.environments[this.subDomain].sentry;
 
         api.setHost(this.apiurl);
-        api.onDisconnected = this.sendDisconnectToListeners;
+        api.onDisconnected = () => {this.sendDisconnectToListeners();};
         this.checkProjectId();
 
         // getSubDomain allows testing on localhost
@@ -89,11 +91,9 @@ export class Session {
             if (this.saveBeforeUnload) this.save();
         });
 
-        if (undo) {
-            undo.addSaveListener(() => {
-                this.saveLocal();
-            });
-        }
+        this.undo.addSaveListener(() => {
+            this.saveLocal();
+        });
     }
 
     engineList = ['back', 'form', 'story'];
@@ -224,16 +224,25 @@ export class Session {
                     // We don't save engine in database
                     if (!data.engine) data.engine = this.engine;
                     // Cookie will always have the most recent data
-                    if (cookieParsed) callback(cookieParsed);
-                    else callback(data);
+                    if (cookieParsed) this.projectFound(callback, cookieParsed);
+                    else this.projectFound(callback, data);
                 } else {
                     this.setProjectId('');
-                    callback(cookieParsed);
+                    if (cookieParsed) this.projectFound(callback, cookieParsed);
+                    else this.projectFound(callback, false);
                 }
             });
         } else {
-            callback(cookieParsed);
+            this.projectFound(callback, cookieParsed);
         }
+    }
+
+    projectFound(callback: Function, project: any) {
+        callback(project);
+        // Start auto save after get project to make sure we don't save empty project
+        this.startAutoSave(() => {
+            return this.undo.getProjectJson();
+        }, 30, 5);
     }
 
     createNew(callback?: Function) {
