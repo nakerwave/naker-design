@@ -35,10 +35,6 @@ export class Header {
             if (user) this.setUserPearl(user);
             this.checkUserAndProject();
         });
-
-        window.addEventListener('focus', () => {
-            this.checkUserAndProject();
-        });
     }
 
     setLogo(nakerImg: string) {
@@ -72,17 +68,15 @@ export class Header {
 
         this.session.on('connect', (user) => {
             this.checkUserAndProject();
-            this.setUserPearl(user);
         });
 
         this.session.on('disconnect', () => {
             this.checkUserAndProject();
-            this.userPearl.setIcoSphere();
         });
 
         window.addEventListener('focus', () => {
-            this.checkUserAndProject();
             this.loginModal.hideModal();
+            this.checkUserAndProject();
         });
     }
 
@@ -91,10 +85,13 @@ export class Header {
             mount(this.control, this.projectsave);
             unmount(this.control, this.loaderEl);
             unmount(this.control, this.projectname);
+            this.userPearl.setIcoSphere();
         } else {
             unmount(this.control, this.projectsave);
             mount(this.control, this.loaderEl);
             mount(this.control, this.projectname);
+            
+            if (this.session.user) this.setUserPearl(this.session.user);
             
             // We automatically create new project if user is connected
             if (!this.session.isProjectSaved()) {

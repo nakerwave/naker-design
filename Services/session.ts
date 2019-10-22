@@ -83,6 +83,7 @@ export class Session {
         this.undo = undo;
         this.spy.setEngine(this.spyPrefix[this.engine]);
         
+        // getSubDomain allows testing on localhost
         let subDomain = api.getSubdomain();
         if (!subDomain) this.subDomain = 'development';
         else this.subDomain = subDomain;
@@ -94,10 +95,13 @@ export class Session {
         this.sentry = this.environments[this.subDomain].sentry;
 
         api.setHost(this.apiurl);
-        api.onDisconnected = () => {this.sendDisconnectToListeners();};
+        api.onDisconnected = () => {
+            this.setProjectId('');
+            this.saving = false;
+            this.sendDisconnectToListeners();
+        };
         this.checkProjectId();
 
-        // getSubDomain allows testing on localhost
         window.addEventListener('beforeunload', () => {
             if (this.saveBeforeUnload) this.save();
         });
