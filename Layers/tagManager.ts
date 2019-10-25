@@ -1,5 +1,5 @@
 
-import { actionPanel } from './actionPanel';
+import { actionPanel } from './panels';
 import { Button } from '../Inputs/button';
 import { TextInput } from '../Inputs/text';
 import { Undo } from '../Services/undo';

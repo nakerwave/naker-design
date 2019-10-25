@@ -1,3 +1,4 @@
+import { selectionPanel } from './panels';
 
 import { el, mount, setChildren, setAttr } from 'redom';
 import Sortable from 'sortablejs';
@@ -160,10 +161,3 @@ export class SortableGroup {
     }
 
 }
-
-/*
-  +------------------------------------------------------------------------+
-  | PARENT SORTABLE MANAGER                                                |
-  +------------------------------------------------------------------------+
-*/
-export let selectionPanel = el('div.layer-left.presets-container.editor-scroll');

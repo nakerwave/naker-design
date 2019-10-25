@@ -13,6 +13,7 @@ import { AssetButton, ImageAssetButton, TextAssetButton } from '../Pickers/asset
 import { ColorAssetInput } from '../Pickers/colorassetInput';
 import { asset } from '../Pickers/assetPicker';
 import { UI } from './common';
+import { actionPanel } from './panels';
 
 import { el, mount, unmount, setStyle, setAttr } from 'redom';
 
@@ -270,11 +271,3 @@ export class InputGroupSwitch extends InputGroup {
         }
     }
 }
-
-/*
-  +------------------------------------------------------------------------+
-  | PARENT INPUT MANAGER                                                   |
-  +------------------------------------------------------------------------+
-*/
-
-export let actionPanel = el('div.layer-right.parameter-container.editor-scroll');
