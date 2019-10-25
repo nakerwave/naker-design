@@ -1,10 +1,18 @@
 
 import { Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
+import { actionPanel } from '../Layers/panels';
 
 import { el, mount, setAttr, setStyle } from 'redom';
-import * as AColorPicker from 'a-color-picker';
 import clone from 'lodash/clone';
+
+
+// import '@simonwep/pickr/dist/themes/classic.min.css';   // 'classic' theme
+// import '@simonwep/pickr/dist/themes/monolith.min.css';  // 'monolith' theme
+// import '@simonwep/pickr/dist/themes/nano.min.css';      // 'nano' theme
+
+// Modern or es5 bundle
+import Pickr from '@simonwep/pickr';
 
 /*
   +------------------------------------------------------------------------+
@@ -116,69 +124,112 @@ export class ColorPicker extends UI {
     title: HTMLElement;
     picker: any;
     opacityPicker: HTMLElement;
+    chooserPicker: HTMLElement;
 
     constructor() {
         super();
-        this.el = el('div', { id: 'colorpicker', class: 'picker color-picker' },
-            [
-                el('div.picker-title',
-                    this.title = el('div.picker-title-text')
-                ),
-                el('div.a-color-picker-palette-background')
-            ]
-        );
 
-        mount(document.body, this.el);
-        this.picker = AColorPicker.createPicker({
-            attachTo: '#colorpicker',
-            color: 'green',
-            showHSL: false,
-            showAlpha: true,
-            paletteEditable: true,
-            // palette: palette,
+        this.el = el('div', { id: 'colorpicker', class: 'color-picker' },
+            el('div.color-picker-background')
+        );
+        mount(actionPanel, this.el);
+        let fakeEl = el('div', { id: 'fakeEl', style:{ display: 'none' } });
+        mount(document.body, fakeEl);
+
+        this.picker = Pickr.create({
+            el: '#fakeEl',
+            container: '#colorpicker',
+            theme: 'nano', // or 'monolith', or 'nano'
+            autoReposition: false,
+            defaultRepresentation: 'HEX',
+            swatches: [],
+
+            components: {
+
+                // Main components
+                preview: true,
+                opacity: true,
+                hue: true,
+
+                // Input / output Options
+                interaction: {
+                    // hex: true,
+                    // rgba: true,
+                    // hsla: true,
+                    // hsva: true,
+                    // cmyk: true,
+                    input: true,
+                    // clear: true,
+                    save: true
+                }
+            }
         });
-        
-        this.opacityPicker = document.querySelector('.a-color-picker-alpha');
+
+        let pickerInputs = document.querySelector('.pcr-interaction');
+        setAttr(pickerInputs, { class:'pcr-interaction-naker'});
+        this.opacityPicker = document.querySelector('.pcr-color-opacity');
+        this.chooserPicker = document.querySelector('.pcr-color-chooser');
+
         this.setEvent();
         this.setBack();
         this.hide();
+
+        setTimeout(() => {
+            this.getPalette();
+        }, 4000)
     }
 
     setPalette (palette?: Array<string>) {
-        this.picker.palette = palette;
+        for (let i = 0; i < palette.length; i++) {
+            const rgba = palette[i];
+            this.picker.addSwatch(this.getRgbaString(rgba));
+        }
+    }
+
+    getRgbaString(rgba:Array<number>) {
+        if (rgba[3] == undefined) rgba[3] = 1;
+        return 'rgba(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')';
     }
 
     getPalette () {
         let palette = [];
-        let pickerPal = this.picker.palette;
-        for (let i = 0; i < pickerPal.length; i++) {
-            const color = pickerPal[i];
-            let ar = AColorPicker.parseColor(color);
-            palette.push(ar);
+        let swatches = this.picker._swatchColors;
+        for (const key in swatches) {
+            const color = swatches[key].color.toRGBA();
+            let savedColor = color.slice(0, 4);
+            palette.push(savedColor);
         }
         return palette;
     }
 
     setBack() {
-        this.back = el('div.modal-background', { onclick: () => { this.hidePicker(); } });
-        setStyle(this.back, { cursor: 'auto', 'z-index': 199 });
-        mount(document.body, this.back);
+        this.back = el('div.color-picker-background-opacity', { onclick: () => { this.picker.hide(); } });
+        setStyle(this.back, { cursor: 'auto', 'z-index': 199, display: 'none' });
+        mount(actionPanel, this.back);
     }
 
-    visible = false;
-    hidePicker() {
-        if (!this.visible) return;
-        this.visible = false;
+    hideBack() {
         setStyle(this.back, { display: 'none' });
-        this.hide();
-        this.currentInput.blurEvent(this.picker);
-        this.currentInput = undefined;
+        setStyle(this.el, { display: 'none' });
+    }
+
+    showBack() {
+        setStyle(this.back, { display: 'block' });
+        setStyle(this.el, { display: 'block' });
     }
 
     setEvent() {
-        this.picker.onchange = (picker) => {
-            if (this.currentInput) this.currentInput.setValue(picker.rgba, true);
-        };
+        this.picker.on('hide', instance => {
+            this.currentInput.blurEvent(this.picker);
+            this.currentInput = undefined;
+            this.hideBack();
+        }).on('change', (color, instance) => {
+            if (this.currentInput) this.currentInput.setValue(color.toRGBA(), true);
+        }).on('save', (color, instance) => {
+            if (this.currentInput) this.picker.addSwatch(color.toRGBA().toString());
+        }).on('clear', (color, instance) => {
+            if (this.currentInput) this.currentInput.setValue(undefined, true);
+        });;
 
         window.addEventListener("resize", () => {
             if (this.currentInput) this.setPickerPosition();
@@ -187,26 +238,46 @@ export class ColorPicker extends UI {
 
     currentInput: ColorButton = null;
     setCurrentInput(input: ColorButton) {
-        this.visible = true;
         if (input.rgba == undefined) input.rgba = [0, 0, 0, 1];
         let rgba = clone(input.rgba);
         if (!input.opacity) rgba[3] = 1;
-        this.picker.rgba = rgba;
+
+        this.picker.setColor(this.rgbToHex(rgba));
         this.currentInput = input;
         this.setPickerPosition();
-        if (input.label) this.title.textContent = input.label.textContent;
-        else this.title.textContent = 'Color';
-        setStyle(this.back, { display: 'block' });
-        if (input.opacity) setStyle(this.opacityPicker, { display: 'block' });
-        else setStyle(this.opacityPicker, { display: 'none' });
+        // if (input.label) this.title.textContent = input.label.textContent;
+        // else this.title.textContent = 'Color';
+        this.checkOpacity(input.opacity)
+        this.picker.show();
         this.show();
+
+        this.showBack();
+    }
+
+    checkOpacity(opacity: boolean) {
+        if (opacity) {
+            setStyle(this.opacityPicker, { display: 'flex' });
+            setStyle(this.chooserPicker, { top: '0px' });
+        } else {
+            setStyle(this.opacityPicker, { display: 'none' });
+            setStyle(this.chooserPicker, { top: '12px' });
+        }
+    }
+
+    componentToHex(c: number) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    rgbToHex(rgb: Array<number>): string {
+        return "#" + this.componentToHex(rgb[0]) + this.componentToHex(rgb[1]) + this.componentToHex(rgb[2]);
     }
 
     setPickerPosition() {
         let pos = this.currentInput.el.getBoundingClientRect();
-        let y = Math.min(pos.top - 80, window.innerHeight - 230);
-        y = Math.max(y, 0);
-        setStyle(this.el, { left: pos.left - 285 + 'px', top: y + 'px' });
+        let y = Math.min(pos.top - 42, window.innerHeight - 230);
+        y = Math.round(Math.max(y, 0));
+        setStyle(this.el, { top: y + 'px' });
     }
 }
 

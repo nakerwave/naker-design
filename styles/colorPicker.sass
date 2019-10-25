@@ -1,5 +1,6 @@
 
 @import '_colors'
+@import '../node_modules/@simonwep/pickr/src/scss/themes/nano.scss'
 
 /***************************************** PICKERS ****************************************
 
@@ -50,82 +51,70 @@
 
 /***************************************** COLOR BUTTON ****************************************
 
-.color-picker
-    box-shadow: 0px 0px 10px 2px $colordarkgrey
-    position: absolute
-    width: 350px
-    height: 270px
-    display: inline-block
-
-.a-color-picker
-    position: absolute
-    top: 20px
-    width: 245px !important
-    margin: 0px
-    padding: 4px !important
-    background-color: #FFFFFF !important
-    box-shadow: none !important
-    border-radius: 0px 0px 0px 3px !important
-    height: calc(100% - 20px)
-    input
-        width: 35px
-        position: relative !important
-
-.a-color-picker-row
-    padding: 2px !important
-    border-top: none !important
-
-.a-color-picker-transparent
-    background-size: auto !important
-    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
-
-.a-color-picker-alpha
-    background-size: auto !important
-    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
-
-.a-color-picker-palette-background
-    position: absolute
-    right: 0px
-    top: 20px
-    width: 105px
-    height: calc(100% - 20px)
-    background: $colortext
-    border-radius: 0px 0px 5px 0px
-
-.a-color-picker-palette
-    position: absolute
-    left: 245px
-    width: 100px !important
-    top: 0px
-
-.a-color-picker-palette-color
-    width: 25px !important
-    height: 25px !important
-    line-height: 25px !important
-    flex: 0 1 25px !important
-    font-size: 22px !important
-    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==)
-    &::after
-        content: ""
-        height: 100%
-        width: 100%
-        background-size: auto
-        display: block
-        background-color: inherit
-        border-radius: $defaultborderradius
-
-.a-color-picker-palette-add
-    background-image: none
-
-.a-color-picker-hsl>label, .a-color-picker-rgb>label, .a-color-picker-single-input>label
-    color: $colorgrey !important
-    font-family: 'Raleway'
-    font-weight: 600
-
 .color-background
     width: 100%
     height: 100%
 
+.color-picker-background-opacity
+    position: absolute
+    top: 0px
+    right: 0px
+    height: 100%
+    width: 100%
+    background-color: rgba($colordarkgrey, 0.8)
+
 .color-default-background
     background-size: auto !important
-    background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
+    background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0…0ZM0,1H1V2H0V1Z"/><path fill="gray" d="M0,0H1V1H0V0ZM1,1H2V2H1V1Z"/></svg>')
+    // background-image: url(data:image/png;base64,R0lGODdhCgAKAPAAAOXl5f///ywAAAAACgAKAEACEIQdqXt9GxyETrI279OIgwIAOw==) !important
+
+.color-picker
+    position: absolute
+    height: auto
+    width: 100%
+    display: inline-block
+    left: 0px
+
+    .color-picker-background
+        // box-shadow: 0px 0px 10px 2px $colortext
+        position: absolute
+        width: 100%
+        height: 100%
+        z-index: 1000
+        background-color: $colorgrey
+        border-radius: 5px
+
+
+    .pcr-app
+        position: relative !important
+        margin: 12px 9px !important
+        top: 0px !important
+        left: 0px !important
+        width: calc(100% - 20px) !important
+        background-color: $colorgrey !important
+        box-shadow: none !important
+
+        input[type='text']
+            position: relative !important
+            box-shadow: none !important
+            width: 145px
+
+        input[type='button']
+            background: $colormain !important
+            color: $colortext !important
+            padding: 5px 10px
+            border-radius: 2px
+            cursor: pointer  
+            margin-left: 2px
+            box-shadow: none !important
+
+        .pcr-interaction-naker
+            margin: 5px 10px
+
+        .pcr-current-color
+            border: 1px solid $colorgrey !important
+
+        .pcr-swatches 
+            button
+                border: 1px solid $colorgrey !important
+                box-shadow: none !important

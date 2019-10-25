@@ -451,6 +451,7 @@ export class AssetPicker extends UI {
     }
 
     addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
+        if (!url) return console.error('Missing asset '+type+' url');
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
         // this.checkAddButtonsType(type);
