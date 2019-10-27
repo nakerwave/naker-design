@@ -385,7 +385,7 @@ export class Session {
     saveOnline(json: any, callback: Function) {
         if (!this.engine) return;
         this.api.post(this.engine + '/save', { id: this.projectid, }, { body: json }, (data) => {
-            if (data.success) console.log('project saved online successfully');
+            if (data.success) console.log('project successfully saved online');
             this.saved = data.success;
             callback(data.success);
             if (data.success) this.failednumber = 0;

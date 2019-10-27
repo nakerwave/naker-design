@@ -5,6 +5,7 @@ import { actionPanel } from '../Layers/panels';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import clone from 'lodash/clone';
+import isEqual from 'lodash/isEqual';
 
 
 // import '@simonwep/pickr/dist/themes/classic.min.css';   // 'classic' theme
@@ -160,15 +161,15 @@ export class ColorPicker extends UI {
                     // cmyk: true,
                     input: true,
                     // clear: true,
-                    save: true
+                    // cancel: true,
+                    // save: true
                 }
-            }
+            },
         });
 
-        let pickerInputs = document.querySelector('.pcr-interaction');
-        setAttr(pickerInputs, { class:'pcr-interaction-naker'});
         this.opacityPicker = document.querySelector('.pcr-color-opacity');
         this.chooserPicker = document.querySelector('.pcr-color-chooser');
+        this.addPickerActions();
 
         this.setEvent();
         this.setBack();
@@ -179,11 +180,58 @@ export class ColorPicker extends UI {
         }, 4000)
     }
 
+    addPickerActions() {
+        let swatches = document.querySelector('.pcr-swatches');
+        let addSwatchButon = el('div.add-in-palette.icon-add', {
+            type: 'button',
+            onclick: () => { this.addNewInPicker(); }
+        },
+            [el('span.path1'), el('span.path2'), el('span.path3')]
+        );
+        mount(swatches, addSwatchButon);
+
+        let pickerInputs = document.querySelector('.pcr-interaction');
+        setAttr(pickerInputs, { class: 'pcr-interaction-naker' });
+
+        let leaveButton = el('div.button.valid-button', {
+            onclick: () => { this.picker.hide(); }
+        }, 'Valid');
+        mount(pickerInputs, leaveButton);
+    }
+
     setPalette (palette?: Array<string>) {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
-            this.picker.addSwatch(this.getRgbaString(rgba));
+            let test = this.isAlreadyInPalette(rgba);
+            if (!test) this.picker.addSwatch(this.getRgbaString(rgba));
         }
+    }
+
+    addNewInPicker() {
+        let newColor = this.picker.getColor().toRGBA();
+        let test = this.isAlreadyInPalette(newColor);
+        if (!test) this.picker.addSwatch(newColor.toString());
+    }
+
+    isAlreadyInPalette(color: Array<number>) {
+        let newColorArr = color.slice(0, 4);
+        let swatches = this.picker._swatchColors;
+        for (const key in swatches) {
+            const rgba = swatches[key].color.toRGBA();
+            let savedColorArr = rgba.slice(0, 4);
+            if (this.isEqualColor(newColorArr, savedColorArr)) return true;
+        }
+        return false;
+    }
+
+    isEqualColor(color1: Array<number>, color2: Array<number>) {
+        let test = true;
+        for (let i = 0; i < color1.length; i++) {
+            const i1 = Math.round(color1[i] * 100) / 100;
+            const i2 = Math.round(color2[i] * 100) / 100;
+            if (i1 != i2) return test = false;
+        }
+        return test;
     }
 
     getRgbaString(rgba:Array<number>) {
