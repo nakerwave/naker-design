@@ -12,9 +12,9 @@
     -ms-word-wrap: break-word
     word-wrap: break-word
     a, label
-        color: $colorgrey
+        color: $colortext
     a:hover
-        color: #CCCCCC
+        color: #colortext
         text-decoration: none
 
 .toast-close-button
@@ -24,15 +24,15 @@
     float: right
     font-size: 20px
     font-weight: bold
-    color: $colorgrey
-    -webkit-text-shadow: 0 1px 0 #ffffff
-    text-shadow: 0 1px 0 #ffffff
+    color: $colortext
+    -webkit-text-shadow: 0 1px 0 $colortext
+    text-shadow: 0 1px 0 $colortext
     opacity: 0.8
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80)
     filter: alpha(opacity = 80)
     line-height: 1
     &:hover, &:focus
-        color: #000000
+        color: #colortext
         text-decoration: none
         cursor: pointer
         opacity: 0.4
@@ -116,7 +116,7 @@ button.toast-close-button
             -moz-box-shadow: 0 0 12px $colorsecondgrey
             -webkit-box-shadow: 0 0 12px $colorsecondgrey
             box-shadow: 0 0 12px $colorsecondgrey
-            color: $colorgrey
+            color: $colortext
             opacity: 1
             -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80)
             filter: alpha(opacity = 80)

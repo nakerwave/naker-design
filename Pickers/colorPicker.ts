@@ -5,7 +5,6 @@ import { actionPanel } from '../Layers/panels';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import clone from 'lodash/clone';
-import isEqual from 'lodash/isEqual';
 
 
 // import '@simonwep/pickr/dist/themes/classic.min.css';   // 'classic' theme
@@ -175,9 +174,6 @@ export class ColorPicker extends UI {
         this.setBack();
         this.hide();
 
-        setTimeout(() => {
-            this.getPalette();
-        }, 4000)
     }
 
     addPickerActions() {
@@ -195,7 +191,7 @@ export class ColorPicker extends UI {
 
         let leaveButton = el('div.button.valid-button', {
             onclick: () => { this.picker.hide(); }
-        }, 'Valid');
+        }, 'Confirm');
         mount(pickerInputs, leaveButton);
     }
 

@@ -300,6 +300,23 @@ export class AssetPicker extends UI {
                 if (this.shown) this.hidePicker();
             }
         });
+
+
+        this.el.addEventListener('dragover', () => {
+            this.sendToDragListener('start')
+        });
+
+        this.el.addEventListener('dragenter', () => {
+            this.sendToDragListener('start')
+        });
+
+        this.el.addEventListener('dragleave', () => {
+            this.sendToDragListener('end')
+        });
+
+        this.el.addEventListener('dragend', () => {
+            this.sendToDragListener('end')
+        });
     }
     
     setParent(parent: HTMLElement) {
@@ -328,9 +345,11 @@ export class AssetPicker extends UI {
 
     focusListeners: Array<Function> = [];
     blurListeners: Array<Function> = [];
-    on(event:'focus'|'blur', listener: Function) {
+    dragListeners: Array<Function> = [];
+    on(event:'focus'|'blur'|'drag', listener: Function) {
         if (event == 'focus') this.focusListeners.push(listener);
         if (event == 'blur') this.blurListeners.push(listener);
+        if (event == 'drag') this.dragListeners.push(listener);
         return this;
     }
 
@@ -343,6 +362,12 @@ export class AssetPicker extends UI {
     sendToBlurListener() {
         for (let i = 0; i < this.blurListeners.length; i++) {
             this.blurListeners[i](this.type);
+        }
+    }
+
+    sendToDragListener(event:'start'|'end') {
+        for (let i = 0; i < this.dragListeners.length; i++) {
+            this.dragListeners[i](this.type, event);
         }
     }
 
@@ -503,7 +528,7 @@ export class AssetPicker extends UI {
 
     selectAsset(url: string) {
         if (this.addAssetMode) this.addAssetFunction(url);
-        else this.currentInput.setValue(url, true);
+        else if (this.currentInput) this.currentInput.setValue(url, true);
         this.eraseCurrent();
     }
 
