@@ -499,7 +499,8 @@ export class AssetPicker extends UI {
         let button: HTMLElement;
         if (image.indexOf('http') != -1) {
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
-                el('img', { src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
+                // Draggable set to false or it can show drag zone
+                el('img', { draggable: false, src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
             );
         } else {
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [

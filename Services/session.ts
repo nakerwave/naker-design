@@ -239,7 +239,7 @@ export class Session {
         }
 
         // We make sure project exist in the base
-        if (this.projectid) {
+        if (this.projectid && this.saving) {
             this.api.get(this.engine, { id: this.projectid }, (data) => {
                 if (data.success !== false) {
                     // We don't save engine in database

@@ -6,13 +6,16 @@ import { actionPanel } from '../Layers/panels';
 import { el, mount, setAttr, setStyle } from 'redom';
 import clone from 'lodash/clone';
 
-
 // import '@simonwep/pickr/dist/themes/classic.min.css';   // 'classic' theme
 // import '@simonwep/pickr/dist/themes/monolith.min.css';  // 'monolith' theme
 // import '@simonwep/pickr/dist/themes/nano.min.css';      // 'nano' theme
 
 // Modern or es5 bundle
 import Pickr from '@simonwep/pickr';
+// import { parseToHSVA } from '@simonwep/pickr/src/js/utils/color';
+// import { HSVaColor } from '@simonwep/pickr/src/js/utils/hsvacolor';
+// let test = parseToHSVA([1, 1, 1, 1]);
+// console.log(test);
 
 /*
   +------------------------------------------------------------------------+
@@ -40,8 +43,11 @@ export class ColorButton extends Input {
         this.opacity = coloroption.opacity;
         this.el = el('div.input-parameter',
             [
-                this.colorbutton = el('div.picker-button.color-default-background', { onclick: () => { this.focus() } },
-                    this.colorel = el('div.color-background')
+                this.colorbutton = el('div.picker-button', { onclick: () => { this.focus() } },
+                    [
+                        this.colorel = el('div.color-background'),
+                        el('div.color-default-background')
+                    ]
                 ),
                 this.coloricon = el('div.icon-color.erase-icon', { onclick: () => { this.checkErase() }, onmouseenter: () => { this.mouseEnter() }, onmouseleave: () => { this.mouseLeave() } },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -268,7 +274,8 @@ export class ColorPicker extends UI {
             this.currentInput = undefined;
             this.hideBack();
         }).on('change', (color, instance) => {
-            if (this.currentInput) this.currentInput.setValue(color.toRGBA(), true);
+            let colorAccurate = this.getAccuracy(color.toRGBA());
+            if (this.currentInput) this.currentInput.setValue(colorAccurate, true);
         }).on('save', (color, instance) => {
             if (this.currentInput) this.picker.addSwatch(color.toRGBA().toString());
         }).on('clear', (color, instance) => {
@@ -280,22 +287,36 @@ export class ColorPicker extends UI {
         });
     }
 
+    getAccuracy(color: Array<number>) {
+        let colorAccurate = [];
+        for (let i = 0; i < 3; i++) {
+            colorAccurate[i] = Math.round(color[i]);
+        }
+        colorAccurate[3] = Math.round(color[3] * 100) / 100;
+        return colorAccurate;
+    }
+
     currentInput: ColorButton = null;
     setCurrentInput(input: ColorButton) {
         if (input.rgba == undefined) input.rgba = [0, 0, 0, 1];
         let rgba = clone(input.rgba);
         if (!input.opacity) rgba[3] = 1;
-
-        this.picker.setColor(this.rgbToHex(rgba));
-        this.currentInput = input;
-        this.setPickerPosition();
+        
         // if (input.label) this.title.textContent = input.label.textContent;
         // else this.title.textContent = 'Color';
-        this.checkOpacity(input.opacity)
+        this.checkOpacity(input.opacity);
         this.picker.show();
+        let rbaInteger = this.getAccuracy(rgba);
+        setTimeout(() => {
+            let newColor = this.rgbToHex(rbaInteger);
+            this.picker.setColor(newColor);
+            // Keep currentInput setting after setColor or it will save it in swatches
+            this.currentInput = input;
+            this.setPickerPosition();
+        }, 1);
         this.show();
-
         this.showBack();
+        
     }
 
     checkOpacity(opacity: boolean) {
@@ -314,7 +335,11 @@ export class ColorPicker extends UI {
     }
 
     rgbToHex(rgb: Array<number>): string {
-        return "#" + this.componentToHex(rgb[0]) + this.componentToHex(rgb[1]) + this.componentToHex(rgb[2]);
+        return "#" + 
+        this.componentToHex(rgb[0]) + 
+        this.componentToHex(rgb[1]) + 
+        this.componentToHex(rgb[2]) + 
+        this.componentToHex(Math.round(rgb[3] * 255));
     }
 
     setPickerPosition() {
