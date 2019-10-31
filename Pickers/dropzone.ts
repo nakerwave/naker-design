@@ -2,6 +2,8 @@
 import toastr from 'toastr';
 import Dropzone from 'dropzone';
 import { el, setStyle, setAttr, mount } from 'redom';
+import ProgressBar from 'progressbar.js';
+
 import { assetPicker } from './assetPicker';
 
 export let dropzoneList: any = {};
@@ -58,15 +60,52 @@ export class NakerDropzone {
 
         this.addDropZone(type, formats, maxWeight);
         dropzoneList[type] = this;
+
+        this.setinPicker();
+        this.addTitle();
     }
     
     addTitle() {
-        let title1 = el('div.upload_title.upload_title1', 'Upload new ' + this.type);
-        mount(this.dropzoneEl, title1);
+        let title = el('div.upload_title.upload_title', 'Upload new ' + this.type);
+        mount(this.dropzoneEl, title);
+    }
+
+    loadingBar: ProgressBar;
+    loadingBarEl: HTMLElement;
+    addProgressBar(container: HTMLElement, color: string) {
+        this.loadingBarEl = el('div.asset-loading-bar', {style: { display: 'none'}})
+        this.loadingBar = new ProgressBar.Line(this.loadingBarEl, {
+            strokeWidth: 20,
+            easing: 'easeInOut',
+            duration: 200,
+            trailColor: '.asset-loading-bar',
+            color: color,
+            svgStyle: { width: '100%', height: '100%' },
+            // from: { color: color },
+            // to: { color: colormain },
+            // step: (state, bar) => {
+            //     bar.path.setAttribute('stroke', state.color);
+            // }
+        });
+        mount(container, this.loadingBarEl);
     }
     
-    setBesidePicker() {
-        this.addTitle();
+    showProgress() {
+        if ( !this.loadingBar ) return;
+        this.loadingBar.set(0);
+        setStyle(this.loadingBarEl, { display: 'block' });
+        this.loadingBar.animate(0.1);
+    }
+
+    hideProgress() {
+        if ( !this.loadingBar ) return;
+        this.loadingBar.animate(1);
+        setTimeout(() => {
+            setStyle(this.loadingBarEl, { display: 'none' });
+        }, 1000);
+    }
+    
+    setinPicker() {
         mount(assetPicker.assetlist, this.el);
         mount(assetPicker, this.dropzoneEl);
         setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker' });
@@ -125,15 +164,19 @@ export class NakerDropzone {
 
 
         this.dropzone.on('sending', (file, xhr, formData) => {
-            this.sending(file, xhr, formData)
+            assetPicker.hide();
+            this.sending(file, xhr, formData);
+            this.showProgress();
         });
 
         this.dropzone.on('success', (file, response) => {
             this.success(file, response);
+            this.hideProgress();
         });
 
         this.dropzone.on('error', (file, response: any) => {
             this.error(file, response);
+            this.hideProgress();
         });
     }
 
@@ -178,6 +221,10 @@ export class NakerDropzone {
 
     error(file, response) {
         this.uploading = false;
+        if (response.error)
+            toastr.error(response.error);
+        else
+            toastr.error(response);
     }
 
     show() {

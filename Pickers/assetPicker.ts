@@ -301,19 +301,22 @@ export class AssetPicker extends UI {
             }
         });
 
-
+        this.setEvents();
+    }
+    
+    setEvents() {
         this.el.addEventListener('dragover', () => {
             this.sendToDragListener('start')
         });
-
+    
         this.el.addEventListener('dragenter', () => {
             this.sendToDragListener('start')
         });
-
+    
         this.el.addEventListener('dragleave', () => {
             this.sendToDragListener('end')
         });
-
+    
         this.el.addEventListener('dragend', () => {
             this.sendToDragListener('end')
         });
