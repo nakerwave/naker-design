@@ -9,13 +9,17 @@
     border: 0px
     border-radius: 3px
     font-size: 12px
-    width: $defaultwithinput - 4
+    width: $defaultwithinput - 18
     height: 22px
     line-height: 22px
-    padding-left: 4px
+    padding: 0px 14px 0px 4px
     cursor: pointer
     transition: all 200ms ease
     z-index: 2
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
     &::first-letter
         text-transform: uppercase
     &:hover
