@@ -2,6 +2,8 @@
 import { el, mount, setAttr } from 'redom';
 import { Undo } from '../Services/undo';
 
+import 'microtip/microtip.css';
+
 /*
   +------------------------------------------------------------------------+
   | TOOLBOX                                                                |
