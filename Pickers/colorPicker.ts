@@ -5,8 +5,6 @@ import { actionPanel } from '../Layers/panels';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import clone from 'lodash/clone';
-import isEqual from 'lodash/isEqual';
-
 
 // import '@simonwep/pickr/dist/themes/classic.min.css';   // 'classic' theme
 // import '@simonwep/pickr/dist/themes/monolith.min.css';  // 'monolith' theme
@@ -14,6 +12,10 @@ import isEqual from 'lodash/isEqual';
 
 // Modern or es5 bundle
 import Pickr from '@simonwep/pickr';
+// import { parseToHSVA } from '@simonwep/pickr/src/js/utils/color';
+// import { HSVaColor } from '@simonwep/pickr/src/js/utils/hsvacolor';
+// let test = parseToHSVA([1, 1, 1, 1]);
+// console.log(test);
 
 /*
   +------------------------------------------------------------------------+
@@ -41,8 +43,11 @@ export class ColorButton extends Input {
         this.opacity = coloroption.opacity;
         this.el = el('div.input-parameter',
             [
-                this.colorbutton = el('div.picker-button.color-default-background', { onclick: () => { this.focus() } },
-                    this.colorel = el('div.color-background')
+                this.colorbutton = el('div.picker-button', { onclick: () => { this.focus() } },
+                    [
+                        this.colorel = el('div.color-background'),
+                        el('div.color-default-background')
+                    ]
                 ),
                 this.coloricon = el('div.icon-color.erase-icon', { onclick: () => { this.checkErase() }, onmouseenter: () => { this.mouseEnter() }, onmouseleave: () => { this.mouseLeave() } },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -130,11 +135,22 @@ export class ColorPicker extends UI {
     constructor() {
         super();
 
+        this.setBack();
+        this.createPicker();
+        this.setParent(actionPanel);
+        this.addPickerActions();
+        this.setEvent();
+        this.hide();
+    }
+
+    createPicker() {
         this.el = el('div', { id: 'colorpicker', class: 'color-picker' },
             el('div.color-picker-background')
         );
-        mount(actionPanel, this.el);
-        let fakeEl = el('div', { id: 'fakeEl', style:{ display: 'none' } });
+        // Need it to be mounted in order to be able to create the picker
+        mount(document.body, this.el);
+
+        let fakeEl = el('div', { id: 'fakeEl', style: { display: 'none' } });
         mount(document.body, fakeEl);
 
         this.picker = Pickr.create({
@@ -142,16 +158,14 @@ export class ColorPicker extends UI {
             container: '#colorpicker',
             theme: 'nano', // or 'monolith', or 'nano'
             autoReposition: false,
-            defaultRepresentation: 'HEX',
+            defaultRepresentation: 'HEXA',
             swatches: [],
 
             components: {
-
                 // Main components
                 preview: true,
                 opacity: true,
                 hue: true,
-
                 // Input / output Options
                 interaction: {
                     // hex: true,
@@ -169,15 +183,11 @@ export class ColorPicker extends UI {
 
         this.opacityPicker = document.querySelector('.pcr-color-opacity');
         this.chooserPicker = document.querySelector('.pcr-color-chooser');
-        this.addPickerActions();
+    }
 
-        this.setEvent();
-        this.setBack();
-        this.hide();
-
-        setTimeout(() => {
-            this.getPalette();
-        }, 4000)
+    setParent(parent: HTMLElement) {
+        mount(parent, this.el);
+        mount(parent, this.back);
     }
 
     addPickerActions() {
@@ -195,11 +205,11 @@ export class ColorPicker extends UI {
 
         let leaveButton = el('div.button.valid-button', {
             onclick: () => { this.picker.hide(); }
-        }, 'Valid');
+        }, 'Confirm');
         mount(pickerInputs, leaveButton);
     }
 
-    setPalette (palette?: Array<string>) {
+    setPalette (palette?: Array<Array<number>>) {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
             let test = this.isAlreadyInPalette(rgba);
@@ -253,7 +263,6 @@ export class ColorPicker extends UI {
     setBack() {
         this.back = el('div.color-picker-background-opacity', { onclick: () => { this.picker.hide(); } });
         setStyle(this.back, { cursor: 'auto', 'z-index': 199, display: 'none' });
-        mount(actionPanel, this.back);
     }
 
     hideBack() {
@@ -272,16 +281,22 @@ export class ColorPicker extends UI {
             this.currentInput = undefined;
             this.hideBack();
         }).on('change', (color, instance) => {
-            if (this.currentInput) this.currentInput.setValue(color.toRGBA(), true);
+            let colorAccurate = this.getAccuracy(color.toRGBA());
+            if (this.currentInput) this.currentInput.setValue(colorAccurate, true);
         }).on('save', (color, instance) => {
             if (this.currentInput) this.picker.addSwatch(color.toRGBA().toString());
         }).on('clear', (color, instance) => {
             if (this.currentInput) this.currentInput.setValue(undefined, true);
-        });;
-
-        window.addEventListener("resize", () => {
-            if (this.currentInput) this.setPickerPosition();
         });
+    }
+
+    getAccuracy(color: Array<number>) {
+        let colorAccurate = [];
+        for (let i = 0; i < 3; i++) {
+            colorAccurate[i] = Math.round(color[i]);
+        }
+        colorAccurate[3] = Math.round(color[3] * 100) / 100;
+        return colorAccurate;
     }
 
     currentInput: ColorButton = null;
@@ -289,17 +304,21 @@ export class ColorPicker extends UI {
         if (input.rgba == undefined) input.rgba = [0, 0, 0, 1];
         let rgba = clone(input.rgba);
         if (!input.opacity) rgba[3] = 1;
-
-        this.picker.setColor(this.rgbToHex(rgba));
-        this.currentInput = input;
-        this.setPickerPosition();
+        
         // if (input.label) this.title.textContent = input.label.textContent;
         // else this.title.textContent = 'Color';
-        this.checkOpacity(input.opacity)
+        this.checkOpacity(input.opacity);
         this.picker.show();
+        let rbaInteger = this.getAccuracy(rgba);
+        setTimeout(() => {
+            let newColor = this.rgbToHex(rbaInteger);
+            this.picker.setColor(newColor);
+            // Keep currentInput setting after setColor or it will save it in swatches
+            this.currentInput = input;
+        }, 1);
         this.show();
-
         this.showBack();
+        
     }
 
     checkOpacity(opacity: boolean) {
@@ -318,14 +337,11 @@ export class ColorPicker extends UI {
     }
 
     rgbToHex(rgb: Array<number>): string {
-        return "#" + this.componentToHex(rgb[0]) + this.componentToHex(rgb[1]) + this.componentToHex(rgb[2]);
-    }
-
-    setPickerPosition() {
-        let pos = this.currentInput.el.getBoundingClientRect();
-        let y = Math.min(pos.top - 42, window.innerHeight - 230);
-        y = Math.round(Math.max(y, 0));
-        setStyle(this.el, { top: y + 'px' });
+        return "#" + 
+        this.componentToHex(rgb[0]) + 
+        this.componentToHex(rgb[1]) + 
+        this.componentToHex(rgb[2]) + 
+        this.componentToHex(Math.round(rgb[3] * 255));
     }
 }
 

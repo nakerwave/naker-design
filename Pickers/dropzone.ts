@@ -2,6 +2,8 @@
 import toastr from 'toastr';
 import Dropzone from 'dropzone';
 import { el, setStyle, setAttr, mount } from 'redom';
+import ProgressBar from 'progressbar.js';
+
 import { assetPicker } from './assetPicker';
 
 export let dropzoneList: any = {};
@@ -14,7 +16,7 @@ export let hideDropzones = () => {
 export class NakerDropzone {
 
     el: HTMLElement;
-    dropzoneElement: HTMLElement;
+    dropzoneEl: HTMLElement;
     text: HTMLElement;
 
     type: string;
@@ -29,48 +31,84 @@ export class NakerDropzone {
         this.callback = callback;
 
         let formattext = this.getFormatText(formats);
-        this.el = el('div.upload_overlay', { onclick: (evt) => { this.checkHide(evt) } },
-            [
-                this.text = el('div.download', formattext),
-                this.dropzoneElement = el('div.upload_dropzone'),
-                el('div.icon-add', { style: { 'pointer-events': 'none' } },
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
-                )
-            ]
+        this.el = el('div.no-asset-button.asset-button', { onclick: (evt) => { this.checkHide(evt) } },
+            el('div.no-asset-icon.icon-add', { style: { 'pointer-events': 'none' } },
+                [el('span.path1'), el('span.path2'), el('span.path3')]
+            )
         );
-        setStyle(this.el, { display: 'none' });
 
-        assetPicker.on('focus', (type: string) => {
-            if (type == this.type) this.show();
+        this.el.addEventListener('click', () => {
+            this.dropzoneEl.click();
         });
+            
+        this.dropzoneEl = el('div.upload_dropzone', [
+            this.text = el('div.download', formattext),
+            el('div.icon-add', { style: { 'pointer-events': 'none' } },
+                [el('span.path1'), el('span.path2'), el('span.path3')]
+            )
+        ]);
 
         assetPicker.on('blur', (type: string) => {
             this.hide();
         });
 
+        assetPicker.on('drag', (type: string, event:string) => {
+            if (type == this.type) {
+                if (event == 'start') this.show();
+            }
+        });
+
         this.addDropZone(type, formats, maxWeight);
         dropzoneList[type] = this;
-    }
 
-    setParent(parent: HTMLElement) {
-        mount(parent, this.el);
-    }
-
-    addTitle() {
-        let title1 = el('div.upload_title.upload_title1', 'Upload new ' + this.type);
-        mount(this.el, title1);
-        // let title2 = el('div.upload_title.upload_title2', 'or');
-        // mount(this.el, title2);
-        // let title3 = el('div.upload_title.upload_title3', 'Select one');
-        // mount(this.el, title3);
-    }
-
-    setBesidePicker() {
+        this.setinPicker();
         this.addTitle();
-        this.setParent(assetPicker.fixedel);
-        setAttr(this.text, { class: 'download left_overlay' });
-        setAttr(this.dropzoneElement, { class: 'upload_dropzone' });
-        setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker editor-scroll' });
+    }
+    
+    addTitle() {
+        let title = el('div.upload_title.upload_title', 'Upload new ' + this.type);
+        mount(this.dropzoneEl, title);
+    }
+
+    loadingBar: ProgressBar;
+    loadingBarEl: HTMLElement;
+    addProgressBar(container: HTMLElement, color: string) {
+        this.loadingBarEl = el('div.asset-loading-bar', {style: { display: 'none'}})
+        this.loadingBar = new ProgressBar.Line(this.loadingBarEl, {
+            strokeWidth: 20,
+            easing: 'easeInOut',
+            duration: 200,
+            trailColor: '.asset-loading-bar',
+            color: color,
+            svgStyle: { width: '100%', height: '100%' },
+            // from: { color: color },
+            // to: { color: colormain },
+            // step: (state, bar) => {
+            //     bar.path.setAttribute('stroke', state.color);
+            // }
+        });
+        mount(container, this.loadingBarEl);
+    }
+    
+    showProgress() {
+        if ( !this.loadingBar ) return;
+        this.loadingBar.set(0);
+        setStyle(this.loadingBarEl, { display: 'block' });
+        this.loadingBar.animate(0.1);
+    }
+
+    hideProgress() {
+        if ( !this.loadingBar ) return;
+        this.loadingBar.animate(1);
+        setTimeout(() => {
+            setStyle(this.loadingBarEl, { display: 'none' });
+        }, 1000);
+    }
+    
+    setinPicker() {
+        mount(assetPicker.assetlist, this.el);
+        mount(assetPicker, this.dropzoneEl);
+        setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker' });
     }
 
     getFormatText(formats: Array<string>) {
@@ -93,7 +131,7 @@ export class NakerDropzone {
     }
     _addDropZone(uploadUrl: string, formats: Array<string>, maxWeight: number) {
         var that = this;
-        this.dropzone = new Dropzone(this.dropzoneElement, {
+        this.dropzone = new Dropzone(this.dropzoneEl, {
             uploadMultiple: false,
             acceptedFiles: '.' + formats.join(',.'),
             timeout: 300000,
@@ -104,8 +142,14 @@ export class NakerDropzone {
             init: function () {
                 this.on("error", (file, errorMessage) => {
                     this.uploading = false;
-                    if (typeof (errorMessage) === 'string')
+                    if (typeof (errorMessage) === 'string') {
+                        if (errorMessage == "You can't upload files of this type.") errorMessage = that.getFormatText(that.formats);
                         that.errorBeforeUpload(errorMessage);
+                    }
+                });
+
+                this.on("dragleave", () => {
+                    that.hide();
                 });
             },
             accept: (file, done) => {
@@ -120,15 +164,19 @@ export class NakerDropzone {
 
 
         this.dropzone.on('sending', (file, xhr, formData) => {
-            this.sending(file, xhr, formData)
+            assetPicker.hide();
+            this.sending(file, xhr, formData);
+            this.showProgress();
         });
 
         this.dropzone.on('success', (file, response) => {
             this.success(file, response);
+            this.hideProgress();
         });
 
         this.dropzone.on('error', (file, response: any) => {
             this.error(file, response);
+            this.hideProgress();
         });
     }
 
@@ -148,14 +196,8 @@ export class NakerDropzone {
     }
 
     errorBeforeUpload(error: string) {
-        this.text.textContent = error;
-        setAttr(this.text, { error: true });
         toastr.error(error);
-        setTimeout(() => {
-            setAttr(this.text, { error: false });
-            let formattext = this.getFormatText(this.formats);
-            this.text.textContent = formattext;
-        }, 3000);
+        this.hide();
     }
 
     sending(file, xhr, formData) {
@@ -179,19 +221,22 @@ export class NakerDropzone {
 
     error(file, response) {
         this.uploading = false;
+        if (response.error)
+            toastr.error(response.error);
+        else
+            toastr.error(response);
     }
 
     show() {
-        setStyle(this.el, { display: 'block' });
+        setStyle(this.dropzoneEl, { display: 'block' });
         setAttr(this.text, { error: false });
     }
 
     hide() {
         this._hide();
-        assetPicker.hide();
     }
-
+    
     _hide() {
-        setStyle(this.el, { display: 'none' });
+        setStyle(this.dropzoneEl, { display: 'none' });
     }
 }

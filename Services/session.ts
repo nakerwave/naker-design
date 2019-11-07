@@ -12,6 +12,7 @@ import Cookies from 'js-cookie';
 export interface User extends Token {
     id: string;
     admin: boolean;
+    tutorial: boolean;
     email: string;
     name: string;
     pearl: Array<number>;
@@ -26,7 +27,7 @@ export class Session {
     spy: Spy;
     undo: Undo;
 
-    subDomain: string;
+    subDomain: 'app' | 'staging' | 'test' | 'cruise' | 'development';
     engine: 'story' | 'back' | 'form';
     projectid: string;
     designer: string;
@@ -57,6 +58,13 @@ export class Session {
             intercom: false,
             sentry: false,
             admin: true,
+        },
+        cruise: {
+            apiurl: 'https://naker-backend.herokuapp.com/',
+            save: false,
+            redirect: false,
+            intercom: false,
+            sentry: false
         },
         development: {
             apiurl: 'http://localhost:3000/',
@@ -104,6 +112,15 @@ export class Session {
 
         window.addEventListener('beforeunload', () => {
             if (this.saveBeforeUnload) this.save();
+        });
+
+        window.addEventListener('focus', () => {
+            let userCookie = Cookies.get('token');
+            if (this.save) {
+                if (userCookie == undefined) {
+                    this.api.disconnect();
+                }
+            }
         });
 
         this.undo.addSaveListener(() => {
@@ -239,7 +256,7 @@ export class Session {
         }
 
         // We make sure project exist in the base
-        if (this.projectid) {
+        if (this.projectid && this.saving) {
             this.api.get(this.engine, { id: this.projectid }, (data) => {
                 if (data.success !== false) {
                     // We don't save engine in database
@@ -261,9 +278,7 @@ export class Session {
     projectFound(callback: Function, project: any) {
         callback(project);
         // Start auto save after get project to make sure we don't save empty project
-        this.startAutoSave(() => {
-            return this.undo.getProjectJson();
-        }, 30, 5);
+        this.startAutoSave(30, 5);
     }
 
     createNew(callback?: Function) {
@@ -294,9 +309,8 @@ export class Session {
 
     lastsave: any;
     lastlocalsave: any;
-    startAutoSave(getProjectJson: Function, frequency: number, localfrequency?: number) {
+    startAutoSave(frequency: number, localfrequency?: number) {
         this.lastsave = new Date().getTime();
-        this.getProjectJson = getProjectJson;
 
         setInterval(() => {
             if (document.hasFocus() && this.saving) {
@@ -360,7 +374,7 @@ export class Session {
 
     lastexport = {};
     saveOnlineAndLocal(callback: Function) {
-        let projectJson = this.getProjectJson();
+        let projectJson = this.undo.getProjectJson();
         // Nothing has changed and previus saved has worked
         if (isEqual(projectJson, this.lastexport) && this.saved) {
             return callback(true);
@@ -371,7 +385,7 @@ export class Session {
     }
 
     saveLocal() {
-        let projectJson = this.getProjectJson();
+        let projectJson = this.undo.getProjectJson();
         let project: any = {};
         project.json = projectJson;
         project.name = this.name;

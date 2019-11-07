@@ -4,61 +4,15 @@
 /***************************************** DROPZONE ****************************************
 
 .upload_overlay
-    pointer-events: visible
-    z-index: 6
-    position: absolute
-    display: none
-    height: 100px
-    width: calc(100% - 4px)
-    bottom: 4px
-    left: 0px
-
-    .upload_title
-        position: absolute
-        top: 12px
-        width: 100%
-        text-align: center
-        pointer-events: none
-        color: $colortext
-        font-family: 'Raleway'
-        font-weight: 600
-        font-size: 20px
-
-    // .upload_title1
-    //     left: calc(50% - 200px)
-
-    // .upload_title2
-    //     left: 50%
-
-    // .upload_title3
-    //     left: calc(50% + 200px)
-
-    .download
-        position: absolute
-        top: 70px
-        width: 100%
-        pointer-events: none
-        color: $colortext
-        font-family: 'Raleway'
-        font-weight: 600
-        font-size: 20px
-        // top: 50%
-        // left: 50%
-        // transform: translate(-50%, -50%)
-        cursor: pointer
-        text-align: center
-        color: $colortext
-
-        &[error="true"]
-            color: $colorerror
-
-    .icon-add
-        position: absolute
-        top: 40px
-        left: 49%
-        font-size: 25px
-        color: $colortext
-
+    padding: 0px
+    // pointer-events: visible
+    // z-index: 6
+    // position: relative
+    // display: none
+    // height: 100px
+    // width: calc(100% - 4px)
+    // bottom: 4px
+    // left: 0px
 
     .cross
         color: $colorsecondtext
@@ -70,27 +24,70 @@
         top: calc(50% - 180px)
         left: calc(50% + 250px)
 
-.upload_dropzone
-    position: absolute
-    width: 100%
-    height: 100%
-    // top: 50%
-    // left: 50%
-    // transform: translate(-50%, -50%)
-    border: 2px dashed $colormain
-    border-radius: 5px
-    background: $colorsecondgrey
-    z-index: -1
-    cursor: pointer
-    .dz-preview
+$border: 4px
+
+.asset-picker
+
+    .upload_dropzone
         display: none
+        position: absolute
+        width: calc(100% - #{2*$border})
+        height: calc(100% - #{2*$border})
+        top: 0px
+        z-index: 10
+        cursor: pointer
+        background: rgba($colordarkgrey, 0.8)
+        border: $border solid $colormain
+        border-radius: 10px
 
-// .left_overlay
-//     left: calc(50% - 200px) !important
+        .dz-preview
+            display: none
 
-// .right_overlay
-//     left: calc(50% + 200px) !important
+        .upload_title
+            position: absolute
+            top: calc(50% + 50px)
+            left: 50%
+            transform: translate(-50%, -50%)
+            width: 100%
+            text-align: center
+            pointer-events: none
+            color: $colortext
+            font-family: 'Raleway'
+            font-weight: 600
+            font-size: 20px
 
-// .beside_overlay
-//     height: 330px !important
-//     width: 315px !important
+        .download
+            position: absolute
+            width: 100%
+            pointer-events: none
+            color: $colortext
+            font-family: 'Raleway'
+            font-weight: 600
+            font-size: 20px
+            top: calc(50% + 80px)
+            left: 50%
+            transform: translate(-50%, -50%)
+            cursor: pointer
+            text-align: center
+            color: $colortext
+
+            &[error="true"]
+                color: $colorerror
+
+        .icon-add
+            position: absolute
+            top: 50%
+            left: 50%
+            transform: translate(-50%, -50%)
+            font-size: 50px
+            color: $colortext
+
+
+/***************************************** LOADING BAR ****************************************
+
+.asset-loading-bar
+    position: absolute
+    top: 0px
+    width: 100%
+    height: 5px
+    z-index: 100

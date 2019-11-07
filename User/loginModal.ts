@@ -24,7 +24,7 @@ export class LoginModal extends Modal {
     loaderEl: HTMLElement;
 
     constructor(session: Session, pearl:UserPearl) {
-        super('Willing to <text class="colormain doublebold">save or export</text> your background?', 'Log in to have your project saved into your personal account and access its embed code', 'login-modal');
+        super('Willing to <text class="colormain doublebold">save or export</text> your project?', 'Login to have your project saved into your personal account and access its embed code', 'login-modal');
         this.session = session;
         this.api = this.session.api;
         this.spy = this.session.spy;

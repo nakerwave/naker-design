@@ -81,7 +81,7 @@ export class Header {
     }
 
     checkUserAndProject() {
-        if (!this.session.api.isConnected()) {
+        if (!this.session.api.isConnected() || !this.session.saving) {
             mount(this.control, this.projectsave);
             unmount(this.control, this.loaderEl);
             unmount(this.control, this.projectname);
