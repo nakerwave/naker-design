@@ -44,7 +44,7 @@ export class Header {
 
     setContent() {
         this.control = el('div.preset-layer', [
-            this.logoEl = el('a.siimple-navbar-title.dashboard-button', { href: '/dashboard/' + this.session.engine }),
+            this.logoEl = el('a.dashboard-button', { href: '/dashboard/' + this.session.engine }),
             this.loaderEl = el('div.loader'),
             this.projectname = el('input.project-name', {
                 type: 'text',

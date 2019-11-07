@@ -29,9 +29,18 @@ export class NakerDropzone {
         this.formats = formats;
         this.maxWeight = maxWeight;
         this.callback = callback;
+        this.createElements(formats),
+        this.setAssetEvent();
+        this.addDropZone(type, formats, maxWeight);
+        this.setinPicker();
+        this.addTitle();
+        this.hide();
+        dropzoneList[type] = this;
+    }
 
+    createElements(formats: Array<string>) {
         let formattext = this.getFormatText(formats);
-        this.el = el('div.no-asset-button.asset-button', { onclick: (evt) => { this.checkHide(evt) } },
+        this.el = el('div.no-asset-button.asset-button', { onclick: (evt) => { evt.stopPropagation(); } },
             el('div.no-asset-icon.icon-add', { style: { 'pointer-events': 'none' } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
@@ -40,29 +49,29 @@ export class NakerDropzone {
         this.el.addEventListener('click', () => {
             this.dropzoneEl.click();
         });
-            
+
         this.dropzoneEl = el('div.upload_dropzone', [
             this.text = el('div.download', formattext),
             el('div.icon-add', { style: { 'pointer-events': 'none' } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         ]);
+    }
 
+    setAssetEvent() {
         assetPicker.on('blur', (type: string) => {
             this.hide();
         });
 
-        assetPicker.on('drag', (type: string, event:string) => {
+        assetPicker.on('focus', (type: string) => {
+            if (type == this.type) this.show();
+        });
+
+        assetPicker.on('drag', (type: string, event: string) => {
             if (type == this.type) {
                 if (event == 'start') this.show();
             }
         });
-
-        this.addDropZone(type, formats, maxWeight);
-        dropzoneList[type] = this;
-
-        this.setinPicker();
-        this.addTitle();
     }
     
     addTitle() {
@@ -113,13 +122,6 @@ export class NakerDropzone {
 
     getFormatText(formats: Array<string>) {
         return 'Supported formats: ' + formats.join(', ');
-    }
-
-    checkHide(evt:Event) {
-        evt.stopPropagation();
-        let elclass = evt.target.className;
-        // If click outside then hide
-        if (elclass.indexOf('upload_dropzone') == -1 && elclass.indexOf('download') == -1) this.hide();
     }
 
     uploadurl: string;
@@ -228,7 +230,7 @@ export class NakerDropzone {
     }
 
     show() {
-        setStyle(this.dropzoneEl, { display: 'block' });
+        setStyle(this.el, { display: 'block' });
         setAttr(this.text, { error: false });
     }
 
@@ -237,6 +239,6 @@ export class NakerDropzone {
     }
     
     _hide() {
-        setStyle(this.dropzoneEl, { display: 'none' });
+        setStyle(this.el, { display: 'none' });
     }
 }
