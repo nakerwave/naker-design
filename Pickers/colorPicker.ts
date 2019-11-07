@@ -135,11 +135,22 @@ export class ColorPicker extends UI {
     constructor() {
         super();
 
+        this.setBack();
+        this.createPicker();
+        this.setParent(actionPanel);
+        this.addPickerActions();
+        this.setEvent();
+        this.hide();
+    }
+
+    createPicker() {
         this.el = el('div', { id: 'colorpicker', class: 'color-picker' },
             el('div.color-picker-background')
         );
-        mount(actionPanel, this.el);
-        let fakeEl = el('div', { id: 'fakeEl', style:{ display: 'none' } });
+        // Need it to be mounted in order to be able to create the picker
+        mount(document.body, this.el);
+
+        let fakeEl = el('div', { id: 'fakeEl', style: { display: 'none' } });
         mount(document.body, fakeEl);
 
         this.picker = Pickr.create({
@@ -147,16 +158,14 @@ export class ColorPicker extends UI {
             container: '#colorpicker',
             theme: 'nano', // or 'monolith', or 'nano'
             autoReposition: false,
-            defaultRepresentation: 'HEX',
+            defaultRepresentation: 'HEXA',
             swatches: [],
 
             components: {
-
                 // Main components
                 preview: true,
                 opacity: true,
                 hue: true,
-
                 // Input / output Options
                 interaction: {
                     // hex: true,
@@ -174,12 +183,11 @@ export class ColorPicker extends UI {
 
         this.opacityPicker = document.querySelector('.pcr-color-opacity');
         this.chooserPicker = document.querySelector('.pcr-color-chooser');
-        this.addPickerActions();
+    }
 
-        this.setEvent();
-        this.setBack();
-        this.hide();
-
+    setParent(parent: HTMLElement) {
+        mount(parent, this.el);
+        mount(parent, this.back);
     }
 
     addPickerActions() {
@@ -201,7 +209,7 @@ export class ColorPicker extends UI {
         mount(pickerInputs, leaveButton);
     }
 
-    setPalette (palette?: Array<string>) {
+    setPalette (palette?: Array<Array<number>>) {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
             let test = this.isAlreadyInPalette(rgba);
@@ -255,7 +263,6 @@ export class ColorPicker extends UI {
     setBack() {
         this.back = el('div.color-picker-background-opacity', { onclick: () => { this.picker.hide(); } });
         setStyle(this.back, { cursor: 'auto', 'z-index': 199, display: 'none' });
-        mount(actionPanel, this.back);
     }
 
     hideBack() {
@@ -280,10 +287,6 @@ export class ColorPicker extends UI {
             if (this.currentInput) this.picker.addSwatch(color.toRGBA().toString());
         }).on('clear', (color, instance) => {
             if (this.currentInput) this.currentInput.setValue(undefined, true);
-        });;
-
-        window.addEventListener("resize", () => {
-            if (this.currentInput) this.setPickerPosition();
         });
     }
 
@@ -312,7 +315,6 @@ export class ColorPicker extends UI {
             this.picker.setColor(newColor);
             // Keep currentInput setting after setColor or it will save it in swatches
             this.currentInput = input;
-            this.setPickerPosition();
         }, 1);
         this.show();
         this.showBack();
@@ -340,13 +342,6 @@ export class ColorPicker extends UI {
         this.componentToHex(rgb[1]) + 
         this.componentToHex(rgb[2]) + 
         this.componentToHex(Math.round(rgb[3] * 255));
-    }
-
-    setPickerPosition() {
-        let pos = this.currentInput.el.getBoundingClientRect();
-        let y = Math.min(pos.top - 42, window.innerHeight - 230);
-        y = Math.round(Math.max(y, 0));
-        setStyle(this.el, { top: y + 'px' });
     }
 }
 
