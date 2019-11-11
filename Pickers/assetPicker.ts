@@ -60,8 +60,8 @@ export class BaseAssetButton extends Input {
         assetPicker.setCurrentInput(this);
     }
 
-    blurEvent() {
-        if (this.events.blur && this.starturl != this.url) this.events.blur(this.url, this);
+    blurEvent(force?: boolean) {
+        if (this.events.blur && (this.starturl != this.url || force)) this.events.blur(this.url, this);
         // In order to avoid waitedAsset changing last selected texture
         assetPicker.currentInput = undefined;
     }
@@ -74,8 +74,12 @@ export class BaseAssetButton extends Input {
     checkErase(evt: Event) {
         evt.stopPropagation();
         evt.preventDefault();
-        if (this.url !== undefined) this.setValue(undefined, true);
-        else this.focus();
+        if (this.url !== undefined) {
+            this.setValue(undefined, true);
+            this.blurEvent(true);
+        } else {
+            this.focus();
+        }
     }
 }
 

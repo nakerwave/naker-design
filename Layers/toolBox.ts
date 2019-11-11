@@ -34,11 +34,11 @@ export class ToolBox {
 
     addUndo(undo: Undo) {
         let backbutton = this.addTool('back', 'Undo (Ctrl + Z)', () => {
-            undo._back();
+            undo.back();
         });
 
         let forwardbottom = this.addTool('forward', 'Redo (Ctrl + Maj + Z)', () => {
-            undo._forward();
+            undo.forward();
         });
 
         undo.on('undo', (change) => {

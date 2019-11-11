@@ -22,11 +22,11 @@ export class Undo {
 
     listenShortcut() {
         hotkeys('command+z,ctrl+z', (event, param) => {
-            this._back();
+            this.back();
         });
 
         hotkeys('command+shift+z,ctrl+shift+z', (event, param) => {
-            this._forward();
+            this.forward();
         });
     }
 
@@ -58,7 +58,7 @@ export class Undo {
 
     getProjectJson() { }
 
-    _back() {
+    back() {
         if (this.pastChange.length != 0) {
             let past = last(this.pastChange);
             // console.log(past.back)
@@ -72,7 +72,7 @@ export class Undo {
         }
     }
 
-    _forward() {
+    forward() {
         if (this.futureChange.length != 0) {
             let future = head(this.futureChange);
             // console.log(future.forward)
@@ -80,9 +80,9 @@ export class Undo {
             let newState = merge(this.presentState, future.forward);
             let forwardState = this.getDifference(newState, future.back);
             this.presentState = forwardState;
-            this.sendToRedoListeners(future.forward, this.presentState)
+            this.sendToRedoListeners(future.forward, this.presentState);
         } else {
-            this.sendToRedoListeners(false, this.presentState)
+            this.sendToRedoListeners(false, this.presentState);
         }
     }
 
