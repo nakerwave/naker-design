@@ -123,7 +123,7 @@ export class Session {
             }
         });
 
-        this.undo.addSaveListener(() => {
+        this.undo.on('save', () => {
             this.saveLocal();
         });
     }

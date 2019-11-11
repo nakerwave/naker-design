@@ -58,12 +58,12 @@ export class Header {
     }
 
     setEvents() {
-        this.undo.addSaveListener(() => {
+        this.undo.on('save', () => {
             this.saveAnimation();
         });
 
-        this.undo.addChangeListener(() => {
-            this.saveAnimation();
+        this.undo.on('change', (change) => {
+            if (change) this.saveAnimation();
         });
 
         this.session.on('connect', (user) => {

@@ -33,12 +33,24 @@ export class ToolBox {
     }
 
     addUndo(undo: Undo) {
-        this.addTool('back', 'Undo (Ctrl + Z)', () => {
+        let backbutton = this.addTool('back', 'Undo (Ctrl + Z)', () => {
             undo._back();
         });
 
-        this.addTool('forward', 'Redo (Ctrl + Maj + Z)', () => {
+        let forwardbottom = this.addTool('forward', 'Redo (Ctrl + Maj + Z)', () => {
             undo._forward();
+        });
+
+        undo.on('undo', (change) => {
+            if (change) setAttr(backbutton, { class: 'tool-button tool-success' });
+            else setAttr(backbutton, { class: 'tool-button tool-error' });
+            setTimeout(() => { setAttr(backbutton, { class: 'tool-button' }); }, 200);
+        });
+
+        undo.on('redo', (change) => {
+            if (change) setAttr(forwardbottom, { class: 'tool-button tool-success' });
+            else setAttr(forwardbottom, { class: 'tool-button tool-error' });
+            setTimeout(() => { setAttr(forwardbottom, { class: 'tool-button' }); }, 200);
         });
     }
 

@@ -277,9 +277,7 @@ export class ColorPicker extends UI {
 
     setEvent() {
         this.picker.on('hide', instance => {
-            this.currentInput.blurEvent(this.picker);
-            this.currentInput = undefined;
-            this.hideBack();
+            this.hide();
         }).on('change', (color, instance) => {
             let colorAccurate = this.getAccuracy(color.toRGBA());
             if (this.currentInput) this.currentInput.setValue(colorAccurate, true);
@@ -288,6 +286,15 @@ export class ColorPicker extends UI {
         }).on('clear', (color, instance) => {
             if (this.currentInput) this.currentInput.setValue(undefined, true);
         });
+    }
+
+    hide() {
+        if (this.currentInput) {
+            this.currentInput.blurEvent(this.picker);
+            this.currentInput = undefined;
+        }
+        this.hideBack();
+        return this;
     }
 
     getAccuracy(color: Array<number>) {

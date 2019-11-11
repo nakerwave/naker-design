@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep';
-import remove from 'lodash/remove';
 import defaultsDeep from 'lodash/defaultsDeep';
 import isEqual from 'lodash/isEqual';
 import last from 'lodash/last';
@@ -67,10 +66,9 @@ export class Undo {
             let newState = merge(this.presentState, past.back);
             let backState = this.getDifference(newState, past.forward);
             this.presentState = backState;
-            this.sendToChangeListeners(past.back, this.presentState)
-            return true;
+            this.sendToUndoListeners(past.back, this.presentState);
         } else {
-            return false;
+            this.sendToUndoListeners(false, this.presentState);
         }
     }
 
@@ -82,10 +80,9 @@ export class Undo {
             let newState = merge(this.presentState, future.forward);
             let forwardState = this.getDifference(newState, future.back);
             this.presentState = forwardState;
-            this.sendToChangeListeners(future.forward, this.presentState)
-            return true;
+            this.sendToRedoListeners(future.forward, this.presentState)
         } else {
-            return false;
+            this.sendToRedoListeners(false, this.presentState)
         }
     }
 
@@ -116,48 +113,40 @@ export class Undo {
         return Changes(object);
     }
 
-    /**
-     * List of all functions following the progress position
-     * @ignore
-     */
     _changeListeners: Array<Function> = [];
-
-    /**
-     * Add a new listener which will get the catching progress position
-     */
-    addChangeListener(callback: Function) {
-        this._changeListeners.push(callback);
+    _saveListeners: Array<Function> = [];
+    _undoListeners: Array<Function> = [];
+    _redoListeners: Array<Function> = [];
+    on(event: 'change' | 'save' | 'undo' | 'redo', callback: Function) {
+        if (event == 'change') this._changeListeners.push(callback);
+        if (event == 'save') this._saveListeners.push(callback);
+        if (event == 'undo') this._undoListeners.push(callback);
+        if (event == 'redo') this._redoListeners.push(callback);
     }
 
-    /**
-     * Send progress Change data to listeners
-     */
     sendToChangeListeners(change: any, newState: any) {
         for (let i = 0; i < this._changeListeners.length; i++) {
             this._changeListeners[i](change, newState);
         }
     }
 
-    /**
-     * List of all functions following the progress position
-     * @ignore
-     */
-    _saveListeners: Array<Function> = [];
-
-
-    /**
-     * Add a new listener which will get the catching progress position
-     */
-    addSaveListener(callback: Function) {
-        this._saveListeners.push(callback);
-    }
-
-    /**
-     * Send progress Change data to listeners
-     */
     sendToSaveListeners(newState: any) {
         for (let i = 0; i < this._saveListeners.length; i++) {
             this._saveListeners[i](newState);
         }
+    }
+
+    sendToUndoListeners(change: any, newState: any) {
+        for (let i = 0; i < this._undoListeners.length; i++) {
+            this._undoListeners[i](change, newState);
+        }
+        this.sendToChangeListeners(change, newState);
+    }
+
+    sendToRedoListeners(change: any, newState: any) {
+        for (let i = 0; i < this._redoListeners.length; i++) {
+            this._redoListeners[i](change, newState);
+        }
+        this.sendToChangeListeners(change, newState);
     }
 }
