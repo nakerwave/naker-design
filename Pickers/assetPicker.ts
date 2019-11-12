@@ -287,10 +287,10 @@ export class AssetPicker extends UI {
     constructor() {
         super();
         this.el = el('div.asset-picker', [
-            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(); } }, 
+            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(true); } }, 
             ),
             this.fixedel = el('div.fixed-asset-part', 
-                el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(); } },
+                el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(true); } },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
             ) 
@@ -301,7 +301,7 @@ export class AssetPicker extends UI {
         window.addEventListener("click", (e) => {
             // Is it a click outside and not on a dropzone input
             if (!this.el.contains(e.target) && !(e.target.type == 'file')) {
-                if (this.shown) this.hidePicker();
+                if (this.shown) this.hidePicker(true);
             }
         });
 
@@ -479,7 +479,7 @@ export class AssetPicker extends UI {
             this.waitingInput.setValue(url, true);
             this.waitingInput.blurEvent(); // Blur event to force push state
         }
-        this.eraseCurrent();
+        this.eraseWaiting();
     }
 
     addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
@@ -537,7 +537,7 @@ export class AssetPicker extends UI {
     selectAsset(url: string) {
         if (this.addAssetMode) this.addAssetFunction(url);
         else if (this.currentInput) this.currentInput.setValue(url, true);
-        this.eraseCurrent();
+        this.eraseWaiting();
     }
 
     onAssetDeleted: Function;
@@ -555,7 +555,7 @@ export class AssetPicker extends UI {
         this.setAssetList(type);
     }
 
-    eraseCurrent() {
+    eraseWaiting() {
         this.currentInput = undefined;
         this.waitingInput = null;
         this.waitingAsset = null;
@@ -572,11 +572,14 @@ export class AssetPicker extends UI {
         }, 10);
     }
 
-    hidePicker() {
+    hidePicker(erase?:boolean) {
         this.shown = false;
         this.hide();
         this.currentInput = undefined;
         this.sendToBlurListener();
+        // Depending on where hidding comes from, we must erase waiting input or not
+        // For instance if loading an asset and waiting for the success, we should not erase it
+        if (erase) this.eraseWaiting();
     }
 }
 

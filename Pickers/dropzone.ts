@@ -217,8 +217,8 @@ export class NakerDropzone {
         this.uploading = false;
         let url = response.secure_url;
         let name = response.original_filename;
-        assetPicker.addWaitedAssetButton(url);
         if (this.callback) this.callback(url, name);
+        assetPicker.addWaitedAssetButton(url);
     }
 
     error(file, response) {
