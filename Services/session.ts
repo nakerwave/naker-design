@@ -78,6 +78,7 @@ export class Session {
 
     apiurl: string;
     saving: boolean;
+    savingLocal = true;
     redirect: boolean;
     intercom: boolean;
     sentry: boolean;
@@ -384,7 +385,12 @@ export class Session {
         this.lastexport = cloneDeep(projectJson);
     }
 
+    setSavingLocal(savingLocal: boolean) {
+        this.savingLocal = savingLocal;
+    }
+
     saveLocal() {
+        if (!this.savingLocal) return;
         let projectJson = this.undo.getProjectJson();
         let project: any = {};
         project.json = projectJson;
