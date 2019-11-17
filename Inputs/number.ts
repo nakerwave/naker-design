@@ -1,5 +1,5 @@
 
-import { Input, inputEvents, defaultleftinput } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, unmount, mount, setAttr, setStyle } from 'redom';
 import merge from 'lodash/merge';
@@ -25,8 +25,8 @@ export class NumberInput extends Input {
 
     unit: any;
     value: number;
-    width = 40;
-    left = defaultleftinput;
+    width = 50;
+    left = 195;
     max: number;
     min: number;
     decimal: number;

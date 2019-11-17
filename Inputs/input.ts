@@ -4,7 +4,6 @@ import { elementEvents, UI } from '../Layers/common';
 import { el, mount, unmount } from 'redom';
 
 export let defaultwithinput = 108;
-export let defaultleftinput = 204;
 
 export interface inputEvents extends elementEvents {
     change: string,
