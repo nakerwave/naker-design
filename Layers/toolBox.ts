@@ -1,8 +1,9 @@
 
-import { el, mount, setAttr } from 'redom';
+import { el, mount, setAttr, setStyle } from 'redom';
 import { Undo } from '../Services/undo';
 
 import 'microtip/microtip.css';
+import GLBench from 'gl-bench/dist/gl-bench.module';
 
 /*
   +------------------------------------------------------------------------+
@@ -54,4 +55,75 @@ export class ToolBox {
         });
     }
 
+    perfEl: HTMLElement;
+    fpsnode: HTMLElement;
+    vertices: HTMLElement;
+    meshes: HTMLElement;
+    benchEl: HTMLElement;
+    addPerformance(canvas:HTMLCanvasElement, parent:HTMLElement, scene:any) {
+
+        this.perfEl = el('div.help-layer',
+            [
+                this.benchEl = el('div'),
+                el('div.help-container',
+                    [
+                        el('div.performance-label', 'Vertices'),
+                        this.vertices = el('div.performance-value', '120'),
+                    ]
+                ),
+                el('div.help-container',
+                    [
+                        el('div.performance-label', 'Meshes'),
+                        this.meshes = el('div.performance-value', '120'),
+                    ]
+                ),
+            ]
+        );
+
+        mount(parent, this.perfEl);
+        setStyle(this.perfEl, { display: 'none' });
+        let bench = new GLBench(canvas.getContext('webgl'),
+            {
+                trackGPU: true,
+                dom: this.benchEl,
+                css: 'naker-gl-bench',
+            }
+        );
+        scene.registerBeforeRender(() => {
+            bench.begin();
+        });
+
+        scene.registerAfterRender(() => {
+            // monitored code
+            bench.nextFrame(new Date());
+            bench.end();
+        });
+
+        
+        let perfVisible = false;
+        this.addTool('performance', 'Performance', () => {
+            if (perfVisible) {
+                setStyle(this.perfEl, { display: 'none' });
+                this.startPerfInterval(scene);
+            } else {
+                setStyle(this.perfEl, { display: 'block' });
+                if (this.perfInterval) clearInterval(this.perfInterval);
+            }
+            perfVisible = !perfVisible;
+        });
+    }
+    
+    perfInterval;
+    startPerfInterval(scene) {
+        if (this.perfInterval) clearInterval(this.perfInterval);
+        console.log('show');
+        
+        this.perfInterval = setInterval(() => {
+            console.log(this.vertices.textContent);
+            
+            this.vertices.textContent = scene.getTotalVertices().toString();
+            this.meshes.textContent = scene.getActiveMeshes().length.toString();
+        }, 500);
+        setStyle(this.control, { display: 'block' });
+    }
 }

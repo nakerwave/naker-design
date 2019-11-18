@@ -44,10 +44,88 @@
 .tool-error
         background: $colorgrey
 
-.tool-button
-    .path1:before
-        color: $colordarkgrey
-    .path2:before
-        color: $colordarkgrey
-    .path3:before
-        color: $colordarkgrey
+.help-layer
+    position: absolute
+    bottom: 10px
+    right: 10px
+    width: 150px
+    height: auto
+    background: $colorthirdgrey
+    z-index: 100
+    border-radius: 5px
+    padding: 5px
+    margin: 0px
+
+.help-container
+    width: 150px
+    left: 0px
+    color: $colortext
+    background: $colorthirdgrey
+    height: 25px
+    padding: 0px
+    border-bottom: none !important
+
+.performance-label
+    position: relative
+    float: left
+    left: 5px
+    top: 3px
+
+.performance-value
+    position: relative
+    float: right
+    top: 0px
+    font-size: 15px
+    font-weight: 600
+
+#gl-bench
+    position: relative
+    left: 0
+    top: 0
+    z-index: 1000
+    -webkit-user-select: none
+    -moz-user-select: none
+    user-select: none
+
+    .gl-box
+        position: relative
+        display: block
+        margin: 5px
+        border-radius: 5px
+        cursor: pointer
+        opacity: 0.9
+
+    svg
+        height: 95px
+        margin: 0 -1px
+
+    text
+        font-size: 8px
+        font-family: Raleway
+        dominant-baseline: middle
+        text-anchor: middle
+        fill: $colortext
+
+    path
+        fill: $colortext
+
+    // .gl-mem
+    //     font-size: 9px
+
+    line
+        stroke-width: 5
+        stroke: $colormain
+        stroke-linecap: round
+
+    polyline
+        fill: none
+        stroke: $colormain
+        stroke-linecap: round
+        stroke-linejoin: round
+        stroke-width: 2
+
+    rect
+        fill: $colordarkgrey
+
+    .opacity
+        stroke: $colordarkgrey
