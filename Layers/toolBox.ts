@@ -116,11 +116,7 @@ export class ToolBox {
     perfInterval;
     startPerfInterval(scene) {
         if (this.perfInterval) clearInterval(this.perfInterval);
-        console.log('show');
-        
         this.perfInterval = setInterval(() => {
-            console.log(this.vertices.textContent);
-            
             this.vertices.textContent = scene.getTotalVertices().toString();
             this.meshes.textContent = scene.getActiveMeshes().length.toString();
         }, 500);

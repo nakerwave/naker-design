@@ -27,7 +27,7 @@ export class Header {
         this.session = session;
 
         this.setContent()
-        this.setEvents();
+        this._setEvents();
         this.addLoginModal();
         this.checkUserAndProject();
 
@@ -57,7 +57,7 @@ export class Header {
         mount(document.body, this.control);
     }
 
-    setEvents() {
+    _setEvents() {
         this.undo.on('save', () => {
             this.saveAnimation();
         });

@@ -61,10 +61,11 @@ export class Session {
         },
         cruise: {
             apiurl: 'https://naker-backend.herokuapp.com/',
-            save: false,
+            saving: false,
             redirect: false,
             intercom: false,
-            sentry: false
+            sentry: false,
+            admin: false,
         },
         development: {
             apiurl: 'http://localhost:3000/',
@@ -102,6 +103,7 @@ export class Session {
         this.redirect = this.environments[this.subDomain].redirect;
         this.intercom = this.environments[this.subDomain].intercom;
         this.sentry = this.environments[this.subDomain].sentry;
+        this.admin = this.environments[this.subDomain].admin;
 
         api.setHost(this.apiurl);
         api.onDisconnected = () => {
