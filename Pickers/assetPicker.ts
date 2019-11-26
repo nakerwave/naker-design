@@ -486,7 +486,6 @@ export class AssetPicker extends UI {
         if (!url) return console.error('Missing asset '+type+' url');
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
-        // this.checkAddButtonsType(type);
         let asset = find(this.thumbnails, (a) => { return a.type == type && a.url == url });
         if (!asset) {
             if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
@@ -503,6 +502,7 @@ export class AssetPicker extends UI {
     addAssetMode = false;
     addAssetFunction: Function;
     addButton(type: string, url: string, image: string, removable: boolean) {
+        if (removable === undefined) removable = true;
         let button: HTMLElement;
         if (image.indexOf('http') != -1) {
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 

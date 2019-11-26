@@ -69,7 +69,7 @@ export class NakerDropzone {
 
         assetPicker.on('drag', (type: string, event: string) => {
             if (type == this.type) {
-                if (event == 'start') this.show();
+                if (event == 'start') this.showDropzone();
             }
         });
     }
@@ -81,6 +81,7 @@ export class NakerDropzone {
 
     loadingBar: ProgressBar;
     loadingBarEl: HTMLElement;
+    loadingBarText: HTMLElement;
     addProgressBar(container: HTMLElement, color: string) {
         this.loadingBarEl = el('div.asset-loading-bar', {style: { display: 'none'}})
         this.loadingBar = new ProgressBar.Line(this.loadingBarEl, {
@@ -97,6 +98,8 @@ export class NakerDropzone {
             // }
         });
         mount(container, this.loadingBarEl);
+        // this.loadingBarText = el('div.loadingBarText'),
+        // mount(container, this.loadingBarEl);
     }
     
     showProgress() {
@@ -151,7 +154,7 @@ export class NakerDropzone {
                 });
 
                 this.on("dragleave", () => {
-                    that.hide();
+                    that.hideDropzone();
                 });
             },
             accept: (file, done) => {
@@ -169,6 +172,7 @@ export class NakerDropzone {
             assetPicker.hide();
             this.sending(file, xhr, formData);
             this.showProgress();
+            this.hideDropzone();
         });
 
         this.dropzone.on('success', (file, response) => {
@@ -206,7 +210,6 @@ export class NakerDropzone {
         // Add naker key for cloudinary
         formData.append('timestamp', Date.now() / 1000 | 0);
         formData.append('upload_preset', 'hdtmkzvn');
-        // Set to 2 because there is to step : Upload in Cloudnary and Download in Scene
         this.hide();
     }
 
@@ -227,6 +230,14 @@ export class NakerDropzone {
             toastr.error(response.error);
         else
             toastr.error(response);
+    }
+
+    showDropzone() {
+        setStyle(this.dropzoneEl, { display: 'block' });
+    }
+
+    hideDropzone() {
+        setStyle(this.dropzoneEl, { display: 'none' });
     }
 
     show() {
