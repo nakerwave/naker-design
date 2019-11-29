@@ -52,7 +52,7 @@ export class Header {
                 onblur: (evt) => { this.saveName(evt) },
                 onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur() }
             }),
-            this.projectsave = el('div.project-save.button.export-button', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
+            this.projectsave = el('div.button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
         ]);
         mount(document.body, this.control);
     }

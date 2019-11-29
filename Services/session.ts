@@ -85,6 +85,9 @@ export class Session {
     sentry: boolean;
     admin: boolean;
 
+    // If all condition ok, then true
+    currentlySaving = false;
+
     constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo) {
         this.setEngine(engine);
         
@@ -108,7 +111,7 @@ export class Session {
         api.setHost(this.apiurl);
         api.onDisconnected = () => {
             this.setProjectId('');
-            this.saving = false;
+            this.currentlySaving = false;
             this.sendDisconnectToListeners();
         };
         this.checkProjectId();
@@ -289,7 +292,8 @@ export class Session {
         this.api.post(this.engine + '/new', {name:'New '+ this.engine}, {}, (data) => {
             if (data.success) {
                 this.setProjectId(data.id);
-                this.saving = true;
+                this.currentlySaving = true;
+                this.sendConnectToListeners(this.user);
                 this.save();
             } else {
                 toastr.error('🤷 Oups, there was an error while saving your project');
@@ -316,9 +320,9 @@ export class Session {
         this.lastsave = new Date().getTime();
 
         setInterval(() => {
-            if (document.hasFocus() && this.saving) {
+            if (document.hasFocus() && this.currentlySaving) {
                 if (!this.projectid || !this.engine) {
-                    this.saving = false;
+                    this.currentlySaving = false;
                     return console.error("You can't save project online without a projectid and engine");
                 }
                 let now = new Date().getTime();
@@ -346,9 +350,9 @@ export class Session {
     startImageSave(getImage: Function, frequency: number) {
         this.lastimagesave = new Date().getTime();
         setInterval(() => {
-            if (document.hasFocus() && this.saving) {
+            if (document.hasFocus() && this.currentlySaving) {
                 if (!this.projectid || !this.engine) {
-                    this.saving = false;
+                    this.currentlySaving = false;
                     return console.error("You can't update image online without a projectid and engine");
                 }
                 let now = new Date().getTime();
