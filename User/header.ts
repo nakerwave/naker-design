@@ -26,7 +26,7 @@ export class Header {
         this.undo = undo;
         this.session = session;
 
-        this.setContent()
+        this.setContent();
         this._setEvents();
         this.addLoginModal();
         this.checkUserAndProject();
@@ -50,7 +50,7 @@ export class Header {
                 type: 'text',
                 placeholder: "Project's name",
                 onblur: (evt) => { this.saveName(evt) },
-                onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur() }
+                onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
             }),
             this.projectsave = el('div.button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
         ]);
