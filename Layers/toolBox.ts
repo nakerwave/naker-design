@@ -104,10 +104,10 @@ export class ToolBox {
         this.addTool('performance', 'Performance', () => {
             if (perfVisible) {
                 setStyle(this.perfEl, { display: 'none' });
-                this.startPerfInterval(scene);
-            } else {
-                setStyle(this.perfEl, { display: 'block' });
                 if (this.perfInterval) clearInterval(this.perfInterval);
+            } else {
+                this.startPerfInterval(scene);
+                setStyle(this.perfEl, { display: 'block' });
             }
             perfVisible = !perfVisible;
         });
