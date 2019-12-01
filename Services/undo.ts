@@ -6,6 +6,8 @@ import head from 'lodash/head';
 import merge from 'lodash/merge';
 import transform from 'lodash/transform';
 import isPlainObject from 'lodash/isPlainObject';
+import isObject from 'lodash/isObject';
+import mapValues from 'lodash/mapValues';
 
 import hotkeys from 'hotkeys-js';
 
@@ -84,6 +86,18 @@ export class Undo {
         } else {
             this.sendToRedoListeners(false, this.presentState);
         }
+    }
+
+    limitObjectAccuracy(obj) {
+        return this.mapValuesDeep(obj, (a) => {
+            if (typeof a == 'number') return this.limitAccuracy(a, 5);
+            else return a;
+        });
+    }
+
+    mapValuesDeep(v, callback: Function) {
+        if (isObject(v)) return mapValues(v, v => this.mapValuesDeep(v, callback));
+        else return callback(v);
     }
 
     limitAccuracy(number: number, length: number) {
