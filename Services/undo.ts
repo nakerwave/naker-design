@@ -7,6 +7,7 @@ import merge from 'lodash/merge';
 import transform from 'lodash/transform';
 import isPlainObject from 'lodash/isPlainObject';
 import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
 import mapValues from 'lodash/mapValues';
 
 import hotkeys from 'hotkeys-js';
@@ -39,6 +40,8 @@ export class Undo {
 
     pushState() {
         let json = this.getProjectRoundedJson();
+        console.log(json);
+        
         let projectJson = cloneDeep(json);
         if (isEqual(projectJson, this.presentState)) return; // Nothing has Change
         let backChange = this.getDifference(this.presentState, projectJson);
@@ -58,7 +61,9 @@ export class Undo {
         this.sendToSaveListeners(this.presentState);
     }
 
-    getProjectJson() { }
+    getProjectJson() {
+        return {};
+     }
 
     getProjectRoundedJson() {
         return this.limitObjectAccuracy(this.getProjectJson());
@@ -100,7 +105,7 @@ export class Undo {
     }
 
     mapValuesDeep(v, callback: Function) {
-        if (isObject(v)) return mapValues(v, v => this.mapValuesDeep(v, callback));
+        if (isObject(v) && !isArray(v)) return mapValues(v, v => this.mapValuesDeep(v, callback));
         else return callback(v);
     }
 

@@ -456,6 +456,10 @@ export class Session {
         return this.projectid;
     }
 
+    getEngine() {
+        return this.engine;
+    }
+
     getRedirect() {
         return this.redirect;
     }
