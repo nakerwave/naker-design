@@ -35,12 +35,13 @@ export class Undo {
 
     saveState() {
         let json = this.getProjectRoundedJson();
+        // console.log(json);
         this.presentState = cloneDeep(json);
     }
 
     pushState() {
         let json = this.getProjectRoundedJson();
-        console.log(json);
+        // console.log(json);
         
         let projectJson = cloneDeep(json);
         if (isEqual(projectJson, this.presentState)) return; // Nothing has Change

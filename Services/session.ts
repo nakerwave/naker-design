@@ -325,10 +325,6 @@ export class Session {
                     this.currentlySaving = false;
                     return console.error("You can't save project online without a projectid and engine");
                 }
-                let now = new Date().getTime();
-                // Avoid sending a lot of request when focus is back on window for instance
-                if (now - this.lastsave < frequency * 800) return;
-                this.lastsave = now;
                 this.save();
             }
         }, frequency * 1000);
@@ -410,6 +406,11 @@ export class Session {
     failednumber = 0;
     saveOnline(json: any, callback: Function) {
         if (!this.engine) return;
+        // Avoid sending a lot of request when focus is back on window for instance
+        // Maximum one save every 5 seconds
+        let now = new Date().getTime();
+        if (now - this.lastsave < 5000) return;
+        this.lastsave = now;
         this.api.post(this.engine + '/save', { id: this.projectid, }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             this.saved = data.success;

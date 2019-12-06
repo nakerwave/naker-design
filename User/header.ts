@@ -35,6 +35,12 @@ export class Header {
             if (user) this.setUserPearl(user);
             this.checkUserAndProject();
         });
+
+        document.addEventListener('mouseout', (evt) => {
+            if (evt.toElement == null && evt.relatedTarget == null) {
+                this.session.saveOnlineAndLocal(() => {});
+            }
+        })
     }
 
     setLogo(nakerImg: string) {
@@ -44,17 +50,29 @@ export class Header {
 
     setContent() {
         this.control = el('div.preset-layer', [
-            this.logoEl = el('a.dashboard-button', { href: '/dashboard/' + this.session.engine }),
+            this.logoEl = el('div.dashboard-button', { 
+                // href: '/dashboard/' + this.session.engine,
+                onclick: (evt) => { this.goToDashboard() },
+            }),
             this.loaderEl = el('div.loader'),
             this.projectname = el('input.project-name', {
                 type: 'text',
                 placeholder: "Project's name",
+                autocomplete: "none",
+                // autocomplete: "off",
                 onblur: (evt) => { this.saveName(evt) },
                 onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
             }),
             this.projectsave = el('div.button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
         ]);
         mount(document.body, this.control);
+    }
+
+    goToDashboard() {
+        // Save before leave
+        this.session.saveOnlineAndLocal(() => {
+            window.location.href = '/dashboard/' + this.session.engine;
+        });
     }
 
     _setEvents() {
