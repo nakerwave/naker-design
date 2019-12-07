@@ -120,6 +120,12 @@ export class Session {
             if (this.saveBeforeUnload) this.save();
         });
 
+        document.addEventListener('mouseout', (evt) => {
+            if (evt.toElement == null && evt.relatedTarget == null) {
+                this.saveOnlineAndLocal(() => { });
+            }
+        });
+
         window.addEventListener('focus', () => {
             let userCookie = Cookies.get('token');
             if (this.save) {
@@ -405,7 +411,7 @@ export class Session {
     saved = false;
     failednumber = 0;
     saveOnline(json: any, callback: Function) {
-        if (!this.engine) return;
+        if (!this.engine || !this.saving) return;
         // Avoid sending a lot of request when focus is back on window for instance
         // Maximum one save every 5 seconds
         let now = new Date().getTime();

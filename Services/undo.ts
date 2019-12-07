@@ -64,7 +64,11 @@ export class Undo {
 
     getProjectJson() {
         return {};
-     }
+    }
+
+    getProjectJsonString() {
+        return {};
+    }
 
     getProjectRoundedJson() {
         return this.limitObjectAccuracy(this.getProjectJson());

@@ -35,12 +35,6 @@ export class Header {
             if (user) this.setUserPearl(user);
             this.checkUserAndProject();
         });
-
-        document.addEventListener('mouseout', (evt) => {
-            if (evt.toElement == null && evt.relatedTarget == null) {
-                this.session.saveOnlineAndLocal(() => {});
-            }
-        })
     }
 
     setLogo(nakerImg: string) {
