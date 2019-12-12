@@ -20,6 +20,7 @@ export class Header {
     logoEl: HTMLElement;
     loaderEl: HTMLElement;
     projectname: HTMLElement;
+    formname: HTMLElement;
     projectsave: HTMLElement;
 
     constructor(session: Session, undo: Undo) {
@@ -49,14 +50,16 @@ export class Header {
                 onclick: (evt) => { this.goToDashboard() },
             }),
             this.loaderEl = el('div.loader'),
-            this.projectname = el('input.project-name', {
-                type: 'text',
-                placeholder: "Project's name",
-                autocomplete: "none",
-                // autocomplete: "off",
-                onblur: (evt) => { this.saveName(evt) },
-                onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
-            }),
+            this.formname = el('form', { autocomplete: "off" },
+                this.projectname = el('input.project-name', {
+                    type: 'text',
+                    placeholder: "Project's name",
+                    // autocomplete: "none",
+                    autocomplete: "off",
+                    onblur: (evt) => { this.saveName(evt) },
+                    onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
+                }),
+            ),
             this.projectsave = el('div.button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
         ]);
         mount(document.body, this.control);
@@ -96,12 +99,12 @@ export class Header {
         if (!this.session.api.isConnected() || !this.session.saving) {
             mount(this.control, this.projectsave);
             unmount(this.control, this.loaderEl);
-            unmount(this.control, this.projectname);
+            unmount(this.control, this.formname);
             this.userPearl.setIcoSphere();
         } else {
             unmount(this.control, this.projectsave);
             mount(this.control, this.loaderEl);
-            mount(this.control, this.projectname);
+            mount(this.control, this.formname);
             
             if (this.session.user) this.setUserPearl(this.session.user);
             
