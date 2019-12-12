@@ -85,9 +85,6 @@ export class Session {
     sentry: boolean;
     admin: boolean;
 
-    // If all condition ok, then true
-    currentlySaving = false;
-
     constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo) {
         this.setEngine(engine);
         
@@ -111,18 +108,14 @@ export class Session {
         api.setHost(this.apiurl);
         api.onDisconnected = () => {
             this.setProjectId('');
-            this.currentlySaving = false;
+            this.stopOnlineSaving();
             this.sendDisconnectToListeners();
         };
         this.checkProjectId();
 
-        window.addEventListener('beforeunload', () => {
-            if (this.saveBeforeUnload) this.save();
-        });
-
         document.addEventListener('mouseout', (evt) => {
             if (evt.toElement == null && evt.relatedTarget == null) {
-                this.saveOnlineAndLocal(() => { });
+                if (this.projectid) this.saveOnlineAndLocal(() => { });
             }
         });
 
@@ -290,7 +283,8 @@ export class Session {
     projectFound(callback: Function, project: any) {
         callback(project);
         // Start auto save after get project to make sure we don't save empty project
-        this.startAutoSave(30, 5);
+        this.startLocalSaving(5);
+        if (project && this.projectid) this.startOnlineSaving(30);
     }
 
     createNew(callback?: Function) {
@@ -298,9 +292,9 @@ export class Session {
         this.api.post(this.engine + '/new', {name:'New '+ this.engine}, {}, (data) => {
             if (data.success) {
                 this.setProjectId(data.id);
-                this.currentlySaving = true;
                 this.sendConnectToListeners(this.user);
-                this.save();
+                this.startOnlineSaving(30);
+                // this.save();
             } else {
                 toastr.error('🤷 Oups, there was an error while saving your project');
             }
@@ -322,51 +316,47 @@ export class Session {
 
     lastsave: any;
     lastlocalsave: any;
-    startAutoSave(frequency: number, localfrequency?: number) {
-        this.lastsave = new Date().getTime();
-
+    savingInterval: any;
+    startLocalSaving(localfrequency: number) {
         setInterval(() => {
-            if (document.hasFocus() && this.currentlySaving) {
+            if (document.hasFocus()) {
+                let now = new Date().getTime();
+                if (now - this.lastlocalsave < localfrequency * 800) return;
+                this.lastlocalsave = now;
+                this.saveLocal();
+            }
+        }, localfrequency * 1000);
+    }
+
+    startOnlineSaving(frequency: number) {
+        this.lastsave = new Date().getTime();
+        this.savingInterval = setInterval(() => {
+            if (document.hasFocus()) {
                 if (!this.projectid || !this.engine) {
-                    this.currentlySaving = false;
+                    this.stopOnlineSaving();
                     return console.error("You can't save project online without a projectid and engine");
                 }
                 this.save();
+                if (this.getThumbnailImage) {
+                    this.getThumbnailImage((image) => {
+                        this.uploadImage(image);
+                    });
+                }
             }
         }, frequency * 1000);
+    }
 
-        if (localfrequency) {
-            setInterval(() => {
-                if (document.hasFocus()) {
-                    let now = new Date().getTime();
-                    // Avoid sending a lot of request when focus is back on window for instance
-                    if (now - this.lastlocalsave < frequency * 800) return;
-                    this.lastlocalsave = now;
-                    this.saveLocal();
-                }
-            }, localfrequency * 1000);
-        }
+    stopOnlineSaving() {
+        clearInterval(this.savingInterval);
+    }
+
+    setThumbnailFunction(getImage: Function) {
+        this.getThumbnailImage = getImage;
     }
 
     lastimagesave: any;
-    startImageSave(getImage: Function, frequency: number) {
-        this.lastimagesave = new Date().getTime();
-        setInterval(() => {
-            if (document.hasFocus() && this.currentlySaving) {
-                if (!this.projectid || !this.engine) {
-                    this.currentlySaving = false;
-                    return console.error("You can't update image online without a projectid and engine");
-                }
-                let now = new Date().getTime();
-                // Avoid sending a lot of request when focus is back on window for instance
-                if (now - this.lastimagesave < frequency * 800) return;
-                this.lastimagesave = now;
-                getImage((image) => {
-                    this.uploadImage(image);
-                });
-            }
-        }, frequency * 1000);
-    }
+    savingImageInterval: any;
+    getThumbnailImage: Function;
 
     errorshown = false;
     save() {
