@@ -23,12 +23,12 @@ export class Undo {
     pastChange: Array<Change> = [];
     futureChange: Array<Change> = [];
 
-    listenShortcut() {
-        hotkeys('command+z,ctrl+z', (event, param) => {
+    constructor() {
+        hotkeys('command+z,ctrl+z,⌘+z', (event, param) => {
             this.back();
         });
 
-        hotkeys('command+shift+z,ctrl+shift+z', (event, param) => {
+        hotkeys('command+⇧+z,ctrl+⇧+z,⌘+⇧+z', (event, param) => {
             this.forward();
         });
     }

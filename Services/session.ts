@@ -194,9 +194,11 @@ export class Session {
 
     connectListeners: Array<Function> = [];
     disconnectListeners: Array<Function> = [];
-    on(event: 'connect'|'disconnect', funct: Function) {
+    saveListeners: Array<Function> = [];
+    on(event: 'connect'|'disconnect'|'save', funct: Function) {
         if (event == 'connect') this.connectListeners.push(funct);
         if (event == 'disconnect') this.disconnectListeners.push(funct);
+        if (event == 'save') this.saveListeners.push(funct);
     }
 
     sendConnectToListeners(data: User) {
@@ -208,6 +210,12 @@ export class Session {
     sendDisconnectToListeners() {
         for (let i = 0; i < this.disconnectListeners.length; i++) {
             this.disconnectListeners[i]();
+        }
+    }
+
+    sendSaveToListeners() {
+        for (let i = 0; i < this.saveListeners.length; i++) {
+            this.saveListeners[i]();
         }
     }
 
@@ -387,6 +395,10 @@ export class Session {
         this.savingLocal = savingLocal;
     }
 
+    setSavingOnline(saving: boolean) {
+        this.saving = saving;
+    }
+
     saveLocal() {
         if (!this.savingLocal) return;
         let projectJson = this.undo.getProjectJson();
@@ -401,12 +413,17 @@ export class Session {
     saved = false;
     failednumber = 0;
     saveOnline(json: any, callback: Function) {
-        if (!this.engine || !this.saving) return;
+        if (!this.engine || !this.saving) return callback(false);
         // Avoid sending a lot of request when focus is back on window for instance
         // Maximum one save every 5 seconds
         let now = new Date().getTime();
-        if (now - this.lastsave < 5000) return;
+        if (now - this.lastsave < 5000) return callback(true);
         this.lastsave = now;
+        this.requestSaveOnline(json, callback);
+    }
+
+    requestSaveOnline(json: any, callback: Function) {
+        this.sendSaveToListeners();
         this.api.post(this.engine + '/save', { id: this.projectid, }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             this.saved = data.success;

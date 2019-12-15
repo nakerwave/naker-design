@@ -62,16 +62,16 @@ export class ToolBox {
     benchEl: HTMLElement;
     addPerformance(canvas:HTMLCanvasElement, parent:HTMLElement, scene:any) {
 
-        this.perfEl = el('div.help-layer',
+        this.perfEl = el('div.perf-layer',
             [
                 this.benchEl = el('div'),
-                el('div.help-container',
+                el('div.perf-container',
                     [
                         el('div.performance-label', 'Vertices'),
                         this.vertices = el('div.performance-value', '120'),
                     ]
                 ),
-                el('div.help-container',
+                el('div.perf-container',
                     [
                         el('div.performance-label', 'Meshes'),
                         this.meshes = el('div.performance-value', '120'),
@@ -101,7 +101,7 @@ export class ToolBox {
 
         
         let perfVisible = false;
-        this.addTool('performance', 'Performance', () => {
+        this.addTool('performance', 'Show/Hide Performance', () => {
             if (perfVisible) {
                 setStyle(this.perfEl, { display: 'none' });
                 if (this.perfInterval) clearInterval(this.perfInterval);
