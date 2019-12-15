@@ -181,6 +181,28 @@ export class ColorPicker extends UI {
             },
         });
 
+        this.picker.on('change', (color, instance) => {
+
+            // We gonna need the dom-element "palette" later
+            const { palette } = instance.getRoot().palette;
+
+            // Pickr the current hue value
+            const [h] = color.toHSVA();
+
+            // Pickr will update the colors in the first frame, so we need to wait until everything got updated
+            requestAnimationFrame(() => {
+
+                // After pickr updated the colors we gonna apply our own without opacity
+                // Corresponding source: https://github.com/Simonwep/pickr/blob/master/src/js/pickr.js#L250
+                palette.style.background = `
+                    linear-gradient(to top, rgb(0, 0, 0), transparent),
+                    linear-gradient(to left, hsl(${h}, 100%, 50%), rgba(255, 255, 255))
+                `;
+            });
+
+            console.log('change', color, instance);
+        });
+
         this.opacityPicker = document.querySelector('.pcr-color-opacity');
         this.chooserPicker = document.querySelector('.pcr-color-chooser');
     }

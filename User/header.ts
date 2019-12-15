@@ -50,7 +50,7 @@ export class Header {
                 onclick: (evt) => { this.goToDashboard() },
             }),
             this.loaderEl = el('div.loader'),
-            this.formname = el('form', { autocomplete: "off" },
+            this.formname = el('form', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
                 this.projectname = el('input.project-name', {
                     type: 'text',
                     placeholder: "Project's name",
