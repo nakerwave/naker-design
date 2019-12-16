@@ -33,7 +33,7 @@ export class SliderInput extends Input {
     constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
         super(parent, label);
         setAttr(this.parent, { class: 'input-container input-container-big' });
-        this.el = parent;
+        this.el = this.parent;
         this.defaultValue = slideroption.value;
         if (slideroption.step) this.step = slideroption.step;
         if (slideroption.curve) this.curve = slideroption.curve;

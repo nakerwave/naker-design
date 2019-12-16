@@ -32,7 +32,6 @@ export class Session {
     projectid: string;
     designer: string;
     name: string;
-    getProjectJson: Function;
 
     environments = {
         app: {
@@ -336,7 +335,9 @@ export class Session {
         }, localfrequency * 1000);
     }
 
+    onlineFrequency: number;
     startOnlineSaving(frequency: number) {
+        this.onlineFrequency = frequency;
         this.lastsave = new Date().getTime();
         this.savingInterval = setInterval(() => {
             if (document.hasFocus()) {
@@ -413,6 +414,7 @@ export class Session {
     saved = false;
     failednumber = 0;
     saveOnline(json: any, callback: Function) {
+        if (!this.lastsave) return callback(false);
         if (!this.engine || !this.saving) return callback(false);
         // Avoid sending a lot of request when focus is back on window for instance
         // Maximum one save every 5 seconds
@@ -427,27 +429,42 @@ export class Session {
         this.api.post(this.engine + '/save', { id: this.projectid, }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             this.saved = data.success;
+            this.checkError(data.success);
             callback(data.success);
-            if (data.success) this.failednumber = 0;
-            else this.failednumber++;
-            if (this.failednumber > 3) this.error("Error while saving your project");
         });
     }
 
+    uploadImageUrl = 'image';
     uploadImage(image: string, callback?: Function) {
         var fd = new FormData();
         fd.append("image", image);
         const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };
-        this.api.post(this.engine + '/image', { id: this.projectid }, { body: fd, header: header }, (data) => {
+        this.api.post(this.engine + '/' + this.uploadImage, { id: this.projectid }, { body: fd, header: header }, (data) => {
             if (callback) callback(data.success, data.image);
         });
     }
 
+    checkError(success: boolean) {
+        if (success) this.failednumber = 0;
+        else this.failednumber++;
+
+        if (this.failednumber > 3) {
+            this.failednumber = 0;
+            this.errorshown = true;
+            toastr.error('We currently have difficulties saving your project 😱, we will try again later 🕵️');
+        } else if (this.errorshown) {
+            this.errorshown = false;
+            toastr.success('We manage to save your project again 👨‍🔧, you are good to go!');
+        }
+    }
+
     error(text: string) {
         toastr.error('🤷 ' + text + ', you will be redirected to your dashboard');
-        setTimeout(() => {
-            window.location.assign('/dashboard/projects');
-        }, 5000);
+        if (this.getRedirect()) {
+            setTimeout(() => {
+                window.location.assign('/dashboard/' + this.engine);
+            }, 5000);
+        }
     }
 
     getSave() {
