@@ -1,5 +1,3 @@
-
-    
 .preset-layer
     z-index: 10
     position: fixed
@@ -41,11 +39,16 @@
         height: 200px
         object-fit: contain
         
-.naker-img
+.naker-engine
+    font-family: 'jaapokkiregular'
     position: absolute
     width: 150px
-    top: 19px
-    left: 80px
+    top: 13px
+    left: 65px
+    font-size: 25px
+
+    .engine
+        display: inline-block
 
 .project-name
     position: absolute !important
@@ -65,3 +68,18 @@
 .project-save
     position: absolute !important
     right: 250px !important
+
+.dashboard-button
+    position: absolute
+    height: 24px
+    width: 24px
+    padding: 18px
+    font-size: 24px
+    color: $colormain
+    border-radius: 0px
+    text-decoration: none
+    transition: all 100ms ease
+    cursor: pointer
+    &:hover
+        color: $colorgrey
+        background: $colormain

@@ -31,6 +31,7 @@ export class Header {
         this._setEvents();
         this.addLoginModal();
         this.checkUserAndProject();
+        this.setLogo();
 
         session.getUser((user: User) => {
             if (user) this.setUserPearl(user);
@@ -38,15 +39,18 @@ export class Header {
         });
     }
 
-    setLogo(nakerImg: string) {
-        let img = el('img.naker-img', { src: nakerImg });
-        mount(this.control, img);
+    setLogo() {
+        let EngineName = this.session.engine.charAt(0).toUpperCase() + this.session.engine.slice(1);
+        
+        let logo = el('div.naker-engine', 'Naker',
+            el('div.engine.color' + this.session.engine, '.' + EngineName)
+        );
+        mount(this.control, logo);
     }
 
     setContent() {
         this.control = el('div.preset-layer', [
             this.logoEl = el('div.dashboard-button', { 
-                // href: '/dashboard/' + this.session.engine,
                 onclick: (evt) => { this.goToDashboard() },
             }),
             this.loaderEl = el('div.loader'),

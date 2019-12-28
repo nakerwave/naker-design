@@ -128,7 +128,8 @@ export class Session {
         });
 
         this.undo.on('save', () => {
-            this.saveLocal();
+            let projectJson = this.undo.getProjectJson();
+            this.saveLocal(projectJson);
         });
     }
 
@@ -316,7 +317,8 @@ export class Session {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
             } else {
                 this.name = name;
-                this.saveLocal();
+                let projectJson = this.undo.getProjectJson();
+                this.saveLocal(projectJson);
             }
         });
     }
@@ -330,7 +332,8 @@ export class Session {
                 let now = new Date().getTime();
                 if (now - this.lastlocalsave < localfrequency * 800) return;
                 this.lastlocalsave = now;
-                this.saveLocal();
+                let projectJson = this.undo.getProjectJson();
+                this.saveLocal(projectJson);
             }
         }, localfrequency * 1000);
     }
@@ -387,7 +390,7 @@ export class Session {
         if (isEqual(projectJson, this.lastexport) && this.saved) {
             return callback(true);
         }
-        this.saveLocal();
+        this.saveLocal(projectJson);
         this.saveOnline(projectJson, callback)
         this.lastexport = cloneDeep(projectJson);
     }
@@ -400,11 +403,10 @@ export class Session {
         this.saving = saving;
     }
 
-    saveLocal() {
+    saveLocal(json) {
         if (!this.savingLocal) return;
-        let projectJson = this.undo.getProjectJson();
         let project: any = {};
-        project.json = projectJson;
+        project.json = json;
         project.name = this.name;
         project.engine = this.engine;
         if (this.projectid) project.id = this.projectid;
@@ -425,7 +427,7 @@ export class Session {
     }
 
     requestSaveOnline(json: any, callback: Function) {
-        this.sendSaveToListeners();
+        this.sendSaveToListeners();        
         this.api.post(this.engine + '/save', { id: this.projectid, }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             this.saved = data.success;
@@ -434,12 +436,13 @@ export class Session {
         });
     }
 
-    uploadImageUrl = 'image';
+    uploadImageUrl;
     uploadImage(image: string, callback?: Function) {
         var fd = new FormData();
         fd.append("image", image);
         const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };
-        this.api.post(this.engine + '/' + this.uploadImage, { id: this.projectid }, { body: fd, header: header }, (data) => {
+        let uploadImageUrl = (this.uploadImageUrl) ? this.uploadImageUrl : this.engine + '/image';
+        this.api.post(uploadImageUrl, { id: this.projectid }, { body: fd, header: header }, (data) => {
             if (callback) callback(data.success, data.image);
         });
     }

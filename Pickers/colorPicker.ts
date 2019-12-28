@@ -199,8 +199,6 @@ export class ColorPicker extends UI {
                     linear-gradient(to left, hsl(${h}, 100%, 50%), rgba(255, 255, 255))
                 `;
             });
-
-            console.log('change', color, instance);
         });
 
         this.opacityPicker = document.querySelector('.pcr-color-opacity');
