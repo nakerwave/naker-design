@@ -1,0 +1,50 @@
+
+@import '_colors'
+
+/***************************************** PICKERS ****************************************
+
+.picker
+    border-radius: 10px
+    z-index: 200
+
+.picker-title
+    left: 0px
+    top: 0px
+    width: calc(100% - 5px)
+    height: 20px
+    line-height: 20px
+    padding-left: 5px
+    font-size: 15px
+    text-transform: capitalize
+    color: $colortext
+    border-radius: 5px 5px 0px 0px
+    background-color: $colormain
+
+.picker-title-text
+    position:  absolute
+    left: 10px
+
+.erase-icon
+    display: inline-block
+    position: relative
+    float: right
+    cursor: pointer
+    font-size: 16px
+    top: 2px
+    right: $defaultwidthinput + 3px
+    color:$colorthirdgrey
+.erase-icon[active='true']
+    color:$colormain
+
+.picker-button
+    position: absolute
+    right: 0px
+    border: 2px solid $colorthirdgrey
+    width: $defaultwidthinput - 4px
+    height: $defaultheightinput - 4px
+    border-radius: $defaultborderradius
+    border-color: $colorthirdgrey
+    cursor: pointer
+
+.picker-button[active='true']
+    border-color: $colormain

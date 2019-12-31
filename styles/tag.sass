@@ -6,7 +6,7 @@
 .tag-container
     position: sticky
     width: 100%
-    height: 20px
+    height: 70px
     top: 0px
     background: $colorgrey
     z-index: 100
@@ -16,21 +16,24 @@
 .tag-option-container
     position: relative
     display: inline-block
-    float: right
     top: 0px
-    right: 10px
-    width: 100px
+    left: 0px
+    width: 100%
     height: 30px
     font-size: 18px
     color: $colorsecondtext
 
 .tag-option-button
-    font-size: 20px
-    width: 30px
+    position: absolute
+    width: 74px
     top: 0px
     color: $colormain
-    display: block
+    display: inline-block
     z-index: 10
+    float: left
+    height: 25px
+    line-height: 25px
+    font-size: 17px
 
 .tag-input
     position: relative
@@ -38,14 +41,11 @@
     float: left
     left: 0px
     top: 0px
-    width: 140px
+    width: 230px
     height: 20px
     font-size: 14px !important
-    background: $colorgrey !important
     border: 0px !important
     font-weight: 600
-    &[active='true']
-        background: $colorthirdgrey !important
 
 
 .copy-icon

@@ -64,7 +64,7 @@ export class Header {
                     onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
                 }),
             ),
-            this.projectsave = el('div.button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
+            this.projectsave = el('div.nav-button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
         ]);
         mount(document.body, this.control);
     }

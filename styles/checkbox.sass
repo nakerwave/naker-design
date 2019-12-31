@@ -6,6 +6,7 @@
 // Website:    https://www.siimple.xyz
 //
 @import "colors.sass"
+@import '_variables'
 
 //Checkbox variables
 $siimple-checkbox-width: 18px
@@ -18,7 +19,7 @@ $siimple-checkbox-height: 18px
     width: $siimple-checkbox-width
     height: $siimple-checkbox-height
     top: 2px
-    left: 226px !important
+    right: $defaultrightinput
     vertical-align: top
     //Checkbox label
     label
@@ -28,7 +29,7 @@ $siimple-checkbox-height: 18px
         transition: all 0.3s
         position: absolute
         top: 0
-        left: 0
+        right: 0
         border-radius: 2px
         background: $colorthirdgrey
         //Tick

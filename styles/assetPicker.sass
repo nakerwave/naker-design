@@ -1,17 +1,7 @@
 
 @import '_colors'
 @import '_variables'
-
-.erase-icon
-    display: inline-block
-    position: relative
-    cursor: pointer
-    font-size: 16px
-    top: 2px
-    left: 46px
-    color:$colorthirdgrey
-.erase-icon[active='true']
-    color:$colormain
+@import 'sharedPickerStyle'
 
 .modal-close
     position: absolute
@@ -112,19 +102,6 @@
     border-radius: 8px
     z-index: 1
 
-.picker-button
-    position: absolute
-    left: 66px
-    border: 2px solid $colorthirdgrey
-    width: 36px
-    height: 16px
-    border-radius: $defaultborderradius
-    border-color: $colorthirdgrey
-    cursor: pointer
-
-.picker-button[active='true']
-    border-color: $colormain
-
 /***************************************** IMAGE ASSET BUTTON ****************************************
 
 .input-asset-image
@@ -134,8 +111,9 @@
     margin-bottom: 8px
     background: $colordarkgrey
     cursor: pointer
-    width: $defaultwithinput
-    left: 135px
+    width: $defaultwidthinputcontainer
+    right: $defaultrightinput
+    float: right
     &:hover
         .image-hover
             opacity: 1
@@ -172,10 +150,10 @@
 .input-asset-text
     position: relative
     height: auto
-    min-height: 22px
+    min-height: $defaultheightinput
     margin-bottom: 8px
     cursor: pointer
-    width: $defaultwithinput
+    width: $defaultwidthinputcontainer
     font-size: 13px
     &:hover
         .text-hover
@@ -187,7 +165,7 @@
     background: $colormain
     border-radius: 5px
     height: auto
-    width: $defaultwithinput - 30
+    width: $defaultwidthinputcontainer - 30
     opacity: 0
     z-index: 10
     padding: 5px
@@ -203,7 +181,7 @@
     left: 22px
     background: $colordarkgrey
     border-radius: 5px
-    width: $defaultwithinput - 30
+    width: $defaultwidthinputcontainer - 30
     height: auto
     padding: 5px
     overflow: hidden

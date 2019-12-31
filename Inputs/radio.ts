@@ -1,5 +1,5 @@
 
-import { Input, inputEvents, defaultwithinput } from './input';
+import { Input, inputEvents, defaultwidthinputcontainer } from './input';
 
 import { el, mount, setAttr, setStyle, setChildren, RedomElement } from 'redom';
 
@@ -114,7 +114,7 @@ export class RadioIconInput extends Input {
 
     radiobuttons: Array<any> = [];
     setInput(label: string, radiooption: radioiconoption) {
-        let width = defaultwithinput / this.iconperline;
+        let width = defaultwidthinputcontainer / this.iconperline;
         for (let i = 0; i < this.option.length; i++) {
             let value = this.option[i];
             let icon = (radiooption.iconLink) ? radiooption.iconLink[value] : value;

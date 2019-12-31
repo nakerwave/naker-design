@@ -1,5 +1,5 @@
 
-import { defaultwithinput, Input } from '../Inputs/input';
+import { defaultwidthinputcontainer, Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle, unmount } from 'redom';
@@ -172,7 +172,7 @@ export class ImageAssetButton extends BaseAssetButton {
                 el('div.image-text-container.image-hover',
                     this.hover = el('div.image-hover-text', 'Replace ' + this.type)
                 ),
-                this.image = el('img', { src: '', style: { width: defaultwithinput + 'px', 'background-size': 'contain', display: 'none' } }),
+                this.image = el('img', { src: '', style: { width: defaultwidthinputcontainer + 'px', 'background-size': 'contain', display: 'none' } }),
                 this.textDisplay = el('div.image-text-container',
                     this.text = el('div.image-hover-text', '')
                 ),
