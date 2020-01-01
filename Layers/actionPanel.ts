@@ -228,7 +228,7 @@ export class InputGroupSwitch extends InputGroup {
         if (expandable === false) {
             if (title) {
                 unmount(this.titleParent, this.expand);
-                setAttr(this.title, { class: 'title-text' });
+                setAttr(this.title, {class:''};)
             }
         }
     }
@@ -236,7 +236,7 @@ export class InputGroupSwitch extends InputGroup {
     titleParent: HTMLElement;
     addTitle(title: string) {
         this.titleParent = el('div.parameter-title',
-            this.title = el('div.title-text.switch-title', title),
+            this.title = el('div.switch-title', title),
             this.expand = el('div.title-expand.icon-expand', { onclick: () => { this.switch() } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             ),

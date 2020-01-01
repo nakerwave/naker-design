@@ -74,20 +74,27 @@
     color: inherit
 
 .input-button
-    position: relative
-    line-height: 20px
     height: 30px
-    line-height: 30px
-    font-size: 13px
+    line-height: 30px !important
     font-weight: 600
-    left: 55px
-    width: 150px
-    margin: 5px 0px
     text-align: center
     border-radius: 5px
     cursor: pointer
     transition: all 200ms ease
-    color: rgba($colortext, 0.8)
+    color: $colortext
+    opacity: 0.8
+    background: $colorthirdgrey
     &:hover
         box-shadow: 0px 0px 2px 2px $colordarkgrey
-        color: rgba($colortext, 1)
+        opacity: 1
+        // color: rgba($colortext, 1)
+
+.input-button-center
+    font-size: 13px
+    position: relative
+    margin: 5px 0px
+    left: 55px
+    width: 150px
+
+.input-button-icon
+    font-size: 18px 

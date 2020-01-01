@@ -40,7 +40,7 @@ export class Inventory extends InputGroup {
     setSaveInputs(placeholder: string) {
         this.placeholder = placeholder;
         let children = [
-            el('div.parameter-title', el('div.title-text', { style: { left: '3px' } }, placeholder + 's Inventory')),
+            el('div.parameter-title', el('div', { style: { left: '3px' } }, placeholder + 's Inventory')),
             this.nameinput = el('input.inventory-input', {
                 type: 'text',
                 placeholder: placeholder + ' name',

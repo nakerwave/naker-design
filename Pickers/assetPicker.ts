@@ -169,8 +169,8 @@ export class ImageAssetButton extends BaseAssetButton {
         this.hideLabel();
         this.el = el('div.input-asset-image', { class: '', onclick: () => { this.focus() } },
             [
-                el('div.image-text-container.image-hover',
-                    this.hover = el('div.image-hover-text', 'Replace ' + this.type)
+                this.hover = el('div.text-hover.icon-add',
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
                 ),
                 this.image = el('img', { src: '', style: { width: defaultwidthinputcontainer + 'px', 'background-size': 'contain', display: 'none' } }),
                 this.textDisplay = el('div.image-text-container',
@@ -199,12 +199,11 @@ export class ImageAssetButton extends BaseAssetButton {
                 setStyle(this.image, { display: 'none' });
                 this.text.textContent = url.substr(url.lastIndexOf('/') + 1);
             }
-            this.hover.textContent = 'Replace ' + this.type;
+            setAttr(this.hover, { empty: false });
         } else {
             setStyle(this.textDisplay, { display: 'block' });
             setStyle(this.image, { display: 'none' });
-            this.text.textContent = 'No ' + this.type;
-            this.hover.textContent = 'Add ' + this.type;
+            setAttr(this.hover, { empty: true });
         }
         return this;
     }
@@ -226,27 +225,16 @@ export class TextAssetButton extends BaseAssetButton {
 
     constructor(parent: HTMLElement, label: string, assetoption: asset) {
         super(parent, label, assetoption);
-        this.el = el('div.input-asset-text.input-parameter', { onclick: () => { this.focus() } },
+        this.el = el('div.input-button.input-asset-text', { onclick: () => { this.focus() } },
             [
-                this.hover = el('div.text-hover', 'Replace'),
+                this.hover = el('div.text-hover.icon-add', 
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
                 this.text = el('div.text-asset-name', '')
             ],
-            this.asseticon = el('div.icon-' + this.type + '.text-erase-icon', { onclick: (evt) => { this.checkErase(evt) }, onmouseenter: () => { this.mouseEnter() }, onmouseleave: () => { this.mouseLeave() } }, [el('span.path1'), el('span.path2'), el('span.path3')])
         );
         mount(this.parent, this.el);
         if (assetoption.url) this.setValue(assetoption.url);
-    }
-
-    mouseEnter() {
-        if (this.url !== undefined) this.setIcon('delete');
-    }
-
-    mouseLeave() {
-        this.setIcon(this.type);
-    }
-
-    setIcon(icon: string) {
-        setAttr(this.asseticon, { class: 'icon-' + icon + ' text-erase-icon' });
     }
 
     setValue(url: string, frompicker?: any) {
@@ -257,10 +245,9 @@ export class TextAssetButton extends BaseAssetButton {
             if (!thumbnail) text = url.substr(url.lastIndexOf('/') + 1);
             else text = thumbnail;
             this.text.textContent = text;
-            this.hover.textContent = 'Replace ' + this.type;
+            setAttr(this.hover, { empty: false });
         } else {
-            this.text.textContent = 'No ' + this.type;
-            this.hover.textContent = 'Add ' + this.type;
+            setAttr(this.hover, { empty: true });
         }
         return this;
     }

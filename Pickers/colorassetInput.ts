@@ -13,18 +13,18 @@ export class ColorAssetInput extends Input {
     assetButton: AssetButton;
     constructor(parent: HTMLElement, label: string, coloroption: coloroption, asset: asset) {
         super(parent, label);
-        let vectorContainer = el('div.input-container')
-        mount(this.parent, vectorContainer);
+        let secondContainer = el('div');
+        mount(this.parent, secondContainer);
 
         // Force label for colorPicker
         this.colorButton = new ColorButton(parent, label, coloroption);
         unmount(parent, this.colorButton.parent);
-        mount(vectorContainer, this.colorButton.el);
+        mount(secondContainer, this.colorButton.el);
         setAttr(this.colorButton.el, { class: 'input-parameter-first' });
 
         this.assetButton = new AssetButton(parent, label, asset);
         unmount(parent, this.assetButton.parent);
-        mount(vectorContainer, this.assetButton.el);
+        mount(secondContainer, this.assetButton.el);
         setAttr(this.assetButton.el, { class: 'input-parameter-second' });
     }
 

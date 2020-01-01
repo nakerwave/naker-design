@@ -20,7 +20,7 @@ export class Button extends Input {
     constructor(parent: HTMLElement, textnode: textnode, className?: string) {
         super(parent, textnode.text)
         this.hideLabel();
-        if (!className) className = 'input-button button-primary';
+        if (!className) className = 'input-button input-button-center button-primary';
         this.textnode = textnode;
         if (textnode.ui == 'text') {
             this.el = el('div', { class: className }, textnode.text);
@@ -53,7 +53,7 @@ export class ImageButton extends Input {
     constructor(parent: HTMLElement, label:string, imageurl: string, className?: string) {
         super(parent, label);
         this.hideLabel();
-        if (!className) className = 'siimple-btn siimple-btn--primary siimple-btn--fluid input-button';
+        if (!className) className = 'input-button';
         this.el = el('div', { class: className });
         mount(this.parent, this.el);
         this.setImage(imageurl);

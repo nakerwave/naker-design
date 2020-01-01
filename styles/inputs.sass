@@ -28,7 +28,7 @@ input:focus, select:focus
 
 label
     color: $colorsecondtext
-    font-size: 12px
+    font-size: $defaultfontsizeinput
     z-index: 0
     text-transform: capitalize
     position: relative
@@ -38,7 +38,8 @@ label
     position: relative
     width: 100%
     left: 0px
-    min-height: $defaultheightinput + 10px
+    min-height: $defaultheightinput
+    height: auto
     margin: 5px 0px
 
 .input-container-big
@@ -61,7 +62,7 @@ label
 .input-parameter-second
     position: absolute
     height: $defaultheightinput
-    right: $defaultrightinput + 74px
+    right: $defaultrightinput + 88px
 
 .input-paragraph
     position: relative
@@ -69,7 +70,7 @@ label
     height: 250px
     left: 15px
     width: 230px
-    font-size: 12px
+    font-size: $defaultfontsizeinput
     line-height: 20px
     padding-left: 5px
 
@@ -83,26 +84,20 @@ label
     position: absolute
     left: 10px
     top: 4px
-    height: 25px
+    height: $defaultheightinput - 5px
+    line-height: $defaultheightinput - 5px
     color: $colortext
-    font-size: 16px
+    font-size: $defaultfontsizeinput
     &::first-letter
         text-transform: uppercase
 
 .input-label-paragraph
     position: relative !important
 
-.vector-container
-    position: absolute
-    width: 180px
-    height: $defaultheightinput
-    right: $defaultrightinput
-    top: 1px
-
 /***************************************** TEXT/NUMBER ****************************************/
 
 textarea
-    font-size: 12px
+    font-size: $defaultfontsizeinput
     color: $colortext
     background: $colorinputbackground
     border: 0px
@@ -114,12 +109,13 @@ textarea
     
 input
     &[type="text"], &[type="number"]
-        font-size: 12px
         color: $colortext
         background: $colorinputbackground
         border: 2px solid $colorinputbackground
         border-radius: $defaultborderradius
         height: $defaultheightinput
+        width: $defaultwidthinput
+        font-size: $defaultfontsizeinput
         padding-left: 5px
         padding-right: 0px
         z-index: 2
@@ -156,13 +152,32 @@ input
 
 .input-unit
     position: absolute
-    top: 4px
-    font-size: 12px
+    height: $defaultheightinput
+    line-height: $defaultheightinput
+    right: $defaultrightinput + 3px
+    font-size: $defaultfontsizeinput
+    border-radius: $defaultborderradius
     z-index: 50
     background: $colorinputbackground
     text-align: center
     color: $colorlightgrey
 
-// .vector-input
-//     margin-right: 5px
-//     position: absolute
+
+/***************************************** VECTOR ****************************************/
+    
+.vector-container
+    position: absolute
+    width: 220px
+    height: $defaultheightinput
+    right: $defaultrightinput
+    top: 1px
+
+.vector-input
+    float: right
+    margin-left: 10px
+    position: relative !important
+
+.vector-title
+    padding-left: 64px
+    letter-spacing: 29px
+    font-size: $defaultfontsizeinput

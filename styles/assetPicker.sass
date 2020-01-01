@@ -42,10 +42,6 @@
         height: 100%
         overflow: hidden auto
 
-// .picker-with-dropzone
-//     .asset-scroll
-//         height: calc(100% - 110px)
-
 .asset-button
     position: relative
     width: 80px
@@ -115,7 +111,7 @@
     right: $defaultrightinput
     float: right
     &:hover
-        .image-hover
+        .text-hover
             opacity: 1
 
 .image-text-container
@@ -145,52 +141,53 @@
     overflow: hidden
     text-overflow: ellipsis
 
-/***************************************** TEXT ASSET BUTTON ****************************************
-
-.input-asset-text
-    position: relative
-    height: auto
-    min-height: $defaultheightinput
-    margin-bottom: 8px
-    cursor: pointer
-    width: $defaultwidthinputcontainer
-    font-size: 13px
-    &:hover
-        .text-hover
-            opacity: 1
-
 .text-hover
     position: absolute
-    left: 22px
-    background: $colormain
+    height: 100%
+    width: 100%
     border-radius: 5px
-    height: auto
-    width: $defaultwidthinputcontainer - 30
+    line-height: $defaultwidthinput !important
+    font-size: $defaultfontsizeinput
+    background: $colorthirdgrey
+    font-size: 30px
     opacity: 0
     z-index: 10
-    padding: 5px
     color: $colortext
     text-align: center
     transition: opacity 200ms ease
     overflow: hidden
-    white-space: nowrap
-    text-overflow: ellipsis
+    &[empty="true"]
+        opacity: 1
 
-.text-asset-name
-    position: absolute
-    left: 22px
-    background: $colordarkgrey
-    border-radius: 5px
-    width: $defaultwidthinputcontainer - 30
-    height: auto
-    padding: 5px
-    overflow: hidden
-    white-space: nowrap
-    text-overflow: ellipsis
+/***************************************** TEXT ASSET BUTTON ****************************************
+
+.input-asset-text
+    position: relative
+    float: right
+    right: 10px
+    height: $defaultwidthinput !important
+    width: $defaultwidthinput
+    cursor: pointer
+    &:hover
+        .text-hover
+            opacity: 1
+
+    .text-asset-name
+        position: absolute
+        width: calc(100% - 5px)
+        height: 100%
+        border-radius: 5px
+        background: $colorthirdgrey
+        font-size: $defaultfontsizeinput
+        line-height: $defaultheightinput
+        padding-left: 5px
+        overflow: hidden
+        white-space: nowrap
+        text-overflow: ellipsis
 
 .text-erase-icon
     position: absolute
     cursor: pointer
-    font-size: 16px
+    font-size: 18px
     top: 5px
     left: 0px

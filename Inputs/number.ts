@@ -13,32 +13,23 @@ import merge from 'lodash/merge';
 export interface numberoption {
     value?: number,
     unit?: string,
-    right?: number,
-    width?: number,
     min?: number,
     max?: number,
     step?: number
     decimal?: number
 }
 
-let defaultWidth = 50;
-
 export class NumberInput extends Input {
 
     unit: any;
     value: number;
-    width = defaultWidth;
-    right = 10;
     max: number;
     min: number;
     decimal: number;
 
     constructor(parent: HTMLElement, label: string, number: numberoption) {
         super(parent, label)
-        this.el = el('input.siimple-input.input-parameter');
-        if (number.width !== undefined) this.width = number.width;
-        if (number.right !== undefined) this.right = number.right;
-        setStyle(this.el, { width: this.width + 'px', right: this.right.toString() + 'px' })
+        this.el = el('input.input-parameter');
         mount(this.parent, this.el);
         if (number.value) setAttr(this.el, { value: number.value });
         let step = (number.step) ? number.step : 0.1;
@@ -70,8 +61,6 @@ export class NumberInput extends Input {
     }
 
     updateUnit(unit: string) {
-        let unitwidth = unit.length * 10
-        setStyle(this.unit, { width: unitwidth + 'px' });
         this.unit.textContent = unit;
     }
 
@@ -178,11 +167,11 @@ export class VectorInput extends Input {
         mount(this.parent, vectorContainer);
         let i = 0;
         for (let key in { x: 0, y: 0, z: 0 }) {
-            let vectoroption = merge(numberoption, { value: 0, unit: key.toUpperCase(), right: i * (defaultWidth + 4), decimal: 2 });
+            let vectoroption = merge(numberoption, { value: 0, unit: key.toUpperCase(), decimal: 2 });
             this[key] = new NumberInput(parent, '', vectoroption);
             unmount(parent, this[key].parent);
             mount(vectorContainer, this[key].el);
-            // setAttr(this[key].el, { class: 'vector-input' });
+            setAttr(this[key].el, { class: 'vector-input' });
             i++;
         }
     }
@@ -205,5 +194,4 @@ export class VectorInput extends Input {
         if (value.y !== undefined) this.y.setValue(value.y);
         if (value.z !== undefined) this.z.setValue(value.z);
     }
-}
 }
