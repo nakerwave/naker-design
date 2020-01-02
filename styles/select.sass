@@ -4,7 +4,7 @@
 
 /***************************************** SELECT ****************************************
 .select
-    color: $colortext
+    color: rgba($colortext, 0.7)
     background: $colorthirdgrey
     border: 0px
     border-radius: 3px
@@ -13,7 +13,7 @@
     right: $defaultrightinput
     height: $defaultheightinput
     line-height: $defaultheightinput
-    padding: 0px 14px 0px 4px
+    padding: 0px 14px 0px 5px
     cursor: pointer
     transition: all 200ms ease
     z-index: 2
@@ -24,9 +24,9 @@
     &::first-letter
         text-transform: uppercase
     &:hover
-        background: $colormain
+        color: rgba($colortext, 1)
     &:focus
-        background: $colormain
+        color: rgba($colortext, 1)
     &::after
         content: ""
         width: 0
@@ -34,7 +34,7 @@
         border: 4px solid transparent
         border-color: #fff transparent transparent transparent
         position: absolute
-        top: 10px
+        top: 13px
         right: 8px
 
 .suggestions

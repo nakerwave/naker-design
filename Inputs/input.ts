@@ -4,6 +4,12 @@ import { elementEvents, UI } from '../Layers/common';
 import { el, mount, unmount } from 'redom';
 
 export let defaultwidthinputcontainer = 108;
+export let defaultwidthinput = 60;
+export let defaultheightinput = 30;
+export let defaultrightinput = 10;
+export let defaultfontsizeinput = 14;
+export let defaultborderradius = 3;
+export let defaultpresetsize = 30;
 
 export interface inputEvents extends elementEvents {
     change: string,
