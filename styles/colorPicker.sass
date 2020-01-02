@@ -1,5 +1,6 @@
 
 @import '_colors'
+@import '_variables'
 @import 'sharedPickerStyle'
 @import '../node_modules/@simonwep/pickr/src/scss/themes/nano.scss'
 
@@ -85,21 +86,37 @@
                 height: auto
                 font-size: 15px
                 margin: 0px
-                margin-left: 5px
+                margin-left: 10px
 
         .pcr-current-color
             border: 1px solid $colorgrey !important
 
         .pcr-swatches 
+            display: block !important
+
             .add-in-palette
-                // border: 1px solid $colortext !important
-                color: $colortext
-                cursor: pointer
-                width: 22px
-                font-size: 22px
-                font-weight: 600
+                position: relative
+                top: -6px
+                display: inline-block
+                width: $defaultpresetsize
+                height: $defaultpresetsize
+                font-size: 18px
+                line-height: $defaultpresetsize !important
+                // font-weight: 600
+                margin: 3px
 
             button
-                border: 2px solid $colortext !important
-                color: $colortext
                 box-shadow: none !important
+                margin: 3px
+                border-radius: $defaultborderradius
+                width: $defaultpresetsize
+                height: $defaultpresetsize
+                &::after
+                    border-radius: $defaultborderradius
+
+                &::before
+                    border-radius: $defaultborderradius
+                    margin: 1px
+                    width: calc(100% - 2px)
+                    height: calc(100% - 2px)
+                    

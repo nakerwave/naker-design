@@ -25,8 +25,8 @@ export class Inventory extends InputGroup {
     assetList: Array<assetOptions> = [];
 
     inventoryContainer: HTMLElement;
-    nameinput: HTMLElement;
-    currentname: string;
+    // nameinput: HTMLElement;
+    // currentname: string;
     placeholder: string;
 
     constructor(assetName: string, parent: HTMLElement) {
@@ -40,28 +40,33 @@ export class Inventory extends InputGroup {
     setSaveInputs(placeholder: string) {
         this.placeholder = placeholder;
         let children = [
-            el('div.parameter-title', el('div', { style: { left: '3px' } }, placeholder + 's Inventory')),
-            this.nameinput = el('input.inventory-input', {
-                type: 'text',
-                placeholder: placeholder + ' name',
-                onclick: () => { this.manageClick(name); },
-                oninput: (evt) => { this.currentname = evt.target.value; },
-                onkeyup: (evt) => { if (evt.keyCode === 13) this.addNewValueFromInput(placeholder); }
-            }),
-            el('div.inventory-add-button', {
-                onclick: () => { this.addNewValueFromInput(placeholder); },
-            }, 'Save'),
-            this.inventoryContainer = el('div.inventory-container-list editor-scroll')
+            el('div.parameter-title', placeholder + 's Presets'),
+            // this.nameinput = el('input.inventory-input', {
+            //     type: 'text',
+            //     placeholder: placeholder + ' name',
+            //     onclick: () => { this.manageClick(name); },
+            //     oninput: (evt) => { this.currentname = evt.target.value; },
+            //     onkeyup: (evt) => { if (evt.keyCode === 13) this.addNewValueFromInput(placeholder); }
+            // }),
+            this.inventoryContainer = el('div.inventory-container-list editor-scroll', [
+                el('div.input-button.inventory-button.inventory-add-button.icon-add', {
+                    onclick: () => { this.addNewValueFromInput(); },
+                }, 
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
+            ])
         ]
         setChildren(this.el, children);
     }
 
-    addNewValueFromInput(name: string) {
-        if (this.currentname == '' || this.currentname == undefined) this.currentname = name + ' ' + (this.namelist.length + 1).toString();
-        let index = this.namelist.indexOf(this.currentname);
-        if (index != -1) return;
-        if (this.onAdd != undefined) this.onAdd(this.currentname);
-        this.setInputValue();
+    addNewValueFromInput() {
+        // if (this.currentname == '' || this.currentname == undefined) this.currentname = name + ' ' + (this.namelist.length + 1).toString();
+        let name = (this.assetList.length).toString();
+        // let name = this.assetName + (this.assetList.length).toString();
+        // let index = this.namelist.indexOf(this.currentname);
+        // if (index != -1) return;
+        if (this.onAdd != undefined) this.onAdd(name);
+        // this.setInputValue();
     }
 
     _addNewValue(asset: assetOptions) {
@@ -73,18 +78,18 @@ export class Inventory extends InputGroup {
         this.assetList.push(asset);
     }
 
-    setInputValue() {
-        this.nameinput.value = '';
-        setAttr(this.nameinput, { placeholder: this.placeholder + ' ' + (this.namelist.length + 1).toString() });
-        this.currentname = '';
-    }
+    // setInputValue() {
+    //     this.nameinput.value = '';
+    //     setAttr(this.nameinput, { placeholder: this.placeholder + ' ' + (this.namelist.length + 1).toString() });
+    //     this.currentname = '';
+    // }
 
     addButtonInInventory(name: string) {
         this.namelist.push(name);
-        let button = el('div.inventory-button-list', name, { onclick: () => { if (this.onClick != undefined) this.manageClick(name); } },
-            el('div.inventory-button-delete.right-icon.icon-delete', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            ),
+        let button = el('div.input-button.inventory-button', name, { onclick: () => { if (this.onClick != undefined) this.manageClick(name); } },
+            // el('div.inventory-button-delete.right-icon.icon-delete', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } },
+            //     [el('span.path1'), el('span.path2'), el('span.path3')]
+            // ),
         )
         mount(this.inventoryContainer, button);
         this.buttonList[name] = button;
@@ -94,7 +99,7 @@ export class Inventory extends InputGroup {
         let index = this.namelist.indexOf(name);
         if (index != -1) this.namelist.splice(index, 1);
         delete this.buttonList[name];
-        this.setInputValue();
+        // this.setInputValue();
         unmount(this.inventoryContainer, button);
         for (let i = 0; i < this.assetList.length; i++) {
             if (this.assetList[i].name == name) this.assetList.splice(i, 1);

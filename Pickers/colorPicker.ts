@@ -212,8 +212,7 @@ export class ColorPicker extends UI {
 
     addPickerActions() {
         let swatches = document.querySelector('.pcr-swatches');
-        let addSwatchButon = el('div.add-in-palette.icon-add', {
-            type: 'button',
+        let addSwatchButon = el('div.input-button.add-in-palette.icon-add', {
             onclick: () => { this.addNewInPicker(); }
         },
             [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -233,6 +232,8 @@ export class ColorPicker extends UI {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
             let test = this.isAlreadyInPalette(rgba);
+            console.log(rgba, this.getRgbaString(rgba));
+            
             if (!test) this.picker.addSwatch(this.getRgbaString(rgba));
         }
     }
