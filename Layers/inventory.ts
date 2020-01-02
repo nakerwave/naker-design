@@ -75,7 +75,7 @@ export class Inventory extends InputGroup {
     }
 
     _addValueInInventory(asset: assetOptions) {
-        this.assetList.push(asset);
+        this.assetList.push(cloneDeep(asset));
     }
 
     // setInputValue() {
@@ -86,7 +86,7 @@ export class Inventory extends InputGroup {
 
     addButtonInInventory(name: string) {
         this.namelist.push(name);
-        let button = el('div.input-button.inventory-button', name, { onclick: () => { if (this.onClick != undefined) this.manageClick(name); } },
+        let button = el('div.input-button.inventory-button', name, { onclick: () => { this.manageClick(name); } },
             // el('div.inventory-button-delete.right-icon.icon-delete', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } },
             //     [el('span.path1'), el('span.path2'), el('span.path3')]
             // ),
@@ -122,6 +122,6 @@ export class Inventory extends InputGroup {
         for (let key in savedAnimation) {
             newAsset[key] = cloneDeep(savedAnimation[key]);
         }
-        this.onClick(newAsset);
+        if (this.onClick != undefined) this.onClick(newAsset);
     }
 }
