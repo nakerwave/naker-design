@@ -209,6 +209,15 @@ export class InputGroup extends UI {
         });
         return vectorInput;
     }
+
+    addSwitchButton(callback: Function) {
+        let test = false;
+        let switchButton = this.addButton({ui: 'text', text:'Less Options'}, () => {
+            if (test) switchButton.el.textContent = 'Less Options';
+            else switchButton.el.textContent = 'More Options';
+            callback(test);
+        });
+    }
 }
 
 /*
@@ -228,7 +237,7 @@ export class InputGroupSwitch extends InputGroup {
         if (expandable === false) {
             if (title) {
                 unmount(this.titleParent, this.expand);
-                setAttr(this.title, {class:''};)
+                setAttr(this.title, {class:''});
             }
         }
     }

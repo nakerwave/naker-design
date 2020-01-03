@@ -85,8 +85,6 @@
     // box-shadow: 0px 0px 8px 2px $colordarkblue
     z-index: 10
 
-.panel
-    &:nth-child(odd)
-        background: $colorsecondgrey
-    &:nth-child(even)
-        background: $colorgrey
+.sortable-panel
+    background: repeating-linear-gradient(0deg, #2c2c3b 0%, #2c2c3b 50%, #404050 50%, #404050 100%)
+    background-size: #{$defaultheightinput * 2} #{$defaultheightinput * 2}

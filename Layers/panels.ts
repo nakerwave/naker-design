@@ -16,5 +16,5 @@ mount(document.body, actionPanel);
   | PARENT SORTABLE MANAGER                                                |
   +------------------------------------------------------------------------+
 */
-export let selectionPanel = el('div.layer-left.presets-container.editor-scroll');
+export let selectionPanel = el('div.layer-left.presets-container');
 // mount(document.body, selectionPanel);

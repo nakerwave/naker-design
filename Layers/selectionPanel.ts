@@ -61,7 +61,7 @@ export class SortableGroup {
 
     addSortable(sortable: sortableObject) {
         let title:HTMLElement;
-        let sortableEl = el('div.sortable-button.panel.draggable.icon-' + sortable.type, {
+        let sortableEl = el('div.sortable-button.draggable.icon-' + sortable.type, {
             onclick: (evt) => { this.onClick(sortable, evt) },
             onmouseenter: (evt) => { this.onEnter(sortable, evt) },
             onmouseleave: (evt) => { this.onLeave(sortable, evt) },

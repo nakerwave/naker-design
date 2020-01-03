@@ -83,7 +83,7 @@ export class RadioInput extends Input {
 
 export interface radioiconoption {
     value: string;
-    iconperline: number;
+    tooltip: boolean;
     list: Array<string>;
     iconLink?: Object;
 }
@@ -107,7 +107,7 @@ export class RadioIconInput extends Input {
         setAttr(this.parent, {class:''});
         // setStyle(this.parent, { height: (this.linenumber * defaultheightinput + 2).toString() + 'px' });
         setStyle(this.el, { height: (this.linenumber * (defaultheightinput + 5)).toString() + 'px' });
-        setStyle(this.el, { 'z-index': 2, overflow: 'hidden' });
+        setStyle(this.el, { 'z-index': 2 });
         this.setInput(label, radiooption);
         return this;
     }
@@ -118,15 +118,18 @@ export class RadioIconInput extends Input {
         for (let i = 0; i < this.option.length; i++) {
             let value = this.option[i];
             let icon = (radiooption.iconLink) ? radiooption.iconLink[value] : value;
-            let radiobutton = el('div.input-button.radio-icon-button.icon-' + icon,
+            let radiobutton = el('div.input-button.radio-button',
                 {
                     id: value,
                     // style: { width: width + 'px' },
-                    onmouseenter: (evt: Event) => { this.label.textContent = label + ' ' + value },
-                    onmouseleave: (evt: Event) => { this.label.textContent = label },
+                    // onmouseenter: (evt: Event) => { this.label.textContent = value },
+                    // onmouseleave: (evt: Event) => { this.label.textContent = label },
                 },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
+                el('div.input-button-icon.icon-' + icon, 
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                )
             );
+            if (radiooption.tooltip) setAttr(radiobutton, { 'aria-label': value, 'data-microtip-position': 'bottom', 'role': 'tooltip' });
             this.radiobuttons.push(radiobutton);
         }
         setChildren(this.el, this.radiobuttons);
