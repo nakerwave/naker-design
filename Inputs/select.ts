@@ -17,7 +17,6 @@ export interface selectoption {
 
 export class SelectInput extends Input {
     options: Array<string>;
-    label: HTMLElement;
 
     constructor(parent: HTMLElement, label: string, selectoption: selectoption) {
         super(parent, label)

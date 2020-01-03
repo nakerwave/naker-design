@@ -89,7 +89,6 @@ export class TextInput extends Input {
 */
 
 export class ParagraphInput extends Input {
-    label: HTMLElement;
     value: string;
     max = 300;
 

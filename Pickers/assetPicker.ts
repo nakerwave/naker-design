@@ -161,8 +161,6 @@ export class ImageAssetButton extends BaseAssetButton {
     text: HTMLElement;
     textDisplay: HTMLElement;
     hover: HTMLElement;
-    label: HTMLElement;
-    container: HTMLElement;
 
     constructor(parent: HTMLElement, label: string, assetoption: asset) {
         super(parent, label, assetoption);
@@ -220,7 +218,6 @@ export class TextAssetButton extends BaseAssetButton {
 
     text: HTMLElement;
     hover: HTMLElement;
-    label: HTMLElement;
     asseticon: HTMLElement;
 
     constructor(parent: HTMLElement, label: string, assetoption: asset) {

@@ -20,7 +20,6 @@ export interface slideroption {
 
 export class SliderInput extends Input {
 
-    label: HTMLElement;
     number: HTMLElement;
     defaultValue: number;
     min: number;

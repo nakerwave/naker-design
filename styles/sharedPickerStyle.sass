@@ -3,6 +3,8 @@
 
 /***************************************** PICKERS ****************************************
 
+$pickerborder: 4px
+
 .picker
     border-radius: 10px
     z-index: 200
@@ -30,7 +32,7 @@
     float: right
     cursor: pointer
     font-size: 18px
-    top: 4px
+    top: 9px
     right: $defaultwidthinput + 5px
     color:$colorthirdgrey
 .erase-icon[active='true']
@@ -39,8 +41,8 @@
 .picker-button
     position: absolute
     right: 0px
-    border: 2px solid $colorthirdgrey
-    width: $defaultwidthinput - 4px
+    border: $pickerborder solid $colorthirdgrey
+    width: #{$defaultwidthinput - $pickerborder * 2}
     height: $defaultheightinput - 4px
     border-radius: $defaultborderradius
     border-color: $colorthirdgrey

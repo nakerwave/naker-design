@@ -16,10 +16,9 @@ export interface radiooption {
 
 export class RadioInput extends Input {
     option: Array<string>;
-    label: HTMLElement;
 
     constructor(parent: HTMLElement, label: string, radiooption: radiooption) {
-        super(parent, label)
+        super(parent, label);
         this.el = el('div.main-radio.input-parameter');
         mount(this.parent, this.el);
         setStyle(this.parent, { height: defaultheightinput * radiooption.list.length + 'px' });
@@ -92,21 +91,22 @@ export interface radioiconoption {
 export class RadioIconInput extends Input {
     option: Array<string>;
     iconLink: Object;
-    iconperline: number;
-    label: HTMLElement;
+    // iconperline: number;
     linenumber: number;
     row: any;
 
     constructor(parent: HTMLElement, label: string, radiooption: radioiconoption) {
-        super(parent, label)
+        super(parent, label);
+        this.hideLabel();
         this.option = radiooption.list;
-        this.iconperline = radiooption.iconperline;
+        // this.iconperline = radiooption.iconperline;
         this.iconLink = radiooption.iconLink;
-        this.linenumber = Math.ceil(radiooption.list.length / radiooption.iconperline);
-        this.el = el('div.radio.input-parameter')
+        this.linenumber = Math.ceil(radiooption.list.length / 3);
+        this.el = el('div.radio')
         mount(this.parent, this.el);
-        setStyle(this.parent, { height: (this.linenumber * defaultheightinput + 2).toString() + 'px' });
-        setStyle(this.el, { height: (this.linenumber * defaultheightinput).toString() + 'px' });
+        setAttr(this.parent, {class:''});
+        // setStyle(this.parent, { height: (this.linenumber * defaultheightinput + 2).toString() + 'px' });
+        setStyle(this.el, { height: (this.linenumber * (defaultheightinput + 5)).toString() + 'px' });
         setStyle(this.el, { 'z-index': 2, overflow: 'hidden' });
         this.setInput(label, radiooption);
         return this;
@@ -114,14 +114,14 @@ export class RadioIconInput extends Input {
 
     radiobuttons: Array<any> = [];
     setInput(label: string, radiooption: radioiconoption) {
-        let width = defaultwidthinputcontainer / this.iconperline;
+        // let width = defaultwidthinputcontainer / this.iconperline;
         for (let i = 0; i < this.option.length; i++) {
             let value = this.option[i];
             let icon = (radiooption.iconLink) ? radiooption.iconLink[value] : value;
-            let radiobutton = el('div.radio-icon-button.icon-' + icon,
+            let radiobutton = el('div.input-button.radio-icon-button.icon-' + icon,
                 {
                     id: value,
-                    style: { width: width + 'px' },
+                    // style: { width: width + 'px' },
                     onmouseenter: (evt: Event) => { this.label.textContent = label + ' ' + value },
                     onmouseleave: (evt: Event) => { this.label.textContent = label },
                 },
@@ -138,8 +138,8 @@ export class RadioIconInput extends Input {
         for (let i = 0; i < this.option.length; i++) {
             let label = this.option[i];
             let icon = (this.iconLink) ? this.iconLink[label] : label;
-            if (value == this.option[i]) setAttr(this.radiobuttons[i], { class: 'radio-icon-button radio-selected icon-' + icon });
-            else setAttr(this.radiobuttons[i], { class: 'radio-icon-button icon-' + icon });
+            if (value == this.option[i]) setAttr(this.radiobuttons[i], { active: true });
+            else setAttr(this.radiobuttons[i], { active: false });
         }
     }
 

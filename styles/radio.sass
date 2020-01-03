@@ -9,30 +9,33 @@
 @import '_variables'
 
 .radio
-    height: 20px
-    width: $defaultwidthinputcontainer
-    border-radius: $defaultborderradius
+    height: auto
+    width: 100%
     right: $defaultrightinput
     top: 1px
     z-index: 2
+    padding: 4px 0px
 
 .radio-icon-button
     display: inline-block
     position: relative
     font-size: 15px
     height: $defaultheightinput
+    width: 70px
     line-height: $defaultheightinput
     cursor: pointer
+    margin-left: 10px
+    margin-bottom: 10px 
     text-align: center
     transition: all 200ms ease
     background: $colorthirdgrey
     color: rgba($colortext, 0.7)
     &:hover
-        color: rgba($colortext, 1)
-
-.radio-selected
-    background: $colormain
-    color: $colortext
+        color: $colortext
+    &[active="true"]
+        background: $colormain
+        color: $colortext
+        opacity: 1
 
 .radio-label
     width: 100px
