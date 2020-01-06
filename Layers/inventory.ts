@@ -61,7 +61,7 @@ export class Inventory extends InputGroup {
 
     addNewValueFromInput() {
         // if (this.currentname == '' || this.currentname == undefined) this.currentname = name + ' ' + (this.namelist.length + 1).toString();
-        let name = (this.assetList.length).toString();
+        let name = (this.assetList.length + 1).toString();
         // let name = this.assetName + (this.assetList.length).toString();
         // let index = this.namelist.indexOf(this.currentname);
         // if (index != -1) return;

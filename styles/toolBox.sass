@@ -32,9 +32,9 @@
     transition: all 200ms ease
     cursor: pointer
     opacity: 0.8
-    color: rgba($colormain, 0.8)
+    color: rgba($colortext, 0.8)
     &:hover
-        color: rgba($colormain, 1)
+        color: rgba($colortext, 1)
         opacity: 1
 
 .tool-success
@@ -134,17 +134,15 @@
 [aria-label][role~="tooltip"]::before
     background: none
     pointer-events: none
-
 [aria-label][role~="tooltip"]::after
-    background: $colormain
+    background: $colorthirdgrey
+    max-height: 15px
+    line-height: 15px
     pointer-events: none
     font-family: 'Noto Sans', sans-serif
 [role~="tooltip"]
     --microtip-font-size: 14px
-    --microtip-font-weight: bold
 [role~="tooltip"][data-microtip-position|="bottom"]::after
     margin-top: 4px
-    padding: 0em 0.5em
 [role~="tooltip"][data-microtip-position|="top"]::after
     margin-bottom: 4px
-    padding: 0em 0.5em
