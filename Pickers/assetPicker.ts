@@ -167,10 +167,10 @@ export class ImageAssetButton extends BaseAssetButton {
         this.hideLabel();
         this.el = el('div.input-asset-image', { class: '', onclick: () => { this.focus() } },
             [
-                this.hover = el('div.text-hover.icon-add',
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                this.hover = el('div.text-hover',
+                    el('div.icon-add', [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ),
-                this.image = el('img', { src: '', style: { width: defaultwidthinputcontainer + 'px', 'background-size': 'contain', display: 'none' } }),
+                this.image = el('img', { src: '' }),
                 this.textDisplay = el('div.image-text-container',
                     this.text = el('div.image-hover-text', '')
                 ),
@@ -224,8 +224,8 @@ export class TextAssetButton extends BaseAssetButton {
         super(parent, label, assetoption);
         this.el = el('div.input-button.input-asset-text', { onclick: () => { this.focus() } },
             [
-                this.hover = el('div.text-hover.icon-add', 
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                this.hover = el('div.text-hover', 
+                    el('div.icon-add', [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ),
                 this.text = el('div.text-asset-name', '')
             ],
