@@ -9,16 +9,14 @@
     height: 180px
     margin-top: 10px
 
-.inventory-input
-    position: relative
-    left: 58px
-    top: 30px !important
-    width: 180px
+.inventory-input-container
+    display: none
 
-.inventory-add-button
-    font-size: 18px
-    z-index: 10
-    top: 2px
+.inventory-input
+    position: relative !important
+    left: 0px
+    top: 0px !important
+    width: 100% !important
 
 .inventory-container-list
     position: relative
@@ -36,14 +34,28 @@
     position: relative
     margin-top: 7px
     margin-left: 7px
-    width: $defaultpresetsize
+    padding: 0px 5px
+    width: auto
+    min-width: $defaultpresetsize - 10px
     height: $defaultpresetsize
     line-height: $defaultpresetsize !important
     font-size: 15px
     z-index: 10
+    div
+        display: inline-block
+    .inventory-button-delete
+        display: none
+        color: rgba($colorerror, 0.7)
+        font-size: 15px
+        font-weight: 600
+        top: 0px
+        right: -2px
+        cursor: pointer
+        &:hover
+            color: $colorerror
+            
 
-.inventory-button-delete
-    color: $colormain
-    font-size: 12px
-    top: 4px
-    cursor: pointer
+.inventory-add-button
+    font-size: 18px
+    top: 2px
+

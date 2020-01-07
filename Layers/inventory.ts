@@ -37,21 +37,31 @@ export class Inventory extends InputGroup {
     }
 
     control: HTMLElement;
+    nameinput: HTMLInputElement;
+    nameContainer: HTMLElement;
     setSaveInputs(placeholder: string) {
         this.placeholder = placeholder;
         let children = [
             el('div.parameter-title', placeholder + 's Presets'),
-            // this.nameinput = el('input.inventory-input', {
-            //     type: 'text',
-            //     placeholder: placeholder + ' name',
-            //     onclick: () => { this.manageClick(name); },
-            //     oninput: (evt) => { this.currentname = evt.target.value; },
-            //     onkeyup: (evt) => { if (evt.keyCode === 13) this.addNewValueFromInput(placeholder); }
-            // }),
             this.inventoryContainer = el('div.inventory-container-list editor-scroll', [
+                this.nameContainer = el('div.inventory-input-container', [
+                    this.nameinput = el('input.inventory-input', {
+                        type: 'text',
+                        placeholder: placeholder + ' name',
+                        onblur: () => { this.hideInput(); },
+                        oninput: (evt) => { this.setName(evt.target.value); },
+                        onkeyup: (evt) => { if (evt.keyCode === 13) this.hideInput(); }
+                    }),
+                    // el('div.input-button.inventory-button.inventory-add-button', 'OK'),
+                ]),
                 el('div.input-button.inventory-button.inventory-add-button.icon-add', {
-                    onclick: () => { this.addNewValueFromInput(); },
+                    onclick: () => { this.showInput(); this.addNewValueFromInput(); },
                 }, 
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
+                el('div.input-button.inventory-button.inventory-add-button.icon-none', {
+                    onclick: () => { this.resetValues(); },
+                },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
                 ),
             ])
@@ -59,14 +69,37 @@ export class Inventory extends InputGroup {
         setChildren(this.el, children);
     }
 
+    showInput() {
+        setStyle(this.nameContainer, {display: 'block'});
+        this.nameinput.focus();
+    }
+
+    hideInput() {
+        setStyle(this.nameContainer, { display: 'none' });
+    }
+
+    currentname = '';
     addNewValueFromInput() {
-        // if (this.currentname == '' || this.currentname == undefined) this.currentname = name + ' ' + (this.namelist.length + 1).toString();
-        let name = (this.assetList.length + 1).toString();
-        // let name = this.assetName + (this.assetList.length).toString();
-        // let index = this.namelist.indexOf(this.currentname);
-        // if (index != -1) return;
-        if (this.onAdd != undefined) this.onAdd(name);
-        // this.setInputValue();
+        this._addNewValueFromInput();
+    }
+    _addNewValueFromInput() {
+        if (this.currentname == '' || this.currentname == undefined) this.currentname = this.assetName + ' ' + (this.namelist.length + 1).toString();
+        // let name = (this.assetList.length + 1).toString();
+        // name = this.assetName + (this.assetList.length).toString();
+        let index = this.namelist.indexOf(this.currentname);
+        if (index != -1) return;
+        if (this.onAdd != undefined) this.onAdd(this.currentname);
+        this.setInputValue();
+    }
+
+    setName(name: string) {
+        this.currentname = name;
+        this.lastButton.childNodes[0].textContent = name;
+    }
+
+    onReset: Function;
+    resetValues() {
+        if (this.onReset) this.onReset();
     }
 
     _addNewValue(asset: assetOptions) {
@@ -78,28 +111,40 @@ export class Inventory extends InputGroup {
         this.assetList.push(cloneDeep(asset));
     }
 
-    // setInputValue() {
-    //     this.nameinput.value = '';
-    //     setAttr(this.nameinput, { placeholder: this.placeholder + ' ' + (this.namelist.length + 1).toString() });
-    //     this.currentname = '';
-    // }
+    setInputValue() {
+        this.nameinput.value = '';
+        setAttr(this.nameinput, { placeholder: this.placeholder + ' ' + (this.namelist.length + 1).toString() });
+        this.currentname = '';
+    }
 
+    lastButton: HTMLElement;
     addButtonInInventory(name: string) {
         this.namelist.push(name);
-        let button = el('div.input-button.inventory-button', name, { onclick: () => { this.manageClick(name); } },
-            // el('div.inventory-button-delete.right-icon.icon-delete', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } },
-            //     [el('span.path1'), el('span.path2'), el('span.path3')]
-            // ),
-        )
+        let id = this.namelist.length.toString();
+        let textButton: HTMLElement;
+        let deleteButton: HTMLElement;
+        let button = el('div.input-button.inventory-button', { 
+                onclick: () => { this.manageClick(name); },
+                onmouseenter: () => { setStyle(deleteButton, { display: 'inline-block'}) },
+                onmouseleave: () => { setStyle(deleteButton, { display: 'none'}) },
+                // onmouseenter: () => { textButton.textContent = name; setStyle(deleteButton, { display: 'inline-block' }) },
+                // onmouseleave: () => { textButton.textContent = id; setStyle(deleteButton, { display: 'none' }) },
+            }, [
+                textButton = el('div', name),
+                deleteButton = el('div.inventory-button-delete.right-icon', 'X', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } }),
+            ]
+        );
+        // setAttr(button, { 'aria-label': name, 'data-microtip-position': 'bottom', 'role': 'tooltip' });
         mount(this.inventoryContainer, button);
         this.buttonList[name] = button;
+        this.lastButton = button;
     }
 
     removeValue(button: HTMLElement, name: string) {
         let index = this.namelist.indexOf(name);
         if (index != -1) this.namelist.splice(index, 1);
         delete this.buttonList[name];
-        // this.setInputValue();
+        this.setInputValue();
         unmount(this.inventoryContainer, button);
         for (let i = 0; i < this.assetList.length; i++) {
             if (this.assetList[i].name == name) this.assetList.splice(i, 1);
@@ -114,13 +159,13 @@ export class Inventory extends InputGroup {
     }
 
     manageClick(name: string) {
-        let savedAnimation = this.getAssetFromName(name);
-        if (savedAnimation == null) return;
+        let savedAsset = this.getAssetFromName(name);
+        if (savedAsset == null) return;
         // Keep loop and don't replace currentAnimation entirely or content animation will be replace and it won't save changes
         // CloneDeep important or contents will share the saved parameters
         let newAsset = {};
-        for (let key in savedAnimation) {
-            newAsset[key] = cloneDeep(savedAnimation[key]);
+        for (let key in savedAsset) {
+            newAsset[key] = cloneDeep(savedAsset[key]);
         }
         if (this.onClick != undefined) this.onClick(newAsset);
     }
