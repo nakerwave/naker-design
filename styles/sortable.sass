@@ -61,17 +61,19 @@
     left: 0px
     top: 0px
     width: 100%
-    height: 25px
-    font-size: 16px
-    padding-top: 4px
+    line-height: $defaultheightinput !important
+    height: $defaultheightinput
+    font-size: 18px
     padding-left: 5px
     float: left
     color: $colortext
     cursor: pointer
     &:hover
-        background: $colorthirdgrey !important
+        background: rgba($colormain, 0.5) !important
+
     &[selected="true"]
-        background: $colorthirdgrey !important
+        background: rgba($colormain, 0.5) !important
+
 
 .sortable-option-button
     top: 4px

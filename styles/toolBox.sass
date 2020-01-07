@@ -1,5 +1,6 @@
 
 @import '_colors'
+@import '_variables'
 
 /***************************************** MODAL ****************************************
 .tool-box
@@ -8,16 +9,16 @@
     height: auto
     top: 10px
     left: 10px
-    border-radius: 5px
+    border-radius: $defaultborderradius
     overflow: hidden
     z-index: 4
     pointer-events: none
 
 .tool-box div:first-child
-    border-radius: 5px 5px 0px 0px !important
+    border-radius: $defaultborderradius $defaultborderradius 0px 0px !important
 
 .tool-box div:last-child
-    border-radius: 0px 0px 5px 5px !important
+    border-radius: 0px 0px $defaultborderradius $defaultborderradius !important
 
 .tool-button
     position: relative
@@ -52,7 +53,7 @@
     height: auto
     background: $colorthirdgrey
     z-index: 100
-    border-radius: 5px
+    border-radius: $defaultborderradius
     padding: 5px
     margin: 0px
 
@@ -91,7 +92,7 @@
         position: relative
         display: block
         margin: 5px
-        border-radius: 5px
+        border-radius: $defaultborderradius
         opacity: 0.9
 
     svg

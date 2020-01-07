@@ -1,5 +1,7 @@
 
 @import '_colors'
+@import '_variables'
+
 body
     font-family: 'Noto Sans', sans-serif
 
@@ -18,7 +20,7 @@ body
     width: 250px
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: 5px 0px 0px 0px
+    border-radius: $defaultborderradius 0px 0px 0px
     overflow: hidden
     .layer-right
         position: relative
@@ -31,7 +33,7 @@ body
     width: 220px
     height: 100%
     transition: width 100ms ease
-    border-radius: 0px 5px 0px 0px
+    border-radius: 0px $defaultborderradius 0px 0px
     background: $colorgrey
 
 .layer-right
@@ -42,7 +44,7 @@ body
     height: 100%
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: 5px 0px 0px 0px
+    border-radius: $defaultborderradius 0px 0px 0px
 
 .editor-scroll
     overflow-y: auto
@@ -51,10 +53,10 @@ body
         width: 5px
         height: 5px
     &::-webkit-scrollbar-track
-        border-radius: 5px
+        border-radius: $defaultborderradius
         background: $colorgrey
     &::-webkit-scrollbar-thumb
-        border-radius: 5px
+        border-radius: $defaultborderradius
         background: $colormain
 
 .parameter-container

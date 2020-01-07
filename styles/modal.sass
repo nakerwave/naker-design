@@ -1,5 +1,6 @@
 
 @import '_colors'
+@import '_variables'
 
 /***************************************** MODAL ****************************************
 .modal
@@ -54,7 +55,7 @@
     width: 100%
     height: 60px
     opacity: 1
-    border-radius: 5px 5px 0px 0px
+    border-radius: $defaultborderradius $defaultborderradius 0px 0px
 
 .modal-description
     position: relative
@@ -84,7 +85,7 @@
     z-index: 100
     color: $colormain
     float: center
-    border-radius: 5px
+    border-radius: $defaultborderradius
     font-size: 30px
 
 .modal-icon
@@ -101,7 +102,7 @@
     height: auto
     padding: 10px
     margin-top: 10px
-    border-radius: 5px
+    border-radius: $defaultborderradius
     background: $colordarkgrey
     color: $colorlight
     text-align: left
@@ -115,7 +116,7 @@
     height: 100%
     top: 0px
     left: 0px
-    border-radius: 5px
+    border-radius: $defaultborderradius
     line-height: 160px
     text-align: center
     background: rgba($colorsuccess, 0.9)
