@@ -12,6 +12,7 @@ import clone from 'lodash/clone';
 
 // Modern or es5 bundle
 import Pickr from '@simonwep/pickr';
+import noUiSlider from 'nouislider';
 // import { parseToHSVA } from '@simonwep/pickr/src/js/utils/color';
 // import { HSVaColor } from '@simonwep/pickr/src/js/utils/hsvacolor';
 // let test = parseToHSVA([1, 1, 1, 1]);
@@ -25,6 +26,7 @@ import Pickr from '@simonwep/pickr';
 
 export interface coloroption {
     opacity: boolean,
+    slider?: boolean,
     removable?: boolean,
     color?: Array<number>,
 }
@@ -40,21 +42,22 @@ export class ColorButton extends Input {
 
     constructor(parent: HTMLElement, label: string, coloroption: coloroption) {
         super(parent, label);
-        this.opacity = coloroption.opacity;
         this.el = el('div.input-parameter',
-            [
+        [
                 this.colorbutton = el('div.picker-button', { onclick: () => { this.focus() } },
-                    [
-                        this.colorel = el('div.color-background'),
+                [
+                    this.colorel = el('div.color-background'),
                         el('div.color-default-background')
                     ]
-                ),
+                    ),
                 this.coloricon = el('div.icon-color.erase-icon', { onclick: () => { this.checkErase() }, onmouseenter: () => { this.mouseEnter() }, onmouseleave: () => { this.mouseLeave() } },
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
             ]
         );
         mount(this.parent, this.el);
+        this.opacity = coloroption.opacity;
+        if (coloroption.slider) this.addOpacitySlider();
         if (coloroption.removable === false) setStyle(this.coloricon, { display: 'none' });
         if (coloroption.color) this.setValue(coloroption.color);
     }
@@ -62,6 +65,32 @@ export class ColorButton extends Input {
     checkErase() {
         if (this.rgba !== undefined) this.setValue(undefined, true);
         else this.focus();
+    }
+
+    slider: noUiSlider;
+    lastSliderValue = 0;
+    addOpacitySlider() {
+        // Set to false so that picker doesn't show opacity
+        this.opacity = false;
+        this.slider = noUiSlider.create(this.parent, {
+            range: { 'min': 0, 'max': 1 },
+            step: 0.01,
+            start: [0],
+            connect: 'lower',
+        });
+        this.slider.on('slide', (values, handle) => {
+            let value = values[0];
+            this.rgba[3] = value;
+            this.events.change(this.rgba);
+        });
+        this.slider.on('change', (values, handle) => {
+            let value = values[0];
+            if (value == this.lastSliderValue) return;
+            this.lastSliderValue = value;
+            this.rgba[3] = value;
+            this.events.blur(this.rgba);
+        });
+        setAttr(this.parent, { class: 'input-container input-container-big color_input'})
     }
 
     mouseEnter() {
@@ -82,12 +111,18 @@ export class ColorButton extends Input {
         if (typeof rgba !== 'object') return console.error('Bad color value sent to ColorButton');
         this.rgba = clone(rgba);
         let stringRgba = clone(rgba);
-        if (rgba[3] == undefined || !this.opacity) stringRgba[3] = 1;
+        if (rgba[3] == undefined) stringRgba[3] = 1;
+        if (!this.opacity || this.slider) stringRgba[3] = 1;
         let color = 'rgba(' + stringRgba[0] + ', ' + stringRgba[1] + ', ' + stringRgba[2] + ', ' + stringRgba[3] + ')';
         setStyle(this.colorel, { 'background-color': color });
         setAttr(this.coloricon, { active: true });
+        if (this.slider) this.slider.set([this.rgba[3]], false);
         if (this.events.change && frompicker) this.events.change(this.rgba);
         return this;
+    }
+
+    checkOpacity() {
+
     }
 
     erase(frompicker?: any) {
@@ -232,7 +267,7 @@ export class ColorPicker extends UI {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
             let test = this.isAlreadyInPalette(rgba);
-            console.log(rgba, this.getRgbaString(rgba));
+            // console.log(rgba, this.getRgbaString(rgba));
             
             if (!test) this.picker.addSwatch(this.getRgbaString(rgba));
         }
@@ -335,7 +370,7 @@ export class ColorPicker extends UI {
         
         // if (input.label) this.title.textContent = input.label.textContent;
         // else this.title.textContent = 'Color';
-        this.checkOpacity(input.opacity);
+        this.checkOpacity(input);
         this.picker.show();
         let rbaInteger = this.getAccuracy(rgba);
         setTimeout(() => {
@@ -349,8 +384,8 @@ export class ColorPicker extends UI {
         
     }
 
-    checkOpacity(opacity: boolean) {
-        if (opacity) {
+    checkOpacity(input: ColorButton) {
+        if (input.opacity && !input.slider) {
             setStyle(this.opacityPicker, { display: 'flex' });
             setStyle(this.chooserPicker, { top: '0px' });
         } else {
