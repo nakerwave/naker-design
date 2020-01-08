@@ -116,7 +116,10 @@ export class ColorButton extends Input {
         let color = 'rgba(' + stringRgba[0] + ', ' + stringRgba[1] + ', ' + stringRgba[2] + ', ' + stringRgba[3] + ')';
         setStyle(this.colorel, { 'background-color': color });
         setAttr(this.coloricon, { active: true });
-        if (this.slider) this.slider.set([this.rgba[3]], false);
+        if (this.slider) {
+            if (frompicker) this.rgba[3] = this.lastSliderValue;
+            else this.slider.set([this.rgba[3]], false);
+        }
         if (this.events.change && frompicker) this.events.change(this.rgba);
         return this;
     }
