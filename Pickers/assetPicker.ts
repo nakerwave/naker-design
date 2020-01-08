@@ -1,5 +1,5 @@
 
-import { defaultwidthinputcontainer, Input } from '../Inputs/input';
+import { widthinputcontainer, Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle, unmount } from 'redom';

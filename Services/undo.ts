@@ -59,7 +59,7 @@ export class Undo {
         this.pastChange.push({ back: backChange, forward: forwardChange });
         this.futureChange = [];
         this.presentState = projectJson;
-        this.sendToSaveListeners(this.presentState);
+        this.sendToSaveListeners(forwardChange, this.presentState);
     }
 
     getProjectJson() {
@@ -158,9 +158,9 @@ export class Undo {
         }
     }
 
-    sendToSaveListeners(newState: any) {
+    sendToSaveListeners(forwardChange: any, newState: any) {
         for (let i = 0; i < this._saveListeners.length; i++) {
-            this._saveListeners[i](newState);
+            this._saveListeners[i](forwardChange, newState);
         }
     }
 

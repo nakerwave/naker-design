@@ -1,5 +1,5 @@
 
-import { Input, inputEvents, defaultheightinput } from './input';
+import { Input, inputEvents, heightinput } from './input';
 
 import { el, mount, setAttr, setStyle, setChildren, RedomElement } from 'redom';
 
@@ -21,7 +21,7 @@ export class RadioInput extends Input {
         super(parent, label);
         this.el = el('div.main-radio.input-parameter');
         mount(this.parent, this.el);
-        setStyle(this.parent, { height: defaultheightinput * radiooption.list.length + 'px' });
+        setStyle(this.parent, { height: heightinput * radiooption.list.length + 'px' });
         this.setInput(radiooption);
         return this;
     }
@@ -105,8 +105,8 @@ export class RadioIconInput extends Input {
         this.el = el('div.radio')
         mount(this.parent, this.el);
         setAttr(this.parent, {class:''});
-        // setStyle(this.parent, { height: (this.linenumber * defaultheightinput + 2).toString() + 'px' });
-        setStyle(this.el, { height: (this.linenumber * (defaultheightinput + 5)).toString() + 'px' });
+        // setStyle(this.parent, { height: (this.linenumber * heightinput + 2).toString() + 'px' });
+        setStyle(this.el, { height: (this.linenumber * (heightinput + 5)).toString() + 'px' });
         setStyle(this.el, { 'z-index': 2 });
         this.setInput(radiooption);
         return this;

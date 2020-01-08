@@ -95,8 +95,8 @@ export class ParagraphInput extends Input {
     constructor(parent: HTMLElement, label: string, text: string, className?: string) {
         super(parent, label);
         if (this.label) setAttr(this.label, { class: 'input-label input-label-paragraph' });
-        if (!className) className = 'input-paragraph editor-scroll';
-        this.el = el('textarea', { class: 'siimple-input ' + className, maxlength: this.max });
+        if (!className) className = 'input-paragraph input-large-width editor-scroll';
+        this.el = el('textarea', { class: className, maxlength: this.max });
         mount(this.parent, this.el);
         setAttr(this.el, { placeholder: text.toString() });
         this.value = text.toString();

@@ -28,7 +28,7 @@ input:focus, select:focus
 
 label
     color: $colorsecondtext
-    font-size: $defaultfontsizeinput
+    font-size: $fontsizeinput
     z-index: 0
     text-transform: capitalize
     position: relative
@@ -38,7 +38,7 @@ label
     position: relative
     width: 100%
     left: 0px
-    min-height: $defaultheightinput
+    min-height: $heightinput
     height: auto
     margin: 5px 0px
 
@@ -50,44 +50,50 @@ label
 
 .input-parameter
     position: absolute
-    height: $defaultheightinput
-    right: $defaultrightinput
-    width: $defaultwidthinputcontainer
+    height: $heightinput
+    right: $rightinput
+    width: $widthinputcontainer
 
 .input-parameter-first
     position: absolute
-    height: $defaultheightinput
-    right: $defaultrightinput
+    height: $heightinput
+    right: $rightinput
 
 .input-parameter-second
     position: absolute
-    height: $defaultheightinput
-    right: $defaultrightinput + 88px
+    height: $heightinput
+    right: $rightinput + 88px
 
 .input-paragraph
     position: relative
     top: 0px
     height: 250px
-    left: 15px
-    width: 230px
-    font-size: $defaultfontsizeinput
+    right: -$rightinput
+    font-size: $fontsizeinput
     line-height: 20px
-    padding-left: 5px
+    padding: 5px
+    color: $colortext
+    background: $colorinputbackground
+    border: 0px
+    border-radius: $borderradius
+
+.input-large-width
+    width: $largewidthinput !important
 
 .input-count
     position: absolute
     bottom: 5px
-    right: 10px
+    right: $rightinput
     z-index: 10
 
 .input-label
     position: absolute
     left: 10px
     top: 4px
-    height: $defaultheightinput - 5px
-    line-height: $defaultheightinput - 5px
+    height: $heightinput - 5px
+    line-height: $heightinput - 5px
     color: $colortext
-    font-size: $defaultfontsizeinput
+    font-size: $fontsizeinput
     width: 230px
     &::first-letter
         text-transform: uppercase
@@ -96,27 +102,16 @@ label
     position: relative !important
 
 /***************************************** TEXT/NUMBER ****************************************/
-
-textarea
-    font-size: $defaultfontsizeinput
-    color: $colortext
-    background: $colorinputbackground
-    border: 0px
-    border-radius: $defaultborderradius
-    height: $defaultheightinput
-    padding-left: 5px
-    padding-right: 0px
-    z-index: 2
     
 input
     &[type="text"], &[type="number"]
         color: $colortext
         background: $colorinputbackground
         border: 2px solid $colorinputbackground
-        border-radius: $defaultborderradius
-        height: $defaultheightinput
-        width: $defaultwidthinput
-        font-size: $defaultfontsizeinput
+        border-radius: $borderradius
+        height: $heightinput
+        width: $widthinput
+        font-size: $fontsizeinput
         padding-left: 5px
         padding-right: 0px
         z-index: 2
@@ -132,9 +127,8 @@ input
         border: 2px solid $colormain
 
 .input-text
-    max-width: 200px
-    right: $defaultrightinput
-    width: $defaultwidthinputcontainer
+    right: $rightinput
+    width: $widthinputcontainer
 textarea
     resize: none
     outline: none
@@ -153,11 +147,11 @@ input
 
 .input-unit
     position: absolute
-    height: $defaultheightinput
-    line-height: $defaultheightinput
-    right: $defaultrightinput + 3px
-    font-size: $defaultfontsizeinput
-    border-radius: $defaultborderradius
+    height: $heightinput
+    line-height: $heightinput
+    right: $rightinput + 3px
+    font-size: $fontsizeinput
+    border-radius: $borderradius
     z-index: 50
     background: $colorinputbackground
     text-align: center
@@ -169,8 +163,8 @@ input
 .vector-container
     position: absolute
     width: 220px
-    height: $defaultheightinput
-    right: $defaultrightinput
+    height: $heightinput
+    right: $rightinput
     top: 1px
 
 .vector-input
@@ -182,4 +176,4 @@ input
     margin-top: 6px
     padding-left: 64px
     letter-spacing: 29px
-    font-size: $defaultfontsizeinput
+    font-size: $fontsizeinput

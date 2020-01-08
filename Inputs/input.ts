@@ -3,13 +3,13 @@ import { elementEvents, UI } from '../Layers/common';
 
 import { el, mount, unmount } from 'redom';
 
-export let defaultwidthinputcontainer = 108;
-export let defaultwidthinput = 60;
-export let defaultheightinput = 30;
-export let defaultrightinput = 10;
-export let defaultfontsizeinput = 14;
-export let defaultborderradius = 3;
-export let defaultpresetsize = 30;
+export let widthinputcontainer = 108;
+export let widthinput = 60;
+export let heightinput = 30;
+export let rightinput = 10;
+export let fontsizeinput = 14;
+export let borderradius = 3;
+export let presetsize = 30;
 
 export interface inputEvents extends elementEvents {
     change: string,
@@ -31,7 +31,7 @@ export class Input extends UI {
         this.parent = el('div.input-container.' + inputName + '_input');
         mount(container, this.parent);
         this.label = el('div.input-label', label);
-        this.showLabel();
+        if (label) this.showLabel();
     }
 
     hideLabel() {

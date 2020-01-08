@@ -107,16 +107,16 @@
     margin-bottom: 8px
     background: $colordarkgrey
     cursor: pointer
-    width: $defaultwidthinputcontainer
-    right: $defaultrightinput
-    border-radius: $defaultborderradius
+    width: $widthinputcontainer
+    right: $rightinput
+    border-radius: $borderradius
     float: right
     &:hover
         .text-hover
             opacity: 1
     img
-        width: $defaultwidthinputcontainer
-        border-radius: $defaultborderradius
+        width: $widthinputcontainer
+        border-radius: $borderradius
         background-size: contain
         display: none
 
@@ -151,7 +151,7 @@
     position: absolute
     height: 100%
     width: 100%
-    border-radius: $defaultborderradius
+    border-radius: $borderradius
     background: $colorthirdgrey
     opacity: 0
     z-index: 10
@@ -166,9 +166,9 @@
         top: 50%
         left: 50%
         transform: translate(-50%, -50%)
-        height: $defaultwidthinput
-        width: $defaultwidthinput
-        line-height: $defaultwidthinput !important
+        height: $widthinput
+        width: $widthinput
+        line-height: $widthinput !important
         font-size: 30px
 
 /***************************************** TEXT ASSET BUTTON ****************************************
@@ -177,8 +177,8 @@
     position: relative
     float: right
     right: 10px
-    height: $defaultwidthinput !important
-    width: $defaultwidthinput
+    height: $widthinput !important
+    width: $widthinput
     cursor: pointer
     &:hover
         .text-hover
@@ -188,10 +188,10 @@
         position: absolute
         width: calc(100% - 5px)
         height: 100%
-        border-radius: $defaultborderradius
+        border-radius: $borderradius
         background: $colorthirdgrey
-        font-size: $defaultfontsizeinput
-        line-height: $defaultheightinput
+        font-size: $fontsizeinput
+        line-height: $heightinput
         padding-left: 5px
         overflow: hidden
         white-space: nowrap

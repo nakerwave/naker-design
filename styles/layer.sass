@@ -20,7 +20,7 @@ body
     width: 250px
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: $defaultborderradius 0px 0px 0px
+    border-radius: $borderradius 0px 0px 0px
     overflow: hidden
     .layer-right
         position: relative
@@ -33,7 +33,7 @@ body
     width: 220px
     height: 100%
     transition: width 100ms ease
-    border-radius: 0px $defaultborderradius 0px 0px
+    border-radius: 0px $borderradius 0px 0px
     background: $colorgrey
 
 .layer-right
@@ -44,7 +44,7 @@ body
     height: 100%
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: $defaultborderradius 0px 0px 0px
+    border-radius: $borderradius 0px 0px 0px
 
 .editor-scroll
     overflow-y: auto
@@ -53,10 +53,10 @@ body
         width: 5px
         height: 5px
     &::-webkit-scrollbar-track
-        border-radius: $defaultborderradius
+        border-radius: $borderradius
         background: $colorgrey
     &::-webkit-scrollbar-thumb
-        border-radius: $defaultborderradius
+        border-radius: $borderradius
         background: $colormain
 
 .parameter-container

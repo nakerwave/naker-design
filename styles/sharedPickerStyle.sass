@@ -20,7 +20,7 @@ $pickerborder: 4px
     font-size: 15px
     text-transform: capitalize
     color: $colortext
-    border-radius: $defaultborderradius $defaultborderradius 0px 0px
+    border-radius: $borderradius $borderradius 0px 0px
     background-color: $colormain
 
 .picker-title-text
@@ -34,7 +34,7 @@ $pickerborder: 4px
     cursor: pointer
     font-size: 18px
     top: 9px
-    right: $defaultwidthinput + 5px
+    right: $widthinput + 5px
     color:$colorthirdgrey
 .erase-icon[active='true']
     color:$colormain
@@ -43,9 +43,9 @@ $pickerborder: 4px
     position: absolute
     right: 0px
     border: $pickerborder solid $colorthirdgrey
-    width: #{$defaultwidthinput - $pickerborder * 2}
-    height: $defaultheightinput - 4px
-    border-radius: $defaultborderradius
+    width: #{$widthinput - $pickerborder * 2}
+    height: $heightinput - 4px
+    border-radius: $borderradius
     border-color: $colorthirdgrey
     cursor: pointer
 

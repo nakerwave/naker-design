@@ -30,7 +30,7 @@ export class Inventory extends InputGroup {
     placeholder: string;
 
     constructor(assetName: string, parent: HTMLElement) {
-        super(assetName+' inventory', parent);
+        super('', parent);
         setStyle(this.el, { border: '0px' });
         this.assetName = assetName;
         this.setSaveInputs(this.assetName);
@@ -42,7 +42,6 @@ export class Inventory extends InputGroup {
     setSaveInputs(placeholder: string) {
         this.placeholder = placeholder;
         let children = [
-            el('div.parameter-title', placeholder + 's Presets'),
             this.inventoryContainer = el('div.inventory-container-list editor-scroll', [
                 this.nameContainer = el('div.inventory-input-container', [
                     this.nameinput = el('input.inventory-input', {
