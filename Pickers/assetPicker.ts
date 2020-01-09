@@ -199,7 +199,6 @@ export class ImageAssetButton extends BaseAssetButton {
             }
             setAttr(this.hover, { empty: false });
         } else {
-            setStyle(this.textDisplay, { display: 'block' });
             setStyle(this.image, { display: 'none' });
             setAttr(this.hover, { empty: true });
         }

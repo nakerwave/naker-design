@@ -19,10 +19,6 @@ export class ExportModal extends Modal {
         this.version = version;
 
         this.addContent(helpurl);
-
-        // window.addEventListener("focus", () => {
-        //     this.modal.hideModal();
-        // });
     }
 
     addContent(helpurl: string) {

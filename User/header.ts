@@ -64,7 +64,7 @@ export class Header {
                     onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
                 }),
             ),
-            this.projectsave = el('div.nav-button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.showModal(); } }, "Save Project"),
+            this.projectsave = el('div.nav-button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.show(); } }, "Save Project"),
         ]);
         mount(document.body, this.control);
     }
@@ -94,7 +94,7 @@ export class Header {
         });
 
         window.addEventListener('focus', () => {
-            this.loginModal.hideModal();
+            this.loginModal.hide();
             this.checkUserAndProject();
         });
     }
@@ -138,7 +138,7 @@ export class Header {
             this.checkUserAndProject();
         });
         // Former code to save project on click, keep here in case change
-        // if (!api.isConnected()) this.loginModal.showModal();
+        // if (!api.isConnected()) this.loginModal.show();
         // else {
         //     session.createNew(() => {
         //         this.checkUserAndProject();

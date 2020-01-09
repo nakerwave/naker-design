@@ -3,7 +3,7 @@ import { elementEvents, UI } from '../Layers/common';
 
 import { el, mount, unmount } from 'redom';
 
-export let widthinputcontainer = 108;
+export let widthinputcontainer = 150;
 export let widthinput = 60;
 export let heightinput = 30;
 export let rightinput = 10;

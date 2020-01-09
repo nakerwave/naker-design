@@ -22,21 +22,22 @@
 
 .tool-button
     position: relative
-    width: 20px
-    height: 20px
-    padding: 5px
-    background: $colordarkgrey
+    width: 30px
+    height: 30px
+    background: $colorgrey
     float: center
-    font-size: 20px
+    font-size: 17px
+    text-align: center
     pointer-events: visible
     opacity: 0.8
     transition: all 200ms ease
     cursor: pointer
-    opacity: 0.8
-    color: rgba($colortext, 0.8)
     &:hover
-        color: rgba($colortext, 1)
         opacity: 1
+        background: rgba($colormain, 0.5)
+    i
+        line-height: 30px
+
 
 .tool-success
         background: $colormain

@@ -21,11 +21,12 @@ export class Modal {
         let modalclass = (clas) ? clas : '';
         this.control = el('div.modal.' + modalclass,
             [
-                this.title = el('div.modal-title'),
+                this.title = el('div.modal-title', title),
                 this.description = el('div.modal-description', description),
             ]
         );
-        this.title.innerHTML = title;
+        if (!title) setStyle(this.title, { display: 'none' });
+        if (!description) setStyle(this.description, { display: 'none' });
         setStyle(this.control, { display: 'none' });
         mount(document.body, this.control);
         this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } },
@@ -42,7 +43,7 @@ export class Modal {
     onmodalclose: Function;
 
     backgroundClick() {
-        this.hideModal();
+        this.hide();
         if (this.onmodalclose) this.onmodalclose();
     }
 
@@ -61,7 +62,10 @@ export class Modal {
         }, 20);
     }
 
-    showModal() {
+    show() {
+        this._show();
+    }
+    _show() {
         for (let i = 0; i < modalList.length; i++) {
             setStyle(modalList[i].back, { display: 'none' });
             setStyle(modalList[i].control, { display: 'none' });
@@ -78,7 +82,10 @@ export class Modal {
         });
     }
 
-    hideModal() {
+    hide() {
+        this._hide();
+    }
+    _hide() {
         this.animate((perc) => {
             let op = (1 - perc) * this.backopacity;
             setStyle(this.back, { opacity: op });

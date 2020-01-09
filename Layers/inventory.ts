@@ -1,4 +1,3 @@
-
 import { InputGroup } from './actionPanel';
 
 import { el, setAttr, mount, unmount, setChildren, setStyle } from 'redom';
@@ -83,12 +82,10 @@ export class Inventory extends InputGroup {
     }
     _addNewValueFromInput() {
         if (this.currentname == '' || this.currentname == undefined) this.currentname = this.assetName + ' ' + (this.namelist.length + 1).toString();
-        // let name = (this.assetList.length + 1).toString();
-        // name = this.assetName + (this.assetList.length).toString();
         let index = this.namelist.indexOf(this.currentname);
         if (index != -1) return;
-        if (this.onAdd != undefined) this.onAdd(this.currentname);
         this.setInputValue();
+        if (this.onAdd != undefined) this.onAdd(this.currentname);
     }
 
     setName(name: string) {
@@ -113,27 +110,21 @@ export class Inventory extends InputGroup {
     setInputValue() {
         this.nameinput.value = '';
         setAttr(this.nameinput, { placeholder: this.placeholder + ' ' + (this.namelist.length + 1).toString() });
-        this.currentname = '';
     }
 
     lastButton: HTMLElement;
     addButtonInInventory(name: string) {
         this.namelist.push(name);
-        let id = this.namelist.length.toString();
-        let textButton: HTMLElement;
         let deleteButton: HTMLElement;
         let button = el('div.input-button.inventory-button', { 
                 onclick: () => { this.manageClick(name); },
                 onmouseenter: () => { setStyle(deleteButton, { display: 'inline-block'}) },
                 onmouseleave: () => { setStyle(deleteButton, { display: 'none'}) },
-                // onmouseenter: () => { textButton.textContent = name; setStyle(deleteButton, { display: 'inline-block' }) },
-                // onmouseleave: () => { textButton.textContent = id; setStyle(deleteButton, { display: 'none' }) },
             }, [
-                textButton = el('div', name),
+                el('div', name),
                 deleteButton = el('div.inventory-button-delete.right-icon', 'X', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } }),
             ]
         );
-        // setAttr(button, { 'aria-label': name, 'data-microtip-position': 'bottom', 'role': 'tooltip' });
         mount(this.inventoryContainer, button);
         this.buttonList[name] = button;
         this.lastButton = button;

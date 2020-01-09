@@ -152,7 +152,7 @@ export class LoginModal extends Modal {
     loginUser(data: User) {
         if (this.session.admin && !data.admin) return this.showError('You must be an admin to have access');
         toastr.success('Hey ! So nice to see you ' + data.name + ', Ready to make some magic? 🧙');
-        this.hideModal();
+        this.hide();
         this.session.loginUser(data);
     }
 }
