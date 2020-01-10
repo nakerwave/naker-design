@@ -28,11 +28,13 @@ export interface assetEvents {
 export class BaseAssetButton extends Input {
     url: string;
     type: string;
+    removable = true;
 
     constructor(parent: HTMLElement, label: string, assetoption: asset) {
         super(parent, label);
         this.url = assetoption.url;
         this.type = assetoption.type;
+        if (assetoption.removable !== undefined) this.removable = assetoption.removable;
     }
 
     getThumbnail(url: string) {
@@ -289,6 +291,7 @@ export class AssetPicker extends UI {
         });
 
         this.setEvents();
+        this.addRemoveAssetButton();
     }
     
     setEvents() {
@@ -313,13 +316,22 @@ export class AssetPicker extends UI {
         mount(parent, this.el);
     }
 
-    addNoAssetButton () {
-        let button = el('div.no-asset-button.asset-button', { onclick: () => { this.selectAsset(null) } },
+    removeAssetButton: HTMLElement;
+    addRemoveAssetButton () {
+        this.removeAssetButton = el('div.no-asset-button.asset-button', { onclick: () => { this.selectAsset(null) } },
             el('div.no-asset-icon.icon-none',
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         );
-        mount(this.assetlist, button);
+        mount(this.assetlist, this.removeAssetButton);
+    }
+    
+    showRemoveAssetButton() {
+        setStyle(this.removeAssetButton, { display: 'block' });
+    }
+
+    hideRemoveAssetButton() {
+        setStyle(this.removeAssetButton, { display: 'none' });
     }
 
     currentInput: BaseAssetButton;
@@ -330,6 +342,8 @@ export class AssetPicker extends UI {
         this.type = input.type;
         this.waitingAsset = this.type;
         this.waitingInput = this.currentInput;
+        if (input.removable) this.showRemoveAssetButton();
+        else this.hideRemoveAssetButton();
         this.showPicker();
     }
 
