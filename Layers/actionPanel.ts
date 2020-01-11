@@ -234,21 +234,22 @@ export class InputGroupSwitch extends InputGroup {
     constructor(title: string, expandable?: boolean, undo?: Undo) {
         super(title, actionPanel, undo);
         if (title) this.addTitle(title);
-        if (expandable === false) {
-            if (title) {
-                unmount(this.titleParent, this.expand);
-                setAttr(this.title, {class:''});
-            }
-        }
+        // if (expandable === false) {
+        //     if (title) {
+        //         // unmount(this.titleParent, this.expand);
+        //         setAttr(this.title, {class:''});
+        //     }
+        // }
     }
 
     titleParent: HTMLElement;
     addTitle(title: string) {
         this.titleParent = el('div.parameter-title',
-            this.title = el('div.switch-title', title),
-            this.expand = el('div.title-expand.icon-expand', { onclick: () => { this.switch() } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            ),
+            this.title = el('div', title),
+            // this.title = el('div.switch-title', title),
+            // this.expand = el('div.title-expand.icon-expand', { onclick: () => { this.switch() } },
+            //     [el('span.path1'), el('span.path2'), el('span.path3')]
+            // ),
         );
         mount(this.el, this.titleParent);
     }
@@ -258,18 +259,18 @@ export class InputGroupSwitch extends InputGroup {
         mount(this.el, textNode);
     }
 
-    expanded = true;
-    switch() {
-        if (this.expanded) {
-            this.expanded = false;
-            setStyle(this.el, { height: '25px' });
-            setStyle(this.expand, { transform: 'rotateZ(90deg)' });
-        } else {
-            this.expanded = true;
-            setStyle(this.el, { height: 'auto' });
-            setStyle(this.expand, { transform: 'rotateZ(0deg)' });
-        }
-    }
+    // expanded = true;
+    // switch() {
+    //     if (this.expanded) {
+    //         this.expanded = false;
+    //         setStyle(this.el, { height: '25px' });
+    //         setStyle(this.expand, { transform: 'rotateZ(90deg)' });
+    //     } else {
+    //         this.expanded = true;
+    //         setStyle(this.el, { height: 'auto' });
+    //         setStyle(this.expand, { transform: 'rotateZ(0deg)' });
+    //     }
+    // }
 
     freezeInput(input: Input, bool: boolean) {
         if (bool) setStyle(input.el, { display: 'none' });

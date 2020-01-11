@@ -46,7 +46,7 @@ export class Inventory extends InputGroup {
                     this.nameinput = el('input.inventory-input', {
                         type: 'text',
                         placeholder: placeholder + ' name',
-                        onblur: () => { this.hideInput(); },
+                        onblur: (evt) => { this.hideInput(); },
                         oninput: (evt) => { this.setName(evt.target.value); },
                         onkeyup: (evt) => { if (evt.keyCode === 13) this.hideInput(); }
                     }),
@@ -74,6 +74,7 @@ export class Inventory extends InputGroup {
 
     hideInput() {
         setStyle(this.nameContainer, { display: 'none' });
+        this.currentname = '';
     }
 
     currentname = '';
@@ -113,7 +114,7 @@ export class Inventory extends InputGroup {
     }
 
     lastButton: HTMLElement;
-    addButtonInInventory(name: string) {
+    addButtonInInventory(name: string) {        
         this.namelist.push(name);
         let deleteButton: HTMLElement;
         let button = el('div.input-button.inventory-button', { 
