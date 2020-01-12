@@ -126,10 +126,8 @@ export class NumberInput extends Input {
         click: 'click',
         enterkey: 'enterkey',
     };
-    changeFunctions: Array<Function> = [];
     enterkeyFunctions: Array<Function> = [];
     on(event: string, funct: Function) {
-        if (event == 'change') this.changeFunctions.push(funct);
         if (event == 'enterkey') this.enterkeyFunctions.push(funct);
         this.el.addEventListener(this.inputEvent[event], (evt) => {
             this.value = parseFloat(this.el.value);

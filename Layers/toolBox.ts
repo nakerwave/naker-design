@@ -1,5 +1,5 @@
 
-import { el, mount, setAttr, setStyle } from 'redom';
+import { el, mount, unmount, setAttr, setStyle } from 'redom';
 import { Undo } from '../Services/undo';
 
 import 'microtip/microtip.css';
@@ -14,10 +14,12 @@ import GLBench from 'gl-bench/dist/gl-bench.module';
 export class ToolBox {
 
     control: HTMLElement;
+    parent: HTMLElement;
 
     constructor(parent: HTMLElement) {
+        this.parent = parent;
         this.control = el('div.tool-box');
-        mount(parent, this.control);
+        this.show();
     }
 
     addTool(icon: string, tooltip: string, callback: Function): HTMLElement {
@@ -121,5 +123,13 @@ export class ToolBox {
             this.meshes.textContent = scene.getActiveMeshes().length.toString();
         }, 500);
         setStyle(this.control, { display: 'block' });
+    }
+
+    show() {
+        mount(this.parent, this.control);
+    }
+
+    hide() {
+        unmount(this.parent, this.control);
     }
 }

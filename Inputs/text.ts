@@ -57,17 +57,15 @@ export class TextInput extends Input {
     }
 
     inputEvent: inputEvents = {
-        change: 'change',
+        change: 'input',
         input: 'input',
         focus: 'focus',
         blur: 'blur',
         click: 'click',
         enterkey: 'enterkey',
     };
-    changeFunctions: Array<Function> = [];
     enterkeyFunctions: Array<Function> = [];
     on(event: string, funct: Function) {
-        if (event == 'change') this.changeFunctions.push(funct);
         if (event == 'enterkey') this.enterkeyFunctions.push(funct);
         this.el.addEventListener(this.inputEvent[event], (evt) => {
             funct(evt.target.value, this, evt);
@@ -144,17 +142,15 @@ export class ParagraphInput extends Input {
     }
 
     inputEvent: inputEvents = {
-        change: 'change',
+        change: 'input',
         input: 'input',
         focus: 'focus',
         blur: 'blur',
         click: 'click',
         enterkey: 'enterkey',
     };
-    changeFunctions: Array<Function> = [];
     enterkeyFunctions: Array<Function> = [];
     on(event: string, funct: Function) {
-        if (event == 'change') this.changeFunctions.push(funct);
         if (event == 'enterkey') this.enterkeyFunctions.push(funct);
         this.el.addEventListener(this.inputEvent[event], (evt) => {
             funct(evt.target.value, this, evt);
