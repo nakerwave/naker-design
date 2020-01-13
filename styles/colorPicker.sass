@@ -38,8 +38,8 @@
     width: 100%
     display: inline-block
     right: 0px
-    top: 50%
-    transform: translateY(-50%)
+    // 50% minus half the size of the picker
+    top: calc(50% - 120px)
     z-index: 1000
 
     .color-picker-background
@@ -53,8 +53,8 @@
 
 
     .pcr-app
-        position: relative !important
-        margin: 12px 9px !important
+        position: absolute !important
+        padding: 12px 9px !important
         top: 0px !important
         left: 0px !important
         width: calc(100% - 20px) !important
@@ -87,6 +87,10 @@
                 font-size: 15px
                 margin: 0px
                 margin-left: 10px
+
+        .pcr-color-palette
+            &::before
+                height: calc(100% - 1px) !important
 
         .pcr-current-color
             border: 1px solid $colorgrey !important
