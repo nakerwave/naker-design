@@ -45,8 +45,8 @@ export class NumberInput extends Input {
         this.min = number.min;
         this.max = number.max;
         // Prevent the correct step, it can add the minimum value to the step
-        // if (number.min !== undefined) setAttr(this.el, { min: number.min });
-        // if (number.max !== undefined) setAttr(this.el, { max: number.max });
+        if (number.min !== undefined) setAttr(this.el, { min: number.min });
+        if (number.max !== undefined) setAttr(this.el, { max: number.max });
     }
 
     setUnit(number: numberoption) {

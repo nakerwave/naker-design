@@ -40,7 +40,7 @@ export class ToolBox {
             undo.back();
         });
 
-        let forwardbottom = this.addTool('forward', 'Redo (Ctrl + Maj + Z)', () => {
+        let forwardbottom = this.addTool('forward', 'Redo (Ctrl + Shift + Z)', () => {
             undo.forward();
         });
 

@@ -43,7 +43,7 @@ export class Input extends UI {
     }
 
     setLabelIcon(icon: string) {
-        setAttr(this.label, {class : 'input-label icon-' + icon});
+        setAttr(this.label, {class : 'input-label input-label-icon icon-' + icon});
         setChildren(this.label, [el('span.path1'), el('span.path2'), el('span.path3')]);
     }
 }
