@@ -1,7 +1,7 @@
 
 import { Input, inputEvents, heightinput } from './input';
 
-import { el, mount, setAttr, setStyle, setChildren, RedomElement } from 'redom';
+import { el, mount, setAttr, setStyle, setChildren } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
@@ -22,29 +22,28 @@ export class RadioInput extends Input {
         this.el = el('div.main-radio.input-parameter');
         mount(this.parent, this.el);
         setStyle(this.parent, { height: heightinput * radiooption.list.length + 'px' });
-        this.setInput(radiooption);
+        this.setInput(label, radiooption);
         return this;
     }
 
-    radiobuttons: Array<RedomElement> = [];
-    radionodes: Array<RedomElement> = [];
-    setInput(radiooption: radiooption) {
+    radiobuttons: Array<HTMLElement> = [];
+    radionodes: Array<HTMLElement> = [];
+    setInput(label:string, radiooption: radiooption) {
         this.option = radiooption.list;
         for (let i = 0; i < this.option.length; i++) {
-            let label = this.option[i]
-            let radiobutton: RedomElement;
+            let option = this.option[i];
+            let radiobutton: HTMLElement;
             let div = el('div.radio-option',
                 [
-                    radiobutton = el('input', { type: 'radio', id: label }),
-                    el('label', { for: label })
+                    radiobutton = el('input', { type: 'radio', id: label + '_' + option }),
+                    el('label', { for: label + '_' + option })
                 ]
             );
-
             this.radiobuttons.push(radiobutton);
             this.radionodes.push(div);
-            let radiolabel = el('div', label, { class: 'radio-label' });
+            let radiolabel = el('div', option, { class: 'radio-label' });
             mount(div, radiolabel);
-            if (label == radiooption.value) setAttr(radiobutton, { checked: true });
+            if (option == radiooption.value) setAttr(radiobutton, { checked: true });
         }
         setChildren(this.el, this.radionodes);
     }
@@ -64,12 +63,12 @@ export class RadioInput extends Input {
     };
     on(event: string, funct: Function) {
         for (let i = 0; i < this.radiobuttons.length; i++) {
-            ((i) => {
-                this.radiobuttons[i].addEventListener(this.inputEvent[event], (evt) => {
-                    funct(evt.target.id, this);
-                    this.setValue(evt.target.id);
-                });
-            })(i)
+            this.radiobuttons[i].addEventListener(this.inputEvent[event], (evt) => {
+                let id = evt.target.id;
+                let value = id.split('_')[1];
+                funct(value, this);
+                this.setValue(value);
+            });
         }
         return this;
     }

@@ -1,4 +1,3 @@
-
 import toastr from 'toastr';
 import Dropzone from 'dropzone';
 import { el, setStyle, setAttr, mount } from 'redom';

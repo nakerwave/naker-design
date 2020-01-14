@@ -1,7 +1,7 @@
 
 import { elementEvents, UI } from '../Layers/common';
 
-import { el, mount, unmount } from 'redom';
+import { el, mount, unmount, setAttr, setChildren } from 'redom';
 
 export let widthinputcontainer = 150;
 export let widthinput = 60;
@@ -40,5 +40,10 @@ export class Input extends UI {
 
     showLabel() {
         mount(this.parent, this.label);
+    }
+
+    setLabelIcon(icon: string) {
+        setAttr(this.label, {class : 'input-label icon-' + icon});
+        setChildren(this.label, [el('span.path1'), el('span.path2'), el('span.path3')]);
     }
 }
