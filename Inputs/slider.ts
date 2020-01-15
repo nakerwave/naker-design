@@ -18,36 +18,35 @@ export interface slideroption {
     curve?: 'logarithmic' | 'linear';
 }
 
-export class SliderInput extends Input {
+export class Slider extends Input {
 
-    number: HTMLElement;
     defaultValue: number;
-    min: number;
-    max: number;
+    min: number = 0;
+    max: number = 1;
     step: number = 0.01;
     curve: 'logarithmic' | 'linear' = 'linear';
 
     noUiSlider: noUiSlider;
 
-    constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
+    constructor(parent: HTMLElement, label: string, slideroption?: slideroption) {
         super(parent, label);
-        setAttr(this.parent, { class: 'input-container input-container-big' });
         this.el = this.parent;
+        if (slideroption) this.initSliderVar(slideroption);
+    }
+    
+    initSliderVar(slideroption: slideroption) {
         this.defaultValue = slideroption.value;
         if (slideroption.step) this.step = slideroption.step;
         if (slideroption.curve) this.curve = slideroption.curve;
-        let value = this.checkAccuracy(slideroption.value);
         this.max = slideroption.max;
         this.min = slideroption.min;
+        let value = this.checkAccuracy(slideroption.value);
         this.formerValue = value;
-        this.createSlider(this.parent, value);
-        this.number = el('input.rangenumber.input-parameter', { type: 'number', value: value, min: this.min, max: this.max, step: this.step })
-        mount(this.parent, this.number);
-        return this;
     }
 
     createSlider(parent: HTMLElement, value: number) {
         // Need to recalculate slider min when logarithmic curve
+        setAttr(this.parent, { class: 'input-container input-container-big' });
         let min = this.checkNumberCurve(this.min);
         let max = this.max;
         this.noUiSlider = noUiSlider.create(parent, {
@@ -58,14 +57,12 @@ export class SliderInput extends Input {
         });
     }
 
-    setValue(value: number) {
+    setSliderValue(value: number) {
         if (value == undefined) {
-            setAttr(this.number, { value: this.defaultValue });
             this.formerValue = value; // To avoid slider to send new value in change callback
             this.noUiSlider.set([this.defaultValue]);
         } else {
             value = this.checkAccuracy(value);
-            setAttr(this.number, { value: value });
             let slidervalue = this.checkNumberCurve(value);
             this.noUiSlider.set([slidervalue], false);
         }
@@ -109,11 +106,52 @@ export class SliderInput extends Input {
 
     // See page https://refreshless.com/nouislider/events-callbacks/ to understand nouislider events
     // Be careful because event are very sensitive and it can break a lot of things like undo
-    inputEvent: inputEvents = {
+    sliderEvent: inputEvents = {
         change: 'slide',
         focus: 'start',
         blur: 'change',
     };
+    formerValue: number;
+    onSlider(event: string, funct: Function) {
+        this.noUiSlider.on(this.sliderEvent[event], (values, handle) => {
+            let value = values[0];
+            value = this.checkAccuracy(value);
+            // Allow focus and blur event where the value hasn't changed
+            if (value == this.formerValue && event == 'change') return;
+            this.formerValue = value;
+            value = this.checkSliderCurve(value);
+            funct(value, this);
+        });
+        return this;
+    }
+}
+
+export class SliderInput extends Slider {
+
+    number: HTMLElement;
+
+    constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
+        super(parent, label, slideroption);
+        setAttr(this.parent, { class: 'input-container input-container-big' });
+        let value = this.checkAccuracy(slideroption.value);
+        this.createSlider(this.parent, value);
+        this.number = el('input.rangenumber.input-parameter', { type: 'number', value: value, min: this.min, max: this.max, step: this.step })
+        mount(this.parent, this.number);
+        return this;
+    }
+
+    setValue(value: number) {
+        if (value == undefined) {
+            setAttr(this.number, { value: this.defaultValue });
+        } else {
+            value = this.checkAccuracy(value);
+            setAttr(this.number, { value: value });
+        }
+        this.setSliderValue(value);
+    }
+
+    // See page https://refreshless.com/nouislider/events-callbacks/ to understand nouislider events
+    // Be careful because event are very sensitive and it can break a lot of things like undo
     numberInputEvent: inputEvents = {
         change: 'input',
         focus: 'focus',
@@ -121,13 +159,7 @@ export class SliderInput extends Input {
     };
     formerValue: number;
     on(event: string, funct: Function) {
-        this.noUiSlider.on(this.inputEvent[event], (values, handle) => {
-            let value = values[0];
-            value = this.checkAccuracy(value);
-            // Allow focus and blur event where the value hasn't changed
-            if (value == this.formerValue && event == 'change') return;
-            this.formerValue = value;
-            value = this.checkSliderCurve(value);
+        this.onSlider(event, (value) => {
             setAttr(this.number, { value: value });
             funct(value, this);
         });

@@ -1,7 +1,7 @@
-
-import { Input } from '../Inputs/input';
+// import { Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
 import { actionPanel } from '../Layers/panels';
+import { Slider, slideroption } from '../Inputs/slider';
 
 import { el, mount, setAttr, setStyle } from 'redom';
 import clone from 'lodash/clone';
@@ -12,7 +12,7 @@ import clone from 'lodash/clone';
 
 // Modern or es5 bundle
 import Pickr from '@simonwep/pickr';
-import noUiSlider from 'nouislider';
+// import noUiSlider from 'nouislider';
 // import { parseToHSVA } from '@simonwep/pickr/src/js/utils/color';
 // import { HSVaColor } from '@simonwep/pickr/src/js/utils/hsvacolor';
 // let test = parseToHSVA([1, 1, 1, 1]);
@@ -26,12 +26,16 @@ import noUiSlider from 'nouislider';
 
 export interface coloroption {
     opacity: boolean,
-    slider?: boolean,
     removable?: boolean,
     color?: Array<number>,
+    slider?: colorslider,
 }
 
-export class ColorButton extends Input {
+export interface colorslider {
+    curve?: 'logarithmic' | 'linear',
+}
+
+export class ColorButton extends Slider {
 
     rgba: Array<number>;
     opacity: boolean;
@@ -57,7 +61,7 @@ export class ColorButton extends Input {
         );
         mount(this.parent, this.el);
         this.opacity = coloroption.opacity;
-        if (coloroption.slider) this.addOpacitySlider();
+        if (coloroption.slider) this.addOpacitySlider(coloroption.slider);
         if (coloroption.removable === false) setStyle(this.coloricon, { display: 'none' });
         if (coloroption.color) this.setValue(coloroption.color);
     }
@@ -67,30 +71,20 @@ export class ColorButton extends Input {
         else this.focus();
     }
 
-    slider: noUiSlider;
     lastSliderValue = 0;
-    addOpacitySlider() {
-        // Set to false so that picker doesn't show opacity
-        this.opacity = false;
-        this.slider = noUiSlider.create(this.parent, {
-            range: { 'min': 0, 'max': 1 },
+    slider = false;
+    addOpacitySlider(colorslideroption: colorslider) {
+        let slideroption: slideroption = {
+            value: 1,
+            min: 0,
+            max: 1,
             step: 0.01,
-            start: [0],
-            connect: 'lower',
-        });
-        this.slider.on('slide', (values, handle) => {
-            let value = values[0];
-            this.rgba[3] = value;
-            this.events.change(this.rgba);
-        });
-        this.slider.on('change', (values, handle) => {
-            let value = values[0];
-            if (value == this.lastSliderValue) return;
-            this.lastSliderValue = value;
-            this.rgba[3] = value;
-            this.events.blur(this.rgba);
-        });
-        setAttr(this.parent, { class: 'input-container input-container-big color_input'})
+        };
+        if (colorslideroption.curve) slideroption.curve = colorslideroption.curve;
+        this.slider = true;
+        this.initSliderVar(slideroption);
+        this.createSlider(this.parent, 1);
+        setAttr(this.parent, { class: 'input-container input-container-big color_input'});
     }
 
     mouseEnter() {
@@ -117,15 +111,14 @@ export class ColorButton extends Input {
         setStyle(this.colorel, { 'background-color': color });
         setAttr(this.coloricon, { active: true });
         if (this.slider) {
-            if (frompicker) this.rgba[3] = this.lastSliderValue;
-            else this.slider.set([this.rgba[3]], false);
+            if (frompicker) {
+                this.rgba[3] = this.lastSliderValue;
+            } else {
+                this.setSliderValue(this.rgba[3]);
+            }
         }
         if (this.events.change && frompicker) this.events.change(this.rgba);
         return this;
-    }
-
-    checkOpacity() {
-
     }
 
     erase(frompicker?: any) {
@@ -137,7 +130,6 @@ export class ColorButton extends Input {
 
     events: any = {};
     startrgba: any;
-
     focus() {
         this.startrgba = this.rgba;
         setAttr(this.colorbutton, { active: true });
@@ -152,6 +144,12 @@ export class ColorButton extends Input {
 
     on(event: string, funct: Function) {
         this.events[event] = funct;
+        if (this.slider) {
+            this.onSlider(event, (value) => {
+                this.rgba[3] = value;
+                funct(this.rgba);
+            });
+        }
         return this;
     }
 }
