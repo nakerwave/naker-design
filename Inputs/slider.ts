@@ -41,7 +41,7 @@ export class Slider extends Input {
         this.max = slideroption.max;
         this.min = slideroption.min;
         let value = this.checkAccuracy(slideroption.value);
-        this.formerValue = value;
+        this.lastSliderValue = value;
     }
 
     createSlider(parent: HTMLElement, value: number) {
@@ -59,14 +59,14 @@ export class Slider extends Input {
 
     setSliderValue(value: number) {
         if (value == undefined) {
-            this.formerValue = value; // To avoid slider to send new value in change callback
+            this.lastSliderValue = value; // To avoid slider to send new value in change callback
             this.noUiSlider.set([this.defaultValue]);
         } else {
             value = this.checkAccuracy(value);
             let slidervalue = this.checkNumberCurve(value);
             this.noUiSlider.set([slidervalue], false);
         }
-        this.formerValue = value;
+        this.lastSliderValue = value;
     }
 
     checkSliderCurve(value: number): number {
@@ -111,14 +111,14 @@ export class Slider extends Input {
         focus: 'start',
         blur: 'change',
     };
-    formerValue: number;
+    lastSliderValue: number;
     onSlider(event: string, funct: Function) {
         this.noUiSlider.on(this.sliderEvent[event], (values, handle) => {
             let value = values[0];
             value = this.checkAccuracy(value);
             // Allow focus and blur event where the value hasn't changed
-            if (value == this.formerValue && event == 'change') return;
-            this.formerValue = value;
+            if (value == this.lastSliderValue && event == 'change') return;
+            this.lastSliderValue = value;
             value = this.checkSliderCurve(value);
             funct(value, this);
         });
@@ -157,7 +157,7 @@ export class SliderInput extends Slider {
         focus: 'focus',
         blur: 'blur',
     };
-    formerValue: number;
+    lastSliderValue: number;
     on(event: string, funct: Function) {
         this.onSlider(event, (value) => {
             setAttr(this.number, { value: value });
@@ -166,8 +166,8 @@ export class SliderInput extends Slider {
         this.number.addEventListener(this.numberInputEvent[event], (evt) => {
             let value = this.checkMaxMin(evt.target.value);
             value = this.checkAccuracy(value);
-            if (value == this.formerValue) return;
-            this.formerValue = value;
+            if (value == this.lastSliderValue) return;
+            this.lastSliderValue = value;
             setAttr(this.number, { value: value });
             let slidervalue = this.checkNumberCurve(value);
             this.noUiSlider.set([slidervalue]);

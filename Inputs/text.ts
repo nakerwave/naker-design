@@ -5,11 +5,27 @@ import { el, mount, setAttr } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
+  | CHANGE EFFECT INPUT                                                    |
+  +------------------------------------------------------------------------+
+*/
+
+export class ChangeEffectInput extends Input {
+
+    valueChangedTimeout: any;
+    changedEffect() {
+        if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
+        setAttr(this.el, { changed: true });
+        this.valueChangedTimeout = setTimeout(() => { setAttr(this.el, { changed: false }) }, 100);
+    }
+}
+
+/*
+  +------------------------------------------------------------------------+
   | TEXT INPUT                                                             |
   +------------------------------------------------------------------------+
 */
 
-export class TextInput extends Input {
+export class TextInput extends ChangeEffectInput {
 
     value: string;
 
@@ -24,15 +40,12 @@ export class TextInput extends Input {
         return this;
     }
 
-    valueChangedTimeout: any;
     setValue(value: string) {
         if (value == undefined) return setAttr(this.el, { value: '' });
         if (value == this.el.value) return this;
         this.value = value.toString();
         setAttr(this.el, { value: value });
-        if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
-        setAttr(this.el, { changed: true });
-        this.valueChangedTimeout = setTimeout(() => { setAttr(this.el, { changed: false }) }, 100);
+        this.changedEffect();
         return this;
     }
 
@@ -86,7 +99,7 @@ export class TextInput extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class ParagraphInput extends Input {
+export class ParagraphInput extends ChangeEffectInput {
     value: string;
     max = 300;
 
@@ -114,8 +127,7 @@ export class ParagraphInput extends Input {
         if (value == this.el.value) return this;
         this.value = value.toString();
         setAttr(this.el, { value: value });
-        setAttr(this.el, { changed: true });
-        setTimeout(() => { setAttr(this.el, { changed: false }) }, 200);
+        this.changedEffect();
         this.count.textContent = this.value.length + '/' + this.max;
         return this;
     }

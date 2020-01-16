@@ -23,20 +23,33 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-[class^="icon-"],
-[class*=" icon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon' !important;
-    speak: none;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
 
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+.icon-Caption-middle-H:before {
+    content: "\e93f";
+}
+
+.icon-Caption-right:before {
+    content: "\e9fb";
+}
+
+.icon-Caption-left:before {
+    content: "\e9fc";
+}
+
+.icon-Caption-middle-V:before {
+    content: "\e9f8";
+}
+
+.icon-Caption-top:before {
+    content: "\e98c";
+}
+
+.icon-Copy-paste:before {
+    content: "\e9f9";
+}
+
+.icon-Caption-down:before {
+    content: "\e9fa";
 }
 
 .icon-Mouse-move:before {

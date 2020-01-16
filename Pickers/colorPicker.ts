@@ -112,7 +112,8 @@ export class ColorButton extends Slider {
         setAttr(this.coloricon, { active: true });
         if (this.slider) {
             if (frompicker) {
-                this.rgba[3] = this.lastSliderValue;
+                let slidervalue = this.checkSliderCurve(this.lastSliderValue);
+                this.rgba[3] = slidervalue;
             } else {
                 this.setSliderValue(this.rgba[3]);
             }
@@ -267,10 +268,11 @@ export class ColorPicker extends UI {
     setPalette (palette?: Array<Array<number>>) {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
-            let test = this.isAlreadyInPalette(rgba);
-            // console.log(rgba, this.getRgbaString(rgba));
-            
-            if (!test) this.picker.addSwatch(this.getRgbaString(rgba));
+            // it happened that color saved is 'null'
+            if (rgba) {
+                let test = this.isAlreadyInPalette(rgba);
+                if (!test) this.picker.addSwatch(this.getRgbaString(rgba));
+            }
         }
     }
 
@@ -281,6 +283,8 @@ export class ColorPicker extends UI {
     }
 
     isAlreadyInPalette(color: Array<number>) {
+        // security
+        if (!color) return;
         let newColorArr = color.slice(0, 4);
         let swatches = this.picker._swatchColors;
         for (const key in swatches) {

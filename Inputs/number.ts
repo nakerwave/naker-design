@@ -3,6 +3,7 @@ import { Input, inputEvents } from './input';
 
 import { el, unmount, mount, setAttr, setStyle } from 'redom';
 import merge from 'lodash/merge';
+import { ChangeEffectInput } from './text';
 
 /*
   +------------------------------------------------------------------------+
@@ -19,7 +20,7 @@ export interface numberoption {
     decimal?: number
 }
 
-export class NumberInput extends Input {
+export class NumberInput extends ChangeEffectInput {
 
     unit: any;
     value: number;
@@ -64,16 +65,14 @@ export class NumberInput extends Input {
         this.unit.textContent = unit;
     }
 
-    valueChangedTimeout: any;
     setValue(value: number) {
         if (value == undefined) return setAttr(this.el, { value: 0 });
-        if (value == this.el.value) return this;
+        // Still update value in case empty
+        if (value == this.el.value) return setAttr(this.el, { value: value });
         this.value = value;
         this.checkDecimal();
         setAttr(this.el, { value: this.value });
-        if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
-        setAttr(this.el, { changed: true });
-        this.valueChangedTimeout = setTimeout(() => { setAttr(this.el, { changed: false }) }, 100);
+        this.changedEffect();
         return this;
     }
 
@@ -185,6 +184,12 @@ export class VectorInput extends Input {
             })(key)
         }
         return this;
+    }
+
+    changedEffect() {
+        this.x.changedEffect();
+        this.y.changedEffect();
+        this.z.changedEffect();
     }
 
     setValue(value: vectorvalue) {
