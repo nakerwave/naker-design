@@ -20,6 +20,8 @@ export class UserPearl {
 
         const script = document.createElement("script");
         script.src = "https://harbor-test.naker.io/pearl/v1.0.1/viewer.js";
+        // script.src = "https://d23jutsnau9x47.cloudfront.net/pearl/v1.0.2/viewer.js";
+        
         script.async = true;
         document.body.appendChild(script);
         script.addEventListener('load', () => {
@@ -29,7 +31,9 @@ export class UserPearl {
     
     createPearl(container: HTMLElement) {
         this.pearl = nakerpearl.render({ container: container, model: 'pearl', modelFollowMouseRapidity: 2 }, (pearl) => {
+            this.pearl = pearl;
             this.model = pearl.model;
+            this.light = pearl.light;
             this.light = pearl.light;
 
             let user = this.session.user;
@@ -44,6 +48,7 @@ export class UserPearl {
                 this.setIcoSphere();
             }
             pearl.model.pattern.setMaterialProperties({ roughness: this.metallicroughness, metallic: this.metallicroughness });
+            this.updateRender();
         });
     
         this.model = this.pearl.model;
@@ -54,6 +59,7 @@ export class UserPearl {
         if (!this.model) return;
         this.model.pattern.mesh._setIcoSphere();
         this.setColor(this.session.engineColor[this.session.engine]);
+        this.updateRender();
     }
     
     setColor(color: Array<number>) {
@@ -61,6 +67,7 @@ export class UserPearl {
         this.light.setColor(color);
         this.light.setIntensity(1.5);
         this.light.show();
+        this.updateRender();
     }
 
     updatePearl(data?: Array<number>) {
@@ -68,6 +75,7 @@ export class UserPearl {
         if (data) this.model.pattern.mesh._setPositions(data);
         else this.model.pattern.mesh._update(10);
         this.model.show();
+        this.updateRender();
     }
 
     savePearl(success:boolean, callback?:Function) {
@@ -99,6 +107,13 @@ export class UserPearl {
                 if (callback) callback(this.session.user);
             });
         });
+    }
+
+    updateRender() {
+        this.pearl.system.launchRender();
+        setTimeout(() => {
+            this.pearl.system.stopRender();
+        }, 1000);
     }
 
 }

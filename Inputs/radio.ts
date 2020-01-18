@@ -85,11 +85,13 @@ export interface radioiconoption {
     tooltip: boolean;
     list: Array<string>;
     iconLink?: Object;
+    tooltipLink?: Object;
 }
 
 export class RadioIconInput extends Input {
     option: Array<string>;
     iconLink: Object;
+    tooltipLink: Object;
     // iconperline: number;
     linenumber: number;
     row: any;
@@ -100,6 +102,7 @@ export class RadioIconInput extends Input {
         this.option = radiooption.list;
         // this.iconperline = radiooption.iconperline;
         this.iconLink = radiooption.iconLink;
+        this.tooltipLink = radiooption.tooltipLink;
         this.linenumber = Math.ceil(radiooption.list.length / 3);
         this.el = el('div.radio')
         mount(this.parent, this.el);
@@ -115,19 +118,20 @@ export class RadioIconInput extends Input {
     setInput(radiooption: radioiconoption) {
         for (let i = 0; i < this.option.length; i++) {
             let value = this.option[i];
-            let icon = (radiooption.iconLink) ? radiooption.iconLink[value] : value;
+            let icon = (radiooption.iconLink && radiooption.iconLink[value]) ? radiooption.iconLink[value] : value;
             let radiobutton = el('div.input-button.radio-button',
-                {
-                    id: value,
-                    // style: { width: width + 'px' },
-                    // onmouseenter: (evt: Event) => { this.label.textContent = value },
+            {
+                id: value,
+                // style: { width: width + 'px' },
+                // onmouseenter: (evt: Event) => { this.label.textContent = value },
                     // onmouseleave: (evt: Event) => { this.label.textContent = label },
                 },
                 el('div.input-button-icon.icon-' + icon, 
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
             );
-            if (radiooption.tooltip) setAttr(radiobutton, { 'aria-label': value, 'data-microtip-position': 'bottom', 'role': 'tooltip' });
+            let tooltip = (radiooption.tooltipLink && radiooption.tooltipLink[value]) ? radiooption.tooltipLink[value] : value;
+            if (radiooption.tooltip) setAttr(radiobutton, { 'aria-label': tooltip, 'data-microtip-position': 'bottom', 'role': 'tooltip' });
             this.radiobuttons.push(radiobutton);
         }
         setChildren(this.el, this.radiobuttons);
@@ -137,8 +141,6 @@ export class RadioIconInput extends Input {
     setValue(value: string) {
         if (value == undefined) value = this.option[0];
         for (let i = 0; i < this.option.length; i++) {
-            let label = this.option[i];
-            let icon = (this.iconLink) ? this.iconLink[label] : label;
             if (value == this.option[i]) setAttr(this.radiobuttons[i], { active: true });
             else setAttr(this.radiobuttons[i], { active: false });
         }

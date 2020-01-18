@@ -61,10 +61,12 @@ export class Api {
         Cookies.set('token', JSON.stringify(cookie), { expires: 7 });
     }
 
-    get(path: string, arg: Object, callback: Function) {
+    put(path: string, arg: Object, callback: Function) {
         let query = arg ? this.ObjecToQuery(arg) : '';
         let url = this.host + path + '?' + query;
-        this.send('GET', url, '', {}, callback);
+        this.send('PUT', url, '', {}, (data) => {
+            callback(data);
+        })
     }
 
     post(path: string, arg: Object, options: postOption, callback: Function) {
@@ -75,10 +77,22 @@ export class Api {
         this.send('POST', url, bodystring, header, callback);
     }
 
+    get(path: string, arg: Object, callback: Function) {
+        let query = arg ? this.ObjecToQuery(arg) : '';
+        let url = this.host + path + '?' + query;
+        this.send('GET', url, '', {}, callback);
+    }
+
     send(method: string, url: string, body: any, headers: any, callback: Function) {
         headers.Authorization = this.access_token;
         if (method == 'POST') {
             axios.post(url, body, { headers: headers })
+                .then((response) => { callback(response.data) })
+                .catch((error) => {
+                    this.checkError(error, method, url, body, headers, callback)
+                });
+        } else if(method == 'PUT') {
+            axios.put(url, body, { headers: headers })
                 .then((response) => { callback(response.data) })
                 .catch((error) => {
                     this.checkError(error, method, url, body, headers, callback)
