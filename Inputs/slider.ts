@@ -15,7 +15,7 @@ export interface slideroption {
     max: number;
     min: number;
     step?: number;
-    curve?: 'logarithmic' | 'linear';
+    curve?: 'logarithmic' | 'exponential' | 'linear';
 }
 
 export class Slider extends Input {
@@ -24,7 +24,7 @@ export class Slider extends Input {
     min: number = 0;
     max: number = 1;
     step: number = 0.01;
-    curve: 'logarithmic' | 'linear' = 'linear';
+    curve: 'logarithmic' | 'exponential' | 'linear' = 'linear';
 
     noUiSlider: noUiSlider;
 
@@ -69,11 +69,16 @@ export class Slider extends Input {
         this.lastSliderValue = value;
     }
 
+    power = 3;
     checkSliderCurve(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
-            let newvalue = Math.pow(value, 2) / this.max;
+            let newvalue = Math.pow(value, this.power) / this.max;
+            newvalue = this.checkAccuracy(newvalue);
+            return newvalue;
+        } else if (this.curve == 'exponential') {
+            let newvalue = Math.pow(value, 1 / this.power) / this.max;
             newvalue = this.checkAccuracy(newvalue);
             return newvalue;
         }
@@ -83,7 +88,9 @@ export class Slider extends Input {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
-            return Math.pow(value * this.max, 1 / 2);
+            return Math.pow(value * this.max, 1 / this.power);
+        } else if (this.curve == 'exponential') {
+            return Math.pow(value * this.max, this.power);
         }
     }
 

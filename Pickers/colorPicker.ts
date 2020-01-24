@@ -32,7 +32,7 @@ export interface coloroption {
 }
 
 export interface colorslider {
-    curve?: 'logarithmic' | 'linear',
+    curve?: 'logarithmic' | 'exponential' | 'linear',
 }
 
 export class ColorButton extends Slider {
