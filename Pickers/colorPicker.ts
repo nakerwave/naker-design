@@ -33,6 +33,7 @@ export interface coloroption {
 
 export interface colorslider {
     curve?: 'logarithmic' | 'exponential' | 'linear',
+    points?: number,
 }
 
 export class ColorButton extends Slider {
@@ -74,16 +75,18 @@ export class ColorButton extends Slider {
     lastSliderValue = 0;
     slider = false;
     addOpacitySlider(colorslideroption: colorslider) {
+        let values = new Array(this.points).fill(1);
         let slideroption: slideroption = {
-            value: 1,
+            value: values,
             min: 0,
             max: 1,
-            step: 0.01,
+            step: 0.001,
         };
         if (colorslideroption.curve) slideroption.curve = colorslideroption.curve;
+        if (colorslideroption.points) slideroption.points = colorslideroption.points;
         this.slider = true;
         this.initSliderVar(slideroption);
-        this.createSlider(this.parent, 1);
+        this.createSlider(this.parent);
         setAttr(this.parent, { class: 'input-container input-container-big color_input'});
     }
 

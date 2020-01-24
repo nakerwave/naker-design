@@ -11,19 +11,21 @@ import noUiSlider from 'nouislider';
 */
 
 export interface slideroption {
-    value: number;
+    value: Array<number>;
     max: number;
     min: number;
     step?: number;
+    points?: number;
     curve?: 'logarithmic' | 'exponential' | 'linear';
 }
 
 export class Slider extends Input {
 
-    defaultValue: number;
+    defaultValues: Array<number>;
     min: number = 0;
     max: number = 1;
     step: number = 0.01;
+    points = 1;
     curve: 'logarithmic' | 'exponential' | 'linear' = 'linear';
 
     noUiSlider: noUiSlider;
@@ -35,56 +37,74 @@ export class Slider extends Input {
     }
     
     initSliderVar(slideroption: slideroption) {
-        this.defaultValue = slideroption.value;
+        this.defaultValues = slideroption.value;
         if (slideroption.step) this.step = slideroption.step;
         if (slideroption.curve) this.curve = slideroption.curve;
+        if (slideroption.points) this.points = slideroption.points;
         this.max = slideroption.max;
         this.min = slideroption.min;
-        let value = this.checkAccuracy(slideroption.value);
-        this.lastSliderValue = value;
+        let val = slideroption.value;
+        if (typeof val == 'number') val = new Array(this.points).fill(val);
+        let value = this.checkAccuracy(val);
+        this.lastSliderValues = value;
+        this.defaultValues = value;
     }
 
-    createSlider(parent: HTMLElement, value: number) {
+    createSlider(parent: HTMLElement) {
         // Need to recalculate slider min when logarithmic curve
         setAttr(this.parent, { class: 'input-container input-container-big' });
-        let min = this.checkNumberCurve(this.min);
-        let max = this.max;
+        let min = this.checkNumberCurveValue(this.min);
+        let max = this.max
         this.noUiSlider = noUiSlider.create(parent, {
             range: { 'min': min, 'max': max },
             step: this.step,
-            start: [value],
+            start: this.defaultValues,
             connect: 'lower',
         });
     }
 
-    setSliderValue(value: number) {
-        if (value == undefined) {
-            this.lastSliderValue = value; // To avoid slider to send new value in change callback
-            this.noUiSlider.set([this.defaultValue]);
+    setSliderValue(values: Array<number>) {
+        if (values == undefined) {
+            this.lastSliderValues = values; // To avoid slider to send new values in change callback
+            this.noUiSlider.set(this.defaultValues);
         } else {
-            value = this.checkAccuracy(value);
-            let slidervalue = this.checkNumberCurve(value);
-            this.noUiSlider.set([slidervalue], false);
+            values = this.checkAccuracy(values);
+            let slidervalues = this.checkNumberCurve(values);
+            this.noUiSlider.set(slidervalues, false);
         }
-        this.lastSliderValue = value;
+        this.lastSliderValues = values;
     }
-
+    
+    checkSliderCurve(values: Array<number>): Array<number> {
+        for (let i = 0; i < values.length; i++) {
+            values[i] = this.checkSliderCurveValue(values[i]);
+        }
+        return values;
+    }
+    
     power = 3;
-    checkSliderCurve(value: number): number {
+    checkSliderCurveValue(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
             let newvalue = Math.pow(value, this.power) / this.max;
-            newvalue = this.checkAccuracy(newvalue);
+            newvalue = this.checkAccuracyValue(newvalue);
             return newvalue;
         } else if (this.curve == 'exponential') {
             let newvalue = Math.pow(value, 1 / this.power) / this.max;
-            newvalue = this.checkAccuracy(newvalue);
+            newvalue = this.checkAccuracyValue(newvalue);
             return newvalue;
         }
     }
 
-    checkNumberCurve(value: number): number {
+    checkNumberCurve(values: Array<number>): Array<number> {
+        for (let i = 0; i < values.length; i++) {
+            values[i] = this.checkNumberCurveValue(values[i]);
+        }
+        return values;
+    }
+
+    checkNumberCurveValue(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
@@ -94,7 +114,14 @@ export class Slider extends Input {
         }
     }
 
-    checkMaxMin(value: number): number {
+    checkMinMax(values: Array<number>): Array<number> {
+        for (let i = 0; i < values.length; i++) {
+            values[i] = this.checkMinMaxValue(values[i]);
+        }
+        return values;
+    }
+
+    checkMinMaxValue(value: number): number {
         let newvalue = value;
         if (this.min) newvalue = Math.max(this.min, value);
         if (this.max) value = Math.min(this.max, newvalue);
@@ -106,7 +133,14 @@ export class Slider extends Input {
         else return value;
     }
 
-    checkAccuracy(value: number): number {
+    checkAccuracy(values: Array<number>): Array<number> {
+        for (let i = 0; i < values.length; i++) {
+            values[i] = this.checkAccuracyValue(values[i]);
+        }
+        return values;
+    }
+
+    checkAccuracyValue(value: number): number {
         let accuracy = 1 / this.step;
         return Math.round(value * accuracy) / accuracy;
     }
@@ -118,16 +152,16 @@ export class Slider extends Input {
         focus: 'start',
         blur: 'change',
     };
-    lastSliderValue: number;
+    lastSliderValues: Array<number>;
     onSlider(event: string, funct: Function) {
-        this.noUiSlider.on(this.sliderEvent[event], (values, handle) => {
-            let value = values[0];
-            value = this.checkAccuracy(value);
+        this.noUiSlider.on(this.sliderEvent[event], (values: Array<number>, handle) => {
+            // let value = values[0];
+            values = this.checkAccuracy(values);
             // Allow focus and blur event where the value hasn't changed
-            if (value == this.lastSliderValue && event == 'change') return;
-            this.lastSliderValue = value;
-            value = this.checkSliderCurve(value);
-            funct(value, this);
+            if (values == this.lastSliderValues && event == 'change') return;
+            this.lastSliderValues = values;
+            values = this.checkSliderCurve(values);
+            funct(values, this);
         });
         return this;
     }
@@ -136,12 +170,12 @@ export class Slider extends Input {
 export class SliderInput extends Slider {
 
     number: HTMLElement;
+    defaultValue: number;
 
     constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
         super(parent, label, slideroption);
-        setAttr(this.parent, { class: 'input-container input-container-big' });
-        let value = this.checkAccuracy(slideroption.value);
-        this.createSlider(this.parent, value);
+        setAttr(this.parent, { class: 'input-container input-container-big' });        
+        this.createSlider(this.parent);
         this.number = el('input.rangenumber.input-parameter', { type: 'number', value: value, min: this.min, max: this.max, step: this.step })
         mount(this.parent, this.number);
         return this;
@@ -151,10 +185,10 @@ export class SliderInput extends Slider {
         if (value == undefined) {
             setAttr(this.number, { value: this.defaultValue });
         } else {
-            value = this.checkAccuracy(value);
+            value = this.checkAccuracyValue(value);
             setAttr(this.number, { value: value });
         }
-        this.setSliderValue(value);
+        this.setSliderValue([value]);
     }
 
     // See page https://refreshless.com/nouislider/events-callbacks/ to understand nouislider events
@@ -171,12 +205,12 @@ export class SliderInput extends Slider {
             funct(value, this);
         });
         this.number.addEventListener(this.numberInputEvent[event], (evt) => {
-            let value = this.checkMaxMin(evt.target.value);
-            value = this.checkAccuracy(value);
+            let value = this.checkMinMaxValue(evt.target.value);
+            value = this.checkAccuracyValue(value);
             if (value == this.lastSliderValue) return;
             this.lastSliderValue = value;
             setAttr(this.number, { value: value });
-            let slidervalue = this.checkNumberCurve(value);
+            let slidervalue = this.checkNumberCurveValue(value);
             this.noUiSlider.set([slidervalue]);
             funct(value, this);
         });
