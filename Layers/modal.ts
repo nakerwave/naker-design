@@ -21,11 +21,12 @@ export class Modal {
         let modalclass = (clas) ? clas : '';
         this.control = el('div.modal.' + modalclass,
             [
-                this.title = el('div.modal-title', title),
+                this.title = el('div.modal-title'),
                 this.description = el('div.modal-description', description),
             ]
         );
         if (!title) setStyle(this.title, { display: 'none' });
+        else this.title.innerHTML = title;
         if (!description) setStyle(this.description, { display: 'none' });
         setStyle(this.control, { display: 'none' });
         mount(document.body, this.control);

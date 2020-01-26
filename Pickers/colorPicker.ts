@@ -78,7 +78,7 @@ export class ColorButton extends Slider {
             value: 1,
             min: 0,
             max: 1,
-            step: 0.01,
+            step: 0.001,
         };
         if (colorslideroption.curve) slideroption.curve = colorslideroption.curve;
         this.slider = true;

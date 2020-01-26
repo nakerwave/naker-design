@@ -39,6 +39,7 @@
 .naker-engine
     font-family: 'jaapokkiregular'
     position: absolute
+    color: $colortext
     width: 150px
     top: 13px
     left: 65px
@@ -47,13 +48,16 @@
     .engine
         display: inline-block
 
-.project-name
+.form-name
     position: absolute
     top: 17px
     right: 250px
     height: 30px
-    padding-left: 10px
     font-size: 13px
+    width: 170px
+    .project-name
+        padding-left: 10px
+        width: 150px !important
 
 .loader
     position: absolute
@@ -64,7 +68,8 @@
 
 .project-save
     position: absolute !important
-    right: 250px !important
+    width: 230px !important
+    font-weight: 900
 
 .dashboard-button
     position: absolute
@@ -85,6 +90,7 @@
     display: inline-block
     height: 60px
     line-height: 60px
+    color: $colortext
     text-align: center
     font-size: 15px
     font-weight: 600

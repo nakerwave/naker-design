@@ -21,7 +21,7 @@ export class Header {
     loaderEl: HTMLElement;
     projectname: HTMLElement;
     formname: HTMLElement;
-    projectsave: HTMLElement;
+    // projectsave: HTMLElement;
 
     constructor(session: Session, undo: Undo) {
         this.undo = undo;
@@ -54,7 +54,7 @@ export class Header {
                 onclick: (evt) => { this.goToDashboard() },
             }),
             this.loaderEl = el('div.loader'),
-            this.formname = el('form', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
+            this.formname = el('form.form-name', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
                 this.projectname = el('input.project-name', {
                     type: 'text',
                     placeholder: "Project's name",
@@ -64,7 +64,7 @@ export class Header {
                     onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
                 }),
             ),
-            this.projectsave = el('div.nav-button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.show(); } }, "Save Project"),
+            // this.projectsave = el('div.nav-button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.show(); } }, "Export Project"),
         ]);
         mount(document.body, this.control);
     }
@@ -101,12 +101,12 @@ export class Header {
 
     checkUserAndProject() {
         if (!this.session.api.isConnected() || !this.session.saving) {
-            mount(this.control, this.projectsave);
+            // mount(this.control, this.projectsave);
             unmount(this.control, this.loaderEl);
             unmount(this.control, this.formname);
             this.userPearl.setIcoSphere();
         } else {
-            unmount(this.control, this.projectsave);
+            // unmount(this.control, this.projectsave);
             mount(this.control, this.loaderEl);
             mount(this.control, this.formname);
             

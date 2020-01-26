@@ -219,6 +219,24 @@ export class InputGroup extends UI {
         return vectorInput;
     }
 
+    addVectorTitle() {
+        let title = el('div.vector-title', [
+            el('div.vector-axe', [
+                el('div.arrow.icon-X-Y-Z-axis.x-axe', [el('span.path1'), el('span.path2'), el('span.path3')]),
+                el('div', 'X'),
+            ]),
+            el('div.vector-axe', [
+                el('div.arrow.icon-X-Y-Z-axis.y-axe', [el('span.path1'), el('span.path2'), el('span.path3')]),
+                el('div', 'Y'),
+            ]),
+            el('div.vector-axe', [
+                el('div.arrow.icon-X-Y-Z-axis.z-axe', [el('span.path1'), el('span.path2'), el('span.path3')]),
+                el('div', 'Z'),
+            ]),
+        ]);
+        mount(this.el, title);
+    }
+
     addSwitchButton(callback: Function) {
         let test = false;
         let switchButton = this.addButton({ui: 'text', text:'Less Options'}, () => {
