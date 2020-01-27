@@ -33,6 +33,7 @@ export interface coloroption {
 
 export interface colorslider {
     curve?: 'logarithmic' | 'exponential' | 'linear',
+    power?: number,
 }
 
 export class ColorButton extends Slider {

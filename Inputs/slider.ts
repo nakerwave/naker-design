@@ -15,6 +15,7 @@ export interface slideroption {
     max: number;
     min: number;
     step?: number;
+    power?: number;
     curve?: 'logarithmic' | 'exponential' | 'linear';
 }
 
@@ -38,6 +39,7 @@ export class Slider extends Input {
         this.defaultValue = slideroption.value;
         if (slideroption.step) this.step = slideroption.step;
         if (slideroption.curve) this.curve = slideroption.curve;
+        if (slideroption.power) this.power = slideroption.power;
         this.max = slideroption.max;
         this.min = slideroption.min;
         let value = this.checkAccuracy(slideroption.value);
@@ -63,34 +65,37 @@ export class Slider extends Input {
             this.noUiSlider.set([this.defaultValue]);
         } else {
             value = this.checkAccuracy(value);
+            
             let slidervalue = this.checkNumberCurve(value);
             this.noUiSlider.set([slidervalue], false);
         }
         this.lastSliderValue = value;
     }
-
-    power = 3;
+    
+    power = 2;
     checkSliderCurve(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
-            let newvalue = Math.pow(value, this.power) / this.max;
+            let newvalue = this.max * Math.pow(value / this.max, this.power);
             newvalue = this.checkAccuracy(newvalue);
             return newvalue;
         } else if (this.curve == 'exponential') {
-            let newvalue = Math.pow(value, 1 / this.power) / this.max;
+            let newvalue = this.max * Math.pow(value / this.max, 1 / this.power);
             newvalue = this.checkAccuracy(newvalue);
             return newvalue;
         }
     }
-
+    
     checkNumberCurve(value: number): number {
         if (this.curve == 'linear') {
             return value;
         } else if (this.curve == 'logarithmic') {
-            return Math.pow(value * this.max, 1 / this.power);
+            let newvalue = this.max * Math.pow(value / this.max, 1 / this.power);
+            return newvalue
         } else if (this.curve == 'exponential') {
-            return Math.pow(value * this.max, this.power);
+            let newvalue = this.max * Math.pow(value / this.max, this.power);
+            return newvalue
         }
     }
 
