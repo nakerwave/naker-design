@@ -39,10 +39,6 @@ export class Undo {
         this.presentState = cloneDeep(json);
     }
 
-    changeInput() {
-        
-    }
-
     pushState() {
         let json = this.getProjectRoundedJson();
         // console.log(json);
