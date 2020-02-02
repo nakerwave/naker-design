@@ -21,8 +21,10 @@ export class ExportModal extends Modal {
         this.addContent(helpurl);
     }
 
+    content: HTMLElement;
+    footer: HTMLElement;
     addContent(helpurl: string) {
-        let modalContent = el('div.modal-content', [
+        this.content = el('div.modal-content', [
             el('div.modal-explanation.colormain.doublebold', "For more help, check this ",
                 el('a', { target: '_blank', href: helpurl }, "article"),
             ),
@@ -36,9 +38,9 @@ export class ExportModal extends Modal {
                 )
             ]),
         ]);
-        mount(this.control, modalContent);
+        mount(this.control, this.content);
 
-        let footer = el('div.modal-footer', {
+        this.footer = el('div.modal-footer', {
             onclick: () => {
                 this.copyLink();
             }
@@ -48,20 +50,22 @@ export class ExportModal extends Modal {
             ),
             this.footerText = el('a.modal-footer-text', 'Share Project')
         ]);
-        mount(this.control, footer);
+        // el('div.button.facebook-button', { onclick: () => { this.shareFacebook() } }, 'Share on Facebook'),
+        //     el('div.button.twitter-button', { onclick: () => { this.shareTwitter() } }, 'Share on Twitter'),
+        mount(this.control, this.footer);
     }
 
     // shareFacebook() {
     //     spy.track('Sharing_Social Click');
-    //     let url = encodeURIComponent('https://harbor.naker.io/' + this.session.getEngine() + '/' + this.session.getProjectId() + '/')
+    //     let url = encodeURIComponent('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId() + '/')
     //     window.open("https://www.facebook.com/sharer.php?u=" + url);
     // }
 
     // shareTwitter() {
     //     spy.track('Sharing_Social Click');
-    //     let url = encodeURIComponent('https://harbor.naker.io/' + this.session.getEngine() + '/' + this.session.getProjectId() + '/'
+    //     let url = encodeURIComponent('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId() + '/'
     //     )
-    //     window.open("http://www.twitter.com/share?url=" + url + "&text=See my new Intale made on Naker : ");
+    //     window.open("http://www.twitter.com/share?url=" + url + "&text=See my new ' + this.engine + ' made on Naker : ");
     // }
 
     // setWaterMarkOption(evt) {
