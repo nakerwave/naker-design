@@ -14,13 +14,13 @@ export class UserPearl {
     api: Api;
     metallicroughness = 0.4;
 
-    constructor(container:HTMLElement, session: Session) {
+    constructor(container: HTMLElement, session: Session) {
         this.session = session;
         this.api = session.api;
 
         const script = document.createElement("script");
-        script.src = "https://harbor-test.naker.io/pearl/v1.0.1/viewer.js";
-        // script.src = "https://d23jutsnau9x47.cloudfront.net/pearl/v1.0.2/viewer.js";
+        // script.src = "https://harbor-test.naker.io/pearl/v1.0.1/viewer.js";
+        script.src = "https://d23jutsnau9x47.cloudfront.net/pearl/v1.0.3/viewer.js";
         
         script.async = true;
         document.body.appendChild(script);
@@ -30,7 +30,7 @@ export class UserPearl {
     }
     
     createPearl(container: HTMLElement) {
-        this.pearl = nakerpearl.render({ container: container, model: 'pearl', modelFollowMouseRapidity: 2 }, (pearl) => {
+        this.pearl = nakerpearl.render({ container: container, model: 'pearl', modelFollowMouseRapidity: 2, waterMark: false, offscreen: false }, (pearl) => {
             this.pearl = pearl;
             this.model = pearl.model;
             this.light = pearl.light;
@@ -48,6 +48,7 @@ export class UserPearl {
                 this.setIcoSphere();
             }
             pearl.model.pattern.setMaterialProperties({ roughness: this.metallicroughness, metallic: this.metallicroughness });
+            pearl.model.setScale({ x: 0.5, y: 0.5, z: 0.5 });
             this.updateRender();
         });
     

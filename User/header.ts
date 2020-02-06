@@ -42,7 +42,9 @@ export class Header {
     setLogo() {
         let EngineName = this.session.engine.charAt(0).toUpperCase() + this.session.engine.slice(1);
         
-        let logo = el('div.naker-engine', 'Naker',
+        let logo = el('div.naker-engine', 'Naker', {
+                onclick: (evt) => { this.goToDashboard(); },
+            },
             el('div.engine.color' + this.session.engine, '.' + EngineName)
         );
         mount(this.control, logo);
@@ -51,7 +53,7 @@ export class Header {
     setContent() {
         this.control = el('div.preset-layer', [
             this.logoEl = el('div.dashboard-button', { 
-                onclick: (evt) => { this.goToDashboard() },
+                onclick: (evt) => { this.goToDashboard(); },
             }),
             this.loaderEl = el('div.loader'),
             this.formname = el('form.form-name', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },

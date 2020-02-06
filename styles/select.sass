@@ -48,7 +48,8 @@
     position: absolute
     text-align: left
     width: $widthinputcontainer
-    top: 100%
+    // +1px otherwise value is selected when click at the bottom of the page
+    top: calc(100% + 1px)
     z-index: 1000
     > li
         > a

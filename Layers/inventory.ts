@@ -1,6 +1,4 @@
-import { InputGroup } from './actionPanel';
-
-import { el, setAttr, mount, unmount, setChildren, setStyle } from 'redom';
+import { el, setAttr, mount, unmount, setStyle } from 'redom';
 import cloneDeep from 'lodash/cloneDeep';
 
 /*
@@ -13,7 +11,7 @@ export interface assetOptions {
     name?: string;
 }
 
-export class Inventory extends InputGroup {
+export class Inventory {
 
     assetName: string;
     onClick: Function;
@@ -24,47 +22,45 @@ export class Inventory extends InputGroup {
     assetList: Array<assetOptions> = [];
 
     inventoryContainer: HTMLElement;
-    // nameinput: HTMLElement;
-    // currentname: string;
     placeholder: string;
 
     constructor(assetName: string, parent: HTMLElement) {
-        super('', parent);
-        setStyle(this.el, { border: '0px' });
         this.assetName = assetName;
-        this.setSaveInputs(this.assetName);
+        this.setSaveInputs(this.assetName, parent);
     }
 
-    control: HTMLElement;
+    el: HTMLElement;
     nameinput: HTMLInputElement;
     nameContainer: HTMLElement;
-    setSaveInputs(placeholder: string) {
+    setSaveInputs(placeholder: string, parent: HTMLElement) {
         this.placeholder = placeholder;
-        let children = [
-            this.inventoryContainer = el('div.inventory-container-list editor-scroll', [
-                this.nameContainer = el('div.inventory-input-container', [
-                    this.nameinput = el('input.inventory-input', {
-                        type: 'text',
-                        placeholder: placeholder + ' name',
-                        onblur: (evt) => { this.hideInput(); },
-                        oninput: (evt) => { this.setName(evt.target.value); },
-                        onkeyup: (evt) => { if (evt.keyCode === 13) this.hideInput(); }
-                    }),
-                    // el('div.input-button.inventory-button.inventory-add-button', 'OK'),
-                ]),
-                el('div.input-button.inventory-button.inventory-add-button.icon-add', {
-                    onclick: () => { this.showInput(); this.addNewValueFromInput(); },
-                }, 
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
-                ),
-                el('div.input-button.inventory-button.inventory-add-button.icon-none', {
-                    onclick: () => { this.resetValues(); },
-                },
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
-                ),
-            ])
-        ]
-        setChildren(this.el, children);
+        this.el = el('div.parameter-gorup',
+            [
+                this.inventoryContainer = el('div.inventory-container-list editor-scroll', [
+                    this.nameContainer = el('div.inventory-input-container', [
+                        this.nameinput = el('input.inventory-input', {
+                            type: 'text',
+                            placeholder: placeholder + ' name',
+                            onblur: (evt) => { this.hideInput(); },
+                            oninput: (evt) => { this.setName(evt.target.value); },
+                            onkeyup: (evt) => { if (evt.keyCode === 13) this.hideInput(); }
+                        }),
+                        // el('div.input-button.inventory-button.inventory-add-button', 'OK'),
+                    ]),
+                    el('div.input-button.inventory-button.inventory-add-button.icon-add', {
+                        onclick: () => { this.showInput(); this.addNewValueFromInput(); },
+                    }, 
+                        [el('span.path1'), el('span.path2'), el('span.path3')]
+                    ),
+                    el('div.input-button.inventory-button.inventory-add-button.icon-none', {
+                        onclick: () => { this.resetValues(); },
+                    },
+                        [el('span.path1'), el('span.path2'), el('span.path3')]
+                    ),
+                ])
+            ]
+        );
+        mount(parent, this.el);
     }
 
     showInput() {
@@ -159,5 +155,13 @@ export class Inventory extends InputGroup {
             newAsset[key] = cloneDeep(savedAsset[key]);
         }
         if (this.onClick != undefined) this.onClick(newAsset);
+    }
+
+    show() {
+        setStyle(this.el, { dispay: 'block' });
+    }
+
+    hide() {
+        setStyle(this.el, { dispay: 'none' });
     }
 }
