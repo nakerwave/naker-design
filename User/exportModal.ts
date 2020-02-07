@@ -82,12 +82,12 @@ export class ExportModal extends Modal {
             ),
             el('input.modal-input', { type: 'text', oninput: (evt) => { this.setContainerId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Node ID container' }),
             el('div.modal-code', { onclick: () => { this.setCodeToCopy() } }, [
-                this.copiedCode = el('div.modal-copied-text', 
+                this.copiedCode = el('div.modal-copied-text.editor-scroll', 
                 ),
                 this.copiedEffect = el('div.modal-copied', 'Copied to Clipboard 👌'),
-                el('div.icon-copypaste.modal-copyicon',
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
-                )
+                // el('div.icon-copypaste.modal-copyicon',
+                //     [el('span.path1'), el('span.path2'), el('span.path3')]
+                // )
             ]),
         ]);
         
