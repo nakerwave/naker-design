@@ -111,10 +111,11 @@ export class InputGroup extends UI {
         let imageAssetInput = new ImageAssetButton(this.el, label, asset);
         imageAssetInput.on('change', (url) => {
             callback(url);
-        });
-        imageAssetInput.on('blur', (url) => {
             this.undo.pushState();
         });
+        // imageAssetInput.on('blur', (url) => {
+        //     this.undo.pushState();
+        // });
         return imageAssetInput;
     }
 

@@ -7,7 +7,8 @@ import { el, mount } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export let actionPanel = el('div.layer-right.parameter-container.editor-scroll');
+// We use a form to make sure we have no autocompletion
+export let actionPanel = el('form.layer-right.parameter-container.editor-scroll', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
 mount(document.body, actionPanel);
 
 /*
@@ -15,13 +16,15 @@ mount(document.body, actionPanel);
   | PARENT INPUT MANAGER USED WITH TAG (ONLY FOR STORY)                    |
   +------------------------------------------------------------------------+
 */
-export let actionPanelWithTag = el('div.layer-right-with-tag');
+// We use a form to make sure we have no autocompletion
+export let actionPanelWithTag = el('form.layer-right-with-tag', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
 
 /*
   +------------------------------------------------------------------------+
   | PARENT SORTABLE MANAGER                                                |
   +------------------------------------------------------------------------+
 */
-export let selectionPanel = el('div.layer-left.presets-container');
+// We use a form to make sure we have no autocompletion
+export let selectionPanel = el('form.layer-left.presets-container', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
 // mount(document.body, selectionPanel);
 

@@ -12,7 +12,7 @@ export class ExportModal extends Modal {
     version: string
 
     constructor(session: Session, undo: Undo, engine: 'back' | 'form' | 'story', version:string, helpurl: string) {
-        super('<text class="colormain doublebold">Embed</text> your Design!', "Paste the code below in your HTML. Or insert the ID of the HTML element which will draw the scene");
+        super('<text class="colormain bold">Embed</text> your Design!', "Paste the code below in your HTML. Or insert the ID of the HTML element which will draw the scene");
         this.session = session;
         this.undo = undo;
         this.engine = engine;
@@ -25,7 +25,7 @@ export class ExportModal extends Modal {
     footer: HTMLElement;
     addContent(helpurl: string) {
         this.content = el('div.modal-content', [
-            el('div.modal-explanation.colormain.doublebold', "For more help, check this ",
+            el('div.modal-explanation.colormain.bold', "For more help, check this ",
                 el('a', { target: '_blank', href: helpurl }, "article"),
             ),
             el('input.modal-input', { type: 'text', oninput: (evt) => { this.setContainerId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Node ID container' }),

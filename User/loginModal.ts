@@ -24,7 +24,7 @@ export class LoginModal extends Modal {
     loaderEl: HTMLElement;
 
     constructor(session: Session, pearl:UserPearl) {
-        super('Willing to <text class="colormain doublebold">save or export</text> your project?', 'Login to have your project saved into your personal account and access its embed code', 'login-modal');
+        super('Willing to <text class="colormain bold">save or export</text> your project?', 'Login to have your project saved into your personal account and access its embed code', 'login-modal');
         this.session = session;
         this.api = this.session.api;
         this.spy = this.session.spy;
@@ -77,7 +77,7 @@ export class LoginModal extends Modal {
             this.errorEl = el('div.form-group.error-message.colorerror'),
             this.loaderEl = el('div.loader', { opacity: 0 }),
             el('div.button.colormainbg', { onclick: () => this.tryLogin() }, 'Log In'),
-            el('a.colormain.doublebold', { href: '/signup' }, 'Sign Up'),
+            el('a.colormain.bold', { href: '/signup' }, 'Sign Up'),
         ]);
         mount(this.control, modalContent);
     }
