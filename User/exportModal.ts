@@ -92,6 +92,7 @@ export class ExportModal extends Modal {
     }
 
     setCodeToCopy() {
+        this.session.spy.track("Embed Code Copy");
         let code = this.setEmbedCode();
         this.copyToClipboard(code);
         this.setCopiedAnimation();
