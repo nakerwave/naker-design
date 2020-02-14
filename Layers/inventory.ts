@@ -47,7 +47,7 @@ export class Inventory {
                         }),
                         // el('div.input-button.inventory-button.inventory-add-button', 'OK'),
                     ]),
-                    el('div.input-button.inventory-button.inventory-add-button.icon-add', {
+                    el('div.input-button.inventory-button.inventory-add-button.icon-save', {
                         onclick: () => { this.showInput(); this.addNewValueFromInput(); },
                     }, 
                         [el('span.path1'), el('span.path2'), el('span.path3')]

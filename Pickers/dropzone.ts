@@ -40,7 +40,7 @@ export class NakerDropzone {
     createElements(formats: Array<string>) {
         let formattext = this.getFormatText(formats);
         this.el = el('div.no-asset-button.asset-button', { onclick: (evt) => { evt.stopPropagation(); } },
-            el('div.no-asset-icon.icon-add', { style: { 'pointer-events': 'none' } },
+            el('div.no-asset-icon.icon-upload', { style: { 'pointer-events': 'none' } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         );
@@ -51,7 +51,7 @@ export class NakerDropzone {
 
         this.dropzoneEl = el('div.upload_dropzone', [
             this.text = el('div.download', formattext),
-            el('div.icon-add', { style: { 'pointer-events': 'none' } },
+            el('div.icon-upload', { style: { 'pointer-events': 'none' } },
                 [el('span.path1'), el('span.path2'), el('span.path3')]
             )
         ]);
