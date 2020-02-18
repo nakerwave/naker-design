@@ -83,8 +83,9 @@ export class Undo {
             let backState = this.getDifference(newState, past.forward);
             this.presentState = backState;
             this.sendToUndoListeners(past.back, this.presentState);
+            return true;
         } else {
-            this.sendToUndoListeners(false, this.presentState);
+            return false;
         }
     }
 
@@ -97,8 +98,9 @@ export class Undo {
             let forwardState = this.getDifference(newState, future.back);
             this.presentState = forwardState;
             this.sendToRedoListeners(future.forward, this.presentState);
+            return true;
         } else {
-            this.sendToRedoListeners(false, this.presentState);
+            return false;
         }
     }
 
