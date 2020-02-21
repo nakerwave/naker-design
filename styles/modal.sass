@@ -4,16 +4,16 @@
 
 /***************************************** MODAL ****************************************
 $modalZindex: 1000
+$modalRadius: 10px
 
 .modal
     position: absolute
     width: 550px
-    padding: 20px
     height: auto
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
-    border-radius: 10px
+    border-radius: $modalRadius
     background-color: $colorgrey
     color: $colorlight
     z-index: $modalZindex + 1
@@ -32,50 +32,40 @@ $modalZindex: 1000
 
 .modal-title
     position: relative
+    padding: 10px 20px
     top: 0px
     left: 0px
-    font-size: 25px
+    font-size: 22px
     font-weight: 600
-    width: 100%
+    width: calc(100% - 40px)
     text-align: left
     height: auto
     padding-bottom: 10px
-    &:after
-        content: ""
-        position: absolute
-        top: 100%
-        left: 0px
-        width: 150px
-        height: 3px
-        border-radius: 2px
-        background: $colormain
+    background-color: darken($colormain, 20%)
+    filter: contrast(1.4)
+    background-size: 100% 100%
+    background-image: url(https://asset.naker.io/image/main/Fond_Light.png)
+    background-size: cover
+    border-radius: $modalRadius $modalRadius 0px 0px 
 
-.modal-title-background
+.modal-content
+    padding: 20px
     position: relative
-    left: 0px
-    top: 0px
-    width: 100%
-    height: 60px
-    opacity: 1
-    border-radius: $borderradius $borderradius 0px 0px
 
 .modal-description
     position: relative
+    padding: 0px 20px
+    width: calc(100% - 40px)
     margin-top: 10px
-    font-size: 18px
-    width: 100%
+    font-size: 16px
     height: auto
     text-align: left
     line-height: 1.5
 
 .modal-explanation
-    font-size: 18px
+    font-size: 16px
     padding-bottom: 10px
     line-height: 1.5
-
-.modal-content
-    margin-top: 10px
-    position: relative
 
 .modal-icon
     position: absolute
@@ -163,7 +153,6 @@ $modalZindex: 1000
     border-radius: 0px 0px 10px 10px
     margin-top: 10px
 
-
 .modal-footer-icon
     position: relative
     display: inline-block
@@ -178,4 +167,4 @@ $modalZindex: 1000
         text-decoration: underline
 
 .cms-button
-    width: 166px
+    width: 154px

@@ -17,7 +17,7 @@ export class ExportModal extends Modal {
     version: string
 
     constructor(session: Session, undo: Undo, engine: 'back' | 'form' | 'story', version:string) {
-        super('<text class="colormain doublebold">Embed</text> your Design!', "What is the CMS you use?");
+        super('Embed your Design!', "First what is the CMS you use?");
         this.session = session;
         this.undo = undo;
         this.engine = engine;
@@ -63,7 +63,7 @@ export class ExportModal extends Modal {
     ];
     CMSContent: HTMLElement;
     addCMSList() {
-        this.CMSContent = el('div.cms-list', this.CMSList.map(p =>
+        this.CMSContent = el('div.cms-list.modal-content', this.CMSList.map(p =>
             el('div.button.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
                 // el('img', { src: p.image })
                 el('div', p.name)
@@ -115,7 +115,7 @@ export class ExportModal extends Modal {
     }
 
     showCMSList() {
-        this.description.innerText = "What is the CMS you use?";
+        this.description.innerText = "First, what is the CMS you use?";
         mount(this.control, this.CMSContent);
         unmount(this.control, this.content);
         unmount(this.control, this.footer);

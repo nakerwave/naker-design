@@ -22,6 +22,9 @@ export class Modal {
         // We use a form to make sure we have no autocompletion
         this.control = el('form.modal.' + modalclass, { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
             [
+                el('div.modal-close.icon-close', { onclick: () => { this.backgroundClick(); } },
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
                 this.title = el('div.modal-title'),
                 this.description = el('div.modal-description', description),
             ]
@@ -31,11 +34,7 @@ export class Modal {
         if (!description) setStyle(this.description, { display: 'none' });
         setStyle(this.control, { display: 'none' });
         mount(document.body, this.control);
-        this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } },
-            el('div.modal-close.icon-close', { onclick: () => { this.backgroundClick(); } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            ),
-        );
+        this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } });
         mount(document.body, this.back);
         modalList.push(this);
     }
