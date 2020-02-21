@@ -19,7 +19,8 @@ export class Modal {
 
     constructor(title: string, description?: string, clas?: string) {
         let modalclass = (clas) ? clas : '';
-        this.control = el('div.modal.' + modalclass,
+        // We use a form to make sure we have no autocompletion
+        this.control = el('form.modal.' + modalclass, { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
             [
                 this.title = el('div.modal-title'),
                 this.description = el('div.modal-description', description),

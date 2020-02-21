@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'icomoon';
-    src: url('https://asset.naker.io/font/engine/v1/icomoon.eot?au4g1p');
-    src: url('https://asset.naker.io/font/engine/v1/icomoon.eot?au4g1p#iefix') format('embedded-opentype'),
-        url('https://asset.naker.io/font/engine/v1/icomoon.ttf?au4g1p') format('truetype'),
-        url('https://asset.naker.io/font/engine/v1/icomoon.woff?au4g1p') format('woff'),
-        url('https://asset.naker.io/font/engine/v1/icomoon.svg?au4g1p#icomoon') format('svg');
+    src: url('https://asset.naker.io/font/engine/v2/icomoon.eot?au4g1p');
+    src: url('https://asset.naker.io/font/engine/v2/icomoon.eot?au4g1p#iefix') format('embedded-opentype'),
+        url('https://asset.naker.io/font/engine/v2/icomoon.ttf?au4g1p') format('truetype'),
+        url('https://asset.naker.io/font/engine/v2/icomoon.woff?au4g1p') format('woff'),
+        url('https://asset.naker.io/font/engine/v2/icomoon.svg?au4g1p#icomoon') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -22,6 +22,13 @@
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+.icon-upload:before {
+    content: "\e9fe";
+}
+
+.icon-save:before {
+    content: "\e9fd";
 }
 
 .icon-Caption-middle-H:before {

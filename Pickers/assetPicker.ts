@@ -293,6 +293,26 @@ export class AssetPicker extends UI {
         this.setEvents();
         this.addRemoveAssetButton();
     }
+
+    addIconButton(type:asset['type'], icon:string, callback: Function) {
+        let button = el('div.no-asset-button.asset-button', { onclick: () => { callback() } },
+            el('div.no-asset-icon.icon-' + icon,
+                [el('span.path1'), el('span.path2'), el('span.path3')]
+            )
+        );
+        mount(this.assetlist, button);
+        let newAsset = { type: type, url: icon, button: button, saved: false };
+        this.thumbnails.push(newAsset);
+    }
+
+    addImageButton(type: asset['type'], image: string, callback: Function) {
+        let button = el('div.no-asset-button.asset-button', { onclick: () => { callback() } },
+            el('div.no-asset-icon', { style: { background: 'url(' + image + ')' } })
+        );
+        mount(this.assetlist, button);
+        let newAsset = { type: type, url: image, button: button, saved: false };
+        this.thumbnails.push(newAsset);
+    }
     
     setEvents() {
         this.el.addEventListener('dragover', () => {
