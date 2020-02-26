@@ -8,6 +8,7 @@ import { Event } from '@sentry/browser';
 interface cms {
     name: string;
     article: string;
+    logo: string;
 }
 
 export class ExportModal extends Modal {
@@ -27,47 +28,56 @@ export class ExportModal extends Modal {
         this.setCmsList();
         this.setExport();
         this.setShare();
+        this.setFooter();
     }
 
     CMSList: Array<cms> = [
         {
             name: 'Webflow',
             article: 'https://help.naker.io/en/articles/3560328-integration-in-webflow',
+            logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d6ecd8c2b173415c27b3a_Webflox.png',
         },
         {
             name: 'Bubble',
             article: 'https://help.naker.io/en/articles/3665861-integration-in-bubble',
+            logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d82f55b8bedd044b00e53_bubble.png',
         },
         {
             name: 'Divi',
             article: 'http://cakewp.com/divi-tutorials/how-to-add-interactive-particles-background/',
+            logo: '',
         },
         {
             name: 'Elementor ',
             article: 'http://cakewp.com/divi-tutorials/how-to-add-interactive-particles-background/',
+            logo: 'https://elementor.com/blog/wp-content/uploads/sites/9/2017/01/White-logo.png',
         },
         {
-            name: 'Gutenberg',
+            name: 'Wordpress',
             article: 'http://cakewp.com/divi-tutorials/how-to-add-interactive-particles-background/',
+            logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d6ece8c2b17a1f9c27b3c_wordpress-1.png',
         },
         {
             name: 'Tilda',
             article: 'https://help.naker.io/en/articles/3559772-integration-in-tilda',
+            logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d6fa1d2e0674183b01dbd_tilda_logo_white.png',
         },
         {
             name: 'Unbounce',
             article: 'https://help.naker.io/en/articles/3560597-integration-in-unbounce',
+            logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d6e9a60dc1a282bef4fbc_1_ofK-nxtOuf4g0ARhYtM-Mg.png',
         },
         {
             name: 'Custom script',
             article: 'https://help.naker.io/en/articles/2868342-how-to-export-and-embed-my-project',
+            logo: '',
         },
     ];
     cmsContent: HTMLElement;
     setCmsList() {
         this.cmsContent = el('div.cms-list.modal-content', this.CMSList.map(p =>
             el('div.button.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
-                // el('img', { src: p.image })
+                el('img', { src: p.logo }),
                 el('div', p.name)
             )
         ));
@@ -76,6 +86,7 @@ export class ExportModal extends Modal {
 
     exportContent: HTMLElement;
     helpLink: HTMLElement;
+    helpImage: HTMLElement;
     idInput: HTMLElement;
     classInput: HTMLElement;
     setExport() {
@@ -117,7 +128,11 @@ export class ExportModal extends Modal {
 
             ]),
             el('div.modal-right', [
-                this.helpLink = el('div.button.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
+                el('div.button.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+                    this.helpImage = el('img'),
+                    this.helpLink = el('div')
+                ),
+                // this.helpLink = el('div.button.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
             ])
         ]);
     }
@@ -129,28 +144,32 @@ export class ExportModal extends Modal {
             el('div.button.facebook-button', { onclick: () => { this.shareFacebook() } }, 'Share on Facebook'),
             el('div.button.twitter-button', { onclick: () => { this.shareTwitter() } }, 'Share on Twitter'),
         ]);
+    }
 
-        this.footer = el('div.modal-footer', {
-            onclick: () => {
-                this.copyLink();
-            }
-        }, [
-            el('div.icon-group.modal-footer-icon',
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            ),
-            this.footerText = el('a.modal-footer-text', 'Share Project')
-        ]);
+    cmsNavButton: HTMLElement;
+    exportNavButton: HTMLElement;
+    setFooter() {
+        this.footer = el('div.modal-footer', 
+            el('div.modal-footer-center', [
+                this.cmsNavButton = el('div.export-button-nav.export-button-nav-left', { onclick: () => { this.showCMSList(); } }),
+                this.exportNavButton = el('div.export-button-nav.export-button-nav-right', { onclick: () => { this.showExport(this.currentCMS); } }),
+            ])
+        );
+        mount(this.control, this.footer);
     }
     
-    currentCMS: cms;
+    currentCMS: cms = this.CMSList[0];
     showExport(cms: cms) {
         this.currentCMS = cms;
         this.description.innerText = 'Great! Follow these step in order to embed it with ' + cms.name +'.';
         this.helpLink.innerText = 'Show ' + cms.name + ' tutorial';
+        setAttr(this.helpImage, { src: cms.logo });
         unmount(this.control, this.shareContent);
         unmount(this.control, this.cmsContent);
         mount(this.control, this.exportContent);
-        // mount(this.control, this.footer);
+        mount(this.control, this.footer);
+        setAttr(this.exportNavButton, { active: true });
+        setAttr(this.cmsNavButton, { active: false });
     }
 
     waterMark = true;
@@ -160,6 +179,7 @@ export class ExportModal extends Modal {
             unmount(this.control, this.exportContent);
             unmount(this.control, this.cmsContent);
             mount(this.control, this.shareContent);
+            unmount(this.control, this.footer);
         }
         this.setEmbedCode();
     }
@@ -173,7 +193,9 @@ export class ExportModal extends Modal {
         unmount(this.control, this.shareContent);
         unmount(this.control, this.exportContent);
         mount(this.control, this.cmsContent);
-        // unmount(this.control, this.footer);
+        mount(this.control, this.footer);
+        setAttr(this.exportNavButton, { active: false });
+        setAttr(this.cmsNavButton, { active: true });
     }
 
     shareFacebook() {

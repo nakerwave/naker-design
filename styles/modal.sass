@@ -148,10 +148,11 @@ $modalRadius: 10px
     width: calc(100% - 60px)
     position: absolute
     padding: 10px 30px
-    background: $colorthirdgrey
+    background: $colorgrey
     left: 0px
+    bottom: -20px
+    height: 20px
     border-radius: 0px 0px 10px 10px
-    margin-top: 10px
 
 .modal-footer-icon
     position: relative
@@ -165,6 +166,30 @@ $modalRadius: 10px
     color: $colortext
     &:hover
         text-decoration: underline
+
+.modal-footer-center
+    position: relative
+    left: 50%
+    transform: translateX(-50%)
+    width: 25px
+    top: 5px
+
+.export-button-nav
+    position: absolute
+    width: 10px
+    height: 10px
+    border-radius: 5px
+    background: $colorthirdgrey
+    display: inline-block
+    cursor: pointer
+    &[active="true"]
+        background: $colorlightgrey
+
+.export-button-nav-right
+    right: 0px
+
+.export-button-nav-left
+    left: 0px
 
 /***************************************** EXPORT MODAL ****************************************
 .modal-export
@@ -208,9 +233,20 @@ $modalRadius: 10px
     text-align: center
 
 .cms-button
-    width: 154px
+    width: 92px
+    padding: 15px
+    height: 48px
+    margin: 10px 10px 0px 0px
+
+    img
+        width: 30px
+        height: 30px
 
 .modal-watermark
     position: absolute
     top: 2px
     left: 140px
+
+.cms-help-button
+    width: 150px
+    margin: 10px
