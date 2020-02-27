@@ -84,6 +84,8 @@ export class ExportModal extends Modal {
         mount(this.control, this.cmsContent);
     }
 
+    waterMarkCheckBox: HTMLElement;
+    websiteUrlInput: HTMLElement;
     exportContent: HTMLElement;
     helpLink: HTMLElement;
     helpImage: HTMLElement;
@@ -97,7 +99,7 @@ export class ExportModal extends Modal {
                     el('div.modal-text', 'Naker watermark'),
                     el('div.main-checkbox.modal-watermark',
                         [
-                            el('input.checkbox', { type: 'checkbox', checked: true, id: 'waterMarkCheckbox', oninput: (evt) => { this.checkWatermark(evt) } }),
+                            this.waterMarkCheckBox = el('input.checkbox', { type: 'checkbox', checked: true, id: 'waterMarkCheckbox', oninput: (evt) => { this.checkWatermark(evt) } }),
                             el('label.checkbox', { for: 'waterMarkCheckbox' })
                         ]
                     ),
@@ -105,7 +107,7 @@ export class ExportModal extends Modal {
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '1.'),
-                    el('input.modal-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Link of your website' }),
+                    this.websiteUrlInput = el('input.modal-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Link of your website' }),
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '2.'),
@@ -182,6 +184,15 @@ export class ExportModal extends Modal {
             unmount(this.control, this.footer);
         }
         this.setEmbedCode();
+    }
+
+    setWaterMark(waterMark: boolean) {
+        this.waterMark = waterMark;
+        setAttr(this.waterMarkCheckBox, { checked: waterMark });
+    }
+
+    setWebsiteUrl(url: string) {
+        setAttr(this.websiteUrlInput, {value: url});
     }
 
     goToHelp() {
