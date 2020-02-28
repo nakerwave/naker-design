@@ -19,7 +19,7 @@ export class ExportModal extends Modal {
     version: string
 
     constructor(session: Session, undo: Undo, engine: 'back' | 'form' | 'story', version:string) {
-        super('Embed your Design!', "First what is the CMS you use?", 'modal-export');
+        super('Embed your Design!', "", 'modal-export');
         this.session = session;
         this.undo = undo;
         this.engine = engine;
@@ -43,14 +43,19 @@ export class ExportModal extends Modal {
             logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d82f55b8bedd044b00e53_bubble.png',
         },
         {
+            name: 'Carrd',
+            article: 'https://help.naker.io/en/articles/3704738-integration-in-carrd-co',
+            logo: 'https://asset.naker.io/image/cms/carrd.png',
+        },
+        {
             name: 'Divi',
             article: 'http://cakewp.com/divi-tutorials/how-to-add-interactive-particles-background/',
-            logo: '',
+            logo: 'https://asset.naker.io/image/cms/logo-divi.png',
         },
         {
             name: 'Elementor ',
             article: 'http://cakewp.com/divi-tutorials/how-to-add-interactive-particles-background/',
-            logo: 'https://elementor.com/blog/wp-content/uploads/sites/9/2017/01/White-logo.png',
+            logo: 'https://asset.naker.io/image/cms/elementor.png',
         },
         {
             name: 'Wordpress',
@@ -70,17 +75,20 @@ export class ExportModal extends Modal {
         {
             name: 'Custom script',
             article: 'https://help.naker.io/en/articles/2868342-how-to-export-and-embed-my-project',
-            logo: '',
+            logo: 'https://asset.naker.io/image/cms/script.png',
         },
     ];
     cmsContent: HTMLElement;
     setCmsList() {
-        this.cmsContent = el('div.cms-list.modal-content', this.CMSList.map(p =>
-            el('div.button.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
-                el('img', { src: p.logo }),
-                el('div', p.name)
+        this.cmsContent = el('div.cms-list.modal-content', [
+            el('div.modal-text', 'First what is the CMS you use?'),
+            this.CMSList.map(p =>
+                el('div.button.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
+                    el('img', { src: p.logo }),
+                    el('div', p.name)
+                )
             )
-        ));
+        ]);
         mount(this.control, this.cmsContent);
     }
 
@@ -93,18 +101,11 @@ export class ExportModal extends Modal {
     classInput: HTMLElement;
     setExport() {
         this.exportContent = el('div.modal-content', [
-            el('div.modal-left', [
-                el('div.modal-layer', [
-                    // el('div.modal-number', '0.'),
-                    el('div.modal-text', 'Naker watermark'),
-                    el('div.main-checkbox.modal-watermark',
-                        [
-                            this.waterMarkCheckBox = el('input.checkbox', { type: 'checkbox', checked: true, id: 'waterMarkCheckbox', oninput: (evt) => { this.checkWatermark(evt) } }),
-                            el('label.checkbox', { for: 'waterMarkCheckbox' })
-                        ]
-                    ),
-                    // el('input.checkbox.modal-watermark', { type: 'checkbox', oninput: (evt) => { this.checkWatermark() } }),
-                ]),
+            el('div', [
+                el('div.button.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+                    this.helpImage = el('img'),
+                    this.helpLink = el('div')
+                ),
                 el('div.modal-layer', [
                     el('div.modal-number', '1.'),
                     this.websiteUrlInput = el('input.modal-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Link of your website' }),
@@ -118,7 +119,7 @@ export class ExportModal extends Modal {
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '3.'),
-                    el('div.modal-text', 'Copy/Paste this snippet in your website head tag.'),
+                    el('div.modal-text', 'Copy/Paste this snippet in your website head tag following above tutorial.'),
                     el('div.modal-code', { onclick: () => { this.setCodeToCopy() } }, [
                         this.copiedCode = el('div.modal-copied-text.editor-scroll'),
                         this.copiedEffect = el('div.modal-copied', 'Copied to Clipboard 👌'),
@@ -127,15 +128,23 @@ export class ExportModal extends Modal {
                         // )
                     ]),
                 ]),
-
+                el('div.modal-layer', [
+                    el('div.modal-text.modal-watermark-text', 'Naker watermark'),
+                    el('div.main-checkbox.modal-watermark',
+                        [
+                            this.waterMarkCheckBox = el('input.checkbox', { type: 'checkbox', checked: true, id: 'waterMarkCheckbox', oninput: (evt) => { this.checkWatermark(evt) } }),
+                            el('label.checkbox', { for: 'waterMarkCheckbox' }),
+                        ]
+                    ),
+                ]),
             ]),
-            el('div.modal-right', [
-                el('div.button.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
-                    this.helpImage = el('img'),
-                    this.helpLink = el('div')
-                ),
-                // this.helpLink = el('div.button.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
-            ])
+            // el('div.modal-right', [
+            //     el('div.button.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+            //         this.helpImage = el('img'),
+            //         this.helpLink = el('div')
+            //     ),
+            //     // this.helpLink = el('div.button.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
+            // ])
         ]);
     }
 
@@ -143,8 +152,12 @@ export class ExportModal extends Modal {
     footer: HTMLElement;
     setShare() {
         this.shareContent = el('div.modal-content', [
-            el('div.button.facebook-button', { onclick: () => { this.shareFacebook() } }, 'Share on Facebook'),
-            el('div.button.twitter-button', { onclick: () => { this.shareTwitter() } }, 'Share on Twitter'),
+            el('div.modal-text', 'It is ok to remove the waterMark, but not cool to keep that super power to yourself. We kindly ask you to share Naker with your friends and give them super powers too!'),
+            el('div.modal-footer-center.modal-share-list', [
+                el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+            ])
         ]);
     }
 
@@ -163,7 +176,6 @@ export class ExportModal extends Modal {
     currentCMS: cms = this.CMSList[0];
     showExport(cms: cms) {
         this.currentCMS = cms;
-        this.description.innerText = 'Great! Follow these step in order to embed it with ' + cms.name +'.';
         this.helpLink.innerText = 'Show ' + cms.name + ' tutorial';
         setAttr(this.helpImage, { src: cms.logo });
         unmount(this.control, this.shareContent);
@@ -200,7 +212,6 @@ export class ExportModal extends Modal {
     }
 
     showCMSList() {
-        this.description.innerText = "First, what is the CMS you use?";
         unmount(this.control, this.shareContent);
         unmount(this.control, this.exportContent);
         mount(this.control, this.cmsContent);
@@ -209,17 +220,26 @@ export class ExportModal extends Modal {
         setAttr(this.cmsNavButton, { active: true });
     }
 
+    
+    shareText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
     shareFacebook() {
-        this.session.spy.track('Sharing_Social Click');
-        let url = encodeURIComponent('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId() + '/')
-        window.open("https://www.facebook.com/sharer.php?u=" + url);
+        this.session.spy.track('Sharing_Social Click', {network: 'facebook'});
+        let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
+        window.open("https://www.facebook.com/sharer.php?u=" + url + "&t=" + this.shareText);
         this.showExport(this.currentCMS);
     }
 
     shareTwitter() {
-        this.session.spy.track('Sharing_Social Click');
-        let url = encodeURIComponent('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId() + '/')
-        window.open("http://www.twitter.com/share?url=" + url + "&text=See my new ' + this.engine + ' made on Naker : ");
+        this.session.spy.track('Sharing_Social Click', {network: 'twitter'});
+        let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
+        window.open("http://www.twitter.com/share?url=" + url + "&text="+this.shareText);
+        this.showExport(this.currentCMS);
+    }
+
+    sharePinterest() {
+        this.session.spy.track('Sharing_Social Click', {network: 'pinterest'});
+        let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
+        window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.shareText);
         this.showExport(this.currentCMS);
     }
 
