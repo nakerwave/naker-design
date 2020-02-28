@@ -114,7 +114,8 @@ export class Session {
 
         document.addEventListener('mouseout', (evt) => {
             if (evt.toElement == null && evt.relatedTarget == null) {
-                if (this.projectid) this.saveOnlineAndLocal(() => { });
+                // Make sure project loaded before save when mouseout
+                if (this.projectid && this.savingInterval) this.saveOnlineAndLocal(() => { });
             }
         });
 
@@ -182,7 +183,6 @@ export class Session {
         this.api.saveToken(data);
         this.spy.startIntercom(data);
         this.spy.track("Platform Login");
-
         this.sendConnectToListeners(data);
     }
 

@@ -12,6 +12,7 @@ export class Spy {
 
     setEngine(engine: 'NB' | 'NF' | 'NS') {
         this.engine = engine;
+        this.track('view');
     }
 
     startIntercom(user: any) {
