@@ -12,6 +12,13 @@ import mapValues from 'lodash/mapValues';
 
 import hotkeys from 'hotkeys-js';
 
+export interface ProjectSavedOptions {
+    id?: string,
+    name?: string,
+    waterMark?: boolean,
+    websiteUrl?: string,
+}
+
 interface Change {
     back: Object
     forward: Object

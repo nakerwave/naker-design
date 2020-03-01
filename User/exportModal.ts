@@ -4,6 +4,7 @@ import { Undo } from '../Services/undo';
 
 import { el, mount, setStyle, setAttr, unmount } from 'redom';
 import { Event } from '@sentry/browser';
+import Airtable from 'airtable';
 
 interface cms {
     name: string;
@@ -11,20 +12,22 @@ interface cms {
     logo: string;
 }
 
-export class ExportModal extends Modal {
+var airtableBase = new Airtable({ apiKey: 'keyvYd17RuctTa2Ln' }).base('appTmDsoaK3FtuiTU');
 
+export class ExportModal extends Modal {
+    
     session: Session;
     undo: Undo;
     engine: 'back' | 'form' | 'story';
     version: string
-
+    
     constructor(session: Session, undo: Undo, engine: 'back' | 'form' | 'story', version:string) {
         super('Embed your Design!', "", 'modal-export');
         this.session = session;
         this.undo = undo;
         this.engine = engine;
         this.version = version;
-
+        
         this.setCmsList();
         this.setExport();
         this.setShare();
@@ -108,7 +111,7 @@ export class ExportModal extends Modal {
                 ),
                 el('div.modal-layer', [
                     el('div.modal-number', '1.'),
-                    this.websiteUrlInput = el('input.modal-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Link of your website' }),
+                    this.websiteUrlInput = el('input.modal-input', { type: 'text', onblur: (evt) => { this.addLinkRecord(evt) }, placeholder: 'Link of your website' }),
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '2.'),
@@ -157,6 +160,7 @@ export class ExportModal extends Modal {
                 el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                 el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                 el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                el('div.modal-share-icon.pinterest-button.icon-link', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
             ])
         ]);
     }
@@ -186,9 +190,8 @@ export class ExportModal extends Modal {
         setAttr(this.cmsNavButton, { active: false });
     }
 
-    waterMark = true;
     checkWatermark(evt: Event) {
-        this.waterMark = evt.target.checked;
+        this.session.setWaterMark(evt.target.checked);
         if (!evt.target.checked) {
             unmount(this.control, this.exportContent);
             unmount(this.control, this.cmsContent);
@@ -199,7 +202,6 @@ export class ExportModal extends Modal {
     }
 
     setWaterMark(waterMark: boolean) {
-        this.waterMark = waterMark;
         setAttr(this.waterMarkCheckBox, { checked: waterMark });
     }
 
@@ -219,7 +221,6 @@ export class ExportModal extends Modal {
         setAttr(this.exportNavButton, { active: false });
         setAttr(this.cmsNavButton, { active: true });
     }
-
     
     shareText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
     shareFacebook() {
@@ -241,6 +242,32 @@ export class ExportModal extends Modal {
         let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
         window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.shareText);
         this.showExport(this.currentCMS);
+    }
+
+    addLinkRecord(evt) {
+        if (this.session.subDomain == 'development') return;
+        let url = evt.target.value;
+        let project = this.session.getProject();
+        let user = this.session.getUser();
+        
+        airtableBase('URL from export modal').create([
+            {
+                "fields": {
+                    "Website": url,
+                    "Engine": this.engine,
+                    "Project ID": project.id,
+                    "Project Name": project.name,
+                    "User ID": user.id,
+                    "User Name": user.name,
+                    "User Email": user.email,
+                }
+            }
+        ], function (err, records) {
+            if (err) {
+                console.error('error saving url in airtable', err);
+                return;
+            }
+        });
     }
 
     setWaterMarkOption(evt) {
@@ -289,7 +316,8 @@ export class ExportModal extends Modal {
 
     getEmbedCode() {
         let idText = (this.embedContainer) ? 'data-container="' + this.embedContainer + '"' : '';
-        let JsonString = this.undo.getProjectJsonString({waterMark: this.waterMark});
+        let waterMark = this.session.getProject().waterMark;
+        let JsonString = this.undo.getProjectJsonString({waterMark: waterMark});
         let viewerUrl = 'https://d23jutsnau9x47.cloudfront.net/' + this.engine + '/' + this.version + '/viewer.js';
         let text = '<script data-who="💎 Made with naker.io 💎" src="' + viewerUrl + '" data-option="' + JsonString + '" ' + idText + '></script>';
         return text;
