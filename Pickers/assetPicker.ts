@@ -190,7 +190,8 @@ export class ImageAssetButton extends BaseAssetButton {
             let image: string;
             if (!thumbnail) image = url;
             else image = thumbnail;
-            if (image.indexOf('http') != -1) {
+            let extension = image.substr(image.lastIndexOf('.') + 1);
+            if (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1) {
                 setStyle(this.image, { display: 'block' });
                 setStyle(this.textDisplay, { display: 'none' });
                 setAttr(this.image, { src: image });
