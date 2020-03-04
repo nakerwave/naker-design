@@ -521,7 +521,8 @@ export class AssetPicker extends UI {
     addButton(type: string, url: string, image: string, removable: boolean) {
         if (removable === undefined) removable = true;
         let button: HTMLElement;
-        if (image.indexOf('http') != -1) {
+        let extension = image.substr(image.lastIndexOf('.') + 1);
+        if (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1) {
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
                 // Draggable set to false or it can show drag zone
                 el('img', { draggable: false, src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
