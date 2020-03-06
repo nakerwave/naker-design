@@ -48,7 +48,7 @@ export class Slider extends Input {
 
     createSlider(parent: HTMLElement, value: number) {
         // Need to recalculate slider min when logarithmic curve
-        setAttr(this.parent, { class: 'input-container input-container-big' });
+        this.setClass('input-container input-container-big');
         let min = this.checkNumberCurve(this.min);
         let max = this.max;
         this.noUiSlider = noUiSlider.create(parent, {
@@ -144,7 +144,7 @@ export class SliderInput extends Slider {
 
     constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
         super(parent, label, slideroption);
-        setAttr(this.parent, { class: 'input-container input-container-big' });
+        this.setClass('input-container input-container-big');
         let value = this.checkAccuracy(slideroption.value);
         this.createSlider(this.parent, value);
         this.number = el('input.rangenumber.input-parameter', { type: 'number', value: value, min: this.min, max: this.max, step: this.step })

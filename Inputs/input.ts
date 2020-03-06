@@ -1,6 +1,4 @@
-
 import { elementEvents, UI } from '../Layers/common';
-
 import { el, mount, unmount, setAttr, setChildren } from 'redom';
 
 export let widthinputcontainer = 150;
@@ -20,6 +18,7 @@ export interface inputEvents extends elementEvents {
 export class Input extends UI {
 
     label: HTMLElement;
+    labelString: string;
     parent: HTMLElement;
     el: any;
     inputEvent: inputEvents;
@@ -27,11 +26,22 @@ export class Input extends UI {
     // Label mandatory to allow Heap analysis
     constructor(container: HTMLElement, label: string) {
         super();
-        let inputName = label.toLowerCase().replace(' ', '_');
-        this.parent = el('div.input-container.' + inputName + '_input');
+        this.parent = el('div');
+        this.labelString = label;
+        this.setClass('input-container');
         mount(container, this.parent);
         this.label = el('div.input-label', label);
         if (label) this.showLabel();
+    }
+    
+    setClass(clas: string) {
+        if (this.labelString) {
+            // Add input class in order to be able to set HEAP events
+            let inputName = this.labelString.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+            setAttr(this.parent, { class: clas + ' ' + inputName + '_input' });
+        } else {
+            setAttr(this.parent, { class: clas });
+        }
     }
 
     hideLabel() {

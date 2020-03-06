@@ -30,7 +30,8 @@ export class InputGroup extends UI {
     // Force name in order to be able to have analytics with heap
     constructor(name:string, parent: HTMLElement, undo: Undo) {
         super();
-        name = name.toLowerCase().replace(' ', '_');
+        // Add block class in order to be able to set HEAP events
+        name = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
         this.el = el('div.parameter-group.' + name + '_block');
         if (parent) mount(parent, this.el);
         if (undo) this.undo = undo;

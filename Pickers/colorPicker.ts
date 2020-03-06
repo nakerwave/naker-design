@@ -85,7 +85,7 @@ export class ColorButton extends Slider {
         this.slider = true;
         this.initSliderVar(slideroption);
         this.createSlider(this.parent, 1);
-        setAttr(this.parent, { class: 'input-container input-container-big color_input'});
+        this.setClass('input-container input-container-big');
     }
 
     mouseEnter() {
