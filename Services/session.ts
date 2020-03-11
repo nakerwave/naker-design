@@ -258,7 +258,7 @@ export class Session {
 
     loadProject(callback: Function) {
         let cookie = Cookies.get('naker_' + this.engine);
-        let cookieParsed;
+        let cookieParsed:any = {};
         if (cookie) cookieParsed = JSON.parse(cookie);
 
         // If no id in url but one in cookie saved, we take it
@@ -512,7 +512,7 @@ export class Session {
     }
 
     getProject():ProjectSavedOptions {
-        return this.project;
+        return (this.project) ? this.project : {};
     }
 
     getUser(): User {

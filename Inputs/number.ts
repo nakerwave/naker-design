@@ -1,9 +1,9 @@
 
 import { Input, inputEvents } from './input';
+import { ChangeEffectInput } from './text';
 
 import { el, unmount, mount, setAttr, setStyle } from 'redom';
 import merge from 'lodash/merge';
-import { ChangeEffectInput } from './text';
 
 /*
   +------------------------------------------------------------------------+

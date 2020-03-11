@@ -4,7 +4,10 @@ import { Undo } from '../Services/undo';
 
 import { el, mount, setStyle, setAttr, unmount } from 'redom';
 import { Event } from '@sentry/browser';
+import find from 'lodash/find';
 import Airtable from 'airtable';
+
+declare let nakerpearl: any;
 
 interface cms {
     name: string;
@@ -86,7 +89,7 @@ export class ExportModal extends Modal {
         this.cmsContent = el('div.cms-list.modal-content', [
             el('div.modal-text', 'First what is the CMS you use?'),
             this.CMSList.map(p =>
-                el('div.button.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
+                el('div.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
                     el('img', { src: p.logo }),
                     el('div', p.name)
                 )
@@ -105,20 +108,21 @@ export class ExportModal extends Modal {
     setExport() {
         this.exportContent = el('div.modal-content', [
             el('div', [
-                el('div.button.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+                el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
                     this.helpImage = el('img'),
                     this.helpLink = el('div')
                 ),
                 el('div.modal-layer', [
                     el('div.modal-number', '1.'),
-                    this.websiteUrlInput = el('input.modal-input', { type: 'text', onblur: (evt) => { this.addLinkRecord(evt) }, placeholder: 'Link of your website' }),
+                    el('div.modal-text', 'Link of your website'),
+                    this.websiteUrlInput = el('input.modal-input', { type: 'text', onblur: (evt) => { this.addLinkRecord(evt) }, placeholder: 'https://' }),
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '2.'),
-                    el('div.modal-text', 'Put the ID or the Class of the destination container.'),
-                    this.idInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'ID' }),
+                    el('div.modal-text', 'Put the ID or the Class of the destination container'),
+                    this.idInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, placeholder: 'ID' }),
                     el('div.modal-or', 'or'),
-                    this.classInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedClass(evt) }, onblur: () => { this.setCodeToCopy() }, placeholder: 'Class' }),
+                    this.classInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedClass(evt) }, placeholder: 'Class' }),
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '3.'),
@@ -142,25 +146,41 @@ export class ExportModal extends Modal {
                 ]),
             ]),
             // el('div.modal-right', [
-            //     el('div.button.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+            //     el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
             //         this.helpImage = el('img'),
             //         this.helpLink = el('div')
             //     ),
-            //     // this.helpLink = el('div.button.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
+            //     // this.helpLink = el('div.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
             // ])
         ]);
     }
 
     shareContent: HTMLElement;
     footer: HTMLElement;
+    shareUrlText: HTMLElement;
+    shareCopied: HTMLElement;
+    sharePearl: HTMLElement;
     setShare() {
         this.shareContent = el('div.modal-content', [
-            el('div.modal-text', 'It is ok to remove the waterMark, but not cool to keep that super power to yourself. We kindly ask you to share Naker with your friends and give them super powers too!'),
-            el('div.modal-footer-center.modal-share-list', [
-                el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
-                el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
-                el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
-                el('div.modal-share-icon.pinterest-button.icon-link', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+            this.sharePearl = el('div.modal-pearl'),
+            el('div.modal-layer', [
+                el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
+                el('div.modal-code.share-text', { onclick: () => { this.setShareCopiedAnimation() } }, [
+                    this.shareUrlText = el('div.modal-copied-text'),
+                    this.shareCopied = el('div.modal-copied.share-copied', 'Copied to Clipboard 👌'),
+                    // el('div.icon-copypaste.modal-copyicon',
+                    //     [el('span.path1'), el('span.path2'), el('span.path3')]
+                    // )
+                ]),
+            ]),
+            el('div.modal-layer', [
+                el('div.modal-text', 'Share'),
+                el('div.modal-share-list', [
+                    el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                    el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                    el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                    el('div.modal-share-icon.pinterest-button.icon-link', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                ])
             ])
         ]);
     }
@@ -171,15 +191,21 @@ export class ExportModal extends Modal {
         this.footer = el('div.modal-footer', 
             el('div.modal-footer-center', [
                 this.cmsNavButton = el('div.export-button-nav.export-button-nav-left', { onclick: () => { this.showCMSList(); } }),
-                this.exportNavButton = el('div.export-button-nav.export-button-nav-right', { onclick: () => { this.showExport(this.currentCMS); } }),
+                this.exportNavButton = el('div.export-button-nav.export-button-nav-right', { onclick: () => { this.showScriptExport(); } }),
             ])
         );
         mount(this.control, this.footer);
+    }
+
+    showScriptExport() {
+        let cms = find(this.CMSList, (cms) => { return cms.name == 'Custom script' });
+        this.showExport(cms);
     }
     
     currentCMS: cms = this.CMSList[0];
     showExport(cms: cms) {
         this.currentCMS = cms;
+        this.title.textContent = 'Embed your Design!';
         this.helpLink.innerText = 'Show ' + cms.name + ' tutorial';
         setAttr(this.helpImage, { src: cms.logo });
         unmount(this.control, this.shareContent);
@@ -190,22 +216,28 @@ export class ExportModal extends Modal {
         setAttr(this.cmsNavButton, { active: false });
     }
 
+    pearl;
     checkWatermark(evt: Event) {
         this.session.setWaterMark(evt.target.checked);
         if (!evt.target.checked) {
+            this.title.textContent = 'Share the love!';
+            this.shareUrlText.textContent = 'https://app.naker.io/'+this.session.engine;
             unmount(this.control, this.exportContent);
             unmount(this.control, this.cmsContent);
             mount(this.control, this.shareContent);
             unmount(this.control, this.footer);
+            if (!this.pearl)
+                this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'pearl', modelFollowMouseRapidity: 2, waterMark: false, offscreen: false });
         }
-        this.setEmbedCode();
     }
 
     setWaterMark(waterMark: boolean) {
         setAttr(this.waterMarkCheckBox, { checked: waterMark });
     }
 
+    websiteUrl = '';
     setWebsiteUrl(url: string) {
+        this.websiteUrl = url;
         setAttr(this.websiteUrlInput, {value: url});
     }
 
@@ -214,6 +246,7 @@ export class ExportModal extends Modal {
     }
 
     showCMSList() {
+        this.title.textContent = 'Embed your Design!';
         unmount(this.control, this.shareContent);
         unmount(this.control, this.exportContent);
         mount(this.control, this.cmsContent);
@@ -247,6 +280,8 @@ export class ExportModal extends Modal {
     addLinkRecord(evt) {
         if (this.session.subDomain == 'development') return;
         let url = evt.target.value;
+        if (url == this.websiteUrl) return;
+        this.websiteUrl = url;
         let project = this.session.getProject();
         let user = this.session.getUser();
         
@@ -270,10 +305,6 @@ export class ExportModal extends Modal {
         });
     }
 
-    setWaterMarkOption(evt) {
-        console.log(evt);
-    }
-
     copiedCode: HTMLElement;
     copiedEffect: HTMLElement;
     footerText: HTMLElement;
@@ -291,14 +322,12 @@ export class ExportModal extends Modal {
     setEmbedId(evt: Event) {
         this.embedContainer = evt.target.value;
         setAttr(this.classInput, {value : ''});
-        this.setEmbedCode();
     }
 
     containerId: string;
     setEmbedClass(evt: Event) {
         this.embedContainer = '.'+evt.target.value;
         setAttr(this.idInput, { value: '' });
-        this.setEmbedCode();
     }
 
     setCodeToCopy() {
@@ -336,6 +365,13 @@ export class ExportModal extends Modal {
         setStyle(this.copiedEffect, { display: 'block' });
         setTimeout(() => {
             setStyle(this.copiedEffect, { display: 'none' });
+        }, 2000);
+    }
+
+    setShareCopiedAnimation() {
+        setStyle(this.shareCopied, { display: 'block' });
+        setTimeout(() => {
+            setStyle(this.shareCopied, { display: 'none' });
         }, 2000);
     }
 
