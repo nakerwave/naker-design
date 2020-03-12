@@ -179,7 +179,6 @@ export class ExportModal extends Modal {
                     el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                     el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                     el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
-                    el('div.modal-share-icon.pinterest-button.icon-link', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ])
             ])
         ]);
@@ -202,7 +201,7 @@ export class ExportModal extends Modal {
         this.showExport(cms);
     }
     
-    currentCMS: cms = this.CMSList[0];
+    currentCMS: cms;
     showExport(cms: cms) {
         this.currentCMS = cms;
         this.title.textContent = 'Embed your Design!';
@@ -227,18 +226,17 @@ export class ExportModal extends Modal {
             mount(this.control, this.shareContent);
             unmount(this.control, this.footer);
             if (!this.pearl)
-                this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'pearl', modelFollowMouseRapidity: 2, waterMark: false, offscreen: false });
+                this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'https://d2uret4ukwmuoe.cloudfront.net/qe2qvy7gsehehim68v88t/scene.glb', waterMark: false, hdr: true, material: { metallic: 1, albedocolor: this.session.engineColor } });
         }
     }
 
     setWaterMark(waterMark: boolean) {
-        setAttr(this.waterMarkCheckBox, { checked: waterMark });
+        if (waterMark !== undefined) setAttr(this.waterMarkCheckBox, { checked: waterMark });
     }
 
     websiteUrl = '';
     setWebsiteUrl(url: string) {
-        this.websiteUrl = url;
-        setAttr(this.websiteUrlInput, {value: url});
+        if (url !== undefined) setAttr(this.websiteUrlInput, {value: url});
     }
 
     goToHelp() {
@@ -278,10 +276,11 @@ export class ExportModal extends Modal {
     }
 
     addLinkRecord(evt) {
-        if (this.session.subDomain == 'development') return;
         let url = evt.target.value;
-        if (url == this.websiteUrl) return;
-        this.websiteUrl = url;
+        if (url == this.session.getProject().websiteUrl) return;
+        this.session.setWebsiteUrl(url);
+        
+        if (this.session.subDomain == 'development') return;        
         let project = this.session.getProject();
         let user = this.session.getUser();
         
@@ -310,7 +309,7 @@ export class ExportModal extends Modal {
     footerText: HTMLElement;
     copyLink() {
         this.session.saveOnlineAndLocal(() => {
-            this.copyToClipboard('https://harbor.naker.io/'+this.engine+'/' + this.session.getProjectId());
+            this.copyToClipboard('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId());
             this.footerText.innerText = 'Link copied';
             setTimeout(() => {
                 this.footerText.innerText = 'Share Project';
@@ -373,10 +372,18 @@ export class ExportModal extends Modal {
         setTimeout(() => {
             setStyle(this.shareCopied, { display: 'none' });
         }, 2000);
+        setTimeout(() => {
+            this.showExport(this.currentCMS);
+        }, 3000);
     }
 
     show() {
-        this.showCMSList();
+        if (this.currentCMS) this.showExport(this.currentCMS);
+        else this.showCMSList();
+        let project = this.session.getProject();
+        this.setWaterMark(project.waterMark);
+        this.setWebsiteUrl(project.websiteUrl);
+        
         this._show();
     }
 }

@@ -41,11 +41,10 @@ export class Modal {
 
     back: HTMLElement;
     backopacity = 0.7;
-    onmodalclose: Function;
+    onModalClose: Function;
 
     backgroundClick() {
         this.hide();
-        if (this.onmodalclose) this.onmodalclose();
     }
 
     animInterval: any;
@@ -87,6 +86,7 @@ export class Modal {
         this._hide();
     }
     _hide() {
+        if (this.onModalClose) this.onModalClose();
         this.animate((perc) => {
             let op = (1 - perc) * this.backopacity;
             setStyle(this.back, { opacity: op });

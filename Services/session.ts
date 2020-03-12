@@ -139,7 +139,8 @@ export class Session {
         back: 'NB',
         form: 'NF'
     };
-    engineColor = {
+    engineColor: Array<number>;
+    engineColors = {
         story: [0, 153, 255],
         back: [255, 8, 114],
         form: [0, 204, 102],
@@ -147,12 +148,14 @@ export class Session {
 
     setEngine(engine: 'story' | 'back' | 'form') {
         this.engine = engine;
+        this.engineColor = this.engineColors[this.engine]
     }
 
     ///////////////////////// USER /////////////////////////
     user: User;
     setUser(user: User) {
         this.user = user;
+        this.user.id = user._id;
     }
 
     loadUser(callback: Function) {
@@ -294,6 +297,9 @@ export class Session {
     project: ProjectSavedOptions = {};
     projectFound(callback: Function, project: ProjectSavedOptions) {
         callback(project);
+
+        this.lastProjectChange = project;
+        
         this.setProject(project);
         this.sendProjectToListeners(project);
 
@@ -318,7 +324,11 @@ export class Session {
     }
 
     setProject(project: ProjectSavedOptions) {
-        this.project = project;
+        // Do not replace project or it will erase the id
+        // this.project = project;
+        for (const key in project) {
+            this.project[key] = project[key];
+        }
     }
 
     setWaterMark(waterMark: boolean) {
@@ -331,14 +341,21 @@ export class Session {
 
     saveProjectName(name: string) {
         if (!this.engine) return;
-        this.api.post(this.engine + '/name', { id: this.project.id, name: name }, {}, (data) => {
-            if (!data.success) {
+        this.updateProjectData({ name: name }, (success) => {
+            if (!success) {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
             } else {
                 this.project.name = name;
                 let projectJson = this.undo.getProjectJson();
                 this.saveLocal(projectJson);
             }
+        });
+    }
+
+    updateProjectData(update, callback?: Function) {
+        update.id = this.project.id;
+        this.api.post(this.engine + '/update', update, {}, (data) => {
+            if (callback) callback(data.success);
         });
     }
 
@@ -409,11 +426,23 @@ export class Session {
         if (isEqual(projectJson, this.lastexport) && this.saved) {
             return callback(true);
         }
+        
         this.saveLocal(projectJson);
-        this.saveOnline(projectJson, callback)
+        this.saveOnline(projectJson, callback);
+        this.checkProjectDataUpdate();
+        
         this.lastexport = cloneDeep(projectJson);
     }
-
+    
+    lastProjectChange: ProjectSavedOptions = {};
+    checkProjectDataUpdate() {
+        let change: ProjectSavedOptions = {};
+        if (this.lastProjectChange.name != this.project.name) change.name = this.project.name;
+        if (this.lastProjectChange.waterMark != this.project.waterMark) change.waterMark = this.project.waterMark;
+        if (this.lastProjectChange.websiteUrl != this.project.websiteUrl) change.websiteUrl = this.project.websiteUrl;
+        if (Object.keys(change).length != 0) this.updateProjectData(change);
+    }
+    
     setSavingLocal(savingLocal: boolean) {
         this.savingLocal = savingLocal;
     }
@@ -421,7 +450,7 @@ export class Session {
     setSavingOnline(saving: boolean) {
         this.saving = saving;
     }
-
+    
     saveLocal(json) {
         if (!this.savingLocal) return;
         let project: any = {};

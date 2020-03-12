@@ -59,7 +59,7 @@ export class UserPearl {
     setIcoSphere() {
         if (!this.model) return;
         this.model.pattern.mesh._setIcoSphere();
-        this.setColor(this.session.engineColor[this.session.engine]);
+        this.setColor(this.session.engineColor);
         this.updateRender();
     }
     
