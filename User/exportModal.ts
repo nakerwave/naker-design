@@ -86,7 +86,7 @@ export class ExportModal extends Modal {
     ];
     cmsContent: HTMLElement;
     setCmsList() {
-        this.cmsContent = el('div.cms-list.modal-content', [
+        this.cmsContent = el('div.cms-list', [
             el('div.modal-text', 'First what is the CMS you use?'),
             this.CMSList.map(p =>
                 el('div.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
@@ -105,6 +105,7 @@ export class ExportModal extends Modal {
     helpImage: HTMLElement;
     idInput: HTMLElement;
     classInput: HTMLElement;
+    waterMarkLayer: HTMLElement;
     setExport() {
         this.exportContent = el('div.modal-content', [
             el('div', [
@@ -135,7 +136,7 @@ export class ExportModal extends Modal {
                         // )
                     ]),
                 ]),
-                el('div.modal-layer', [
+                this.waterMarkLayer = el('div.modal-layer', [
                     el('div.modal-text.modal-watermark-text', 'Naker watermark'),
                     el('div.main-checkbox.modal-watermark',
                         [
@@ -157,6 +158,7 @@ export class ExportModal extends Modal {
 
     shareContent: HTMLElement;
     footer: HTMLElement;
+    shareText: HTMLElement;
     shareUrlText: HTMLElement;
     shareCopied: HTMLElement;
     sharePearl: HTMLElement;
@@ -164,7 +166,7 @@ export class ExportModal extends Modal {
         this.shareContent = el('div.modal-content', [
             this.sharePearl = el('div.modal-pearl'),
             el('div.modal-layer', [
-                el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
+                this.shareText = el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
                 el('div.modal-code.share-text', { onclick: () => { this.setShareCopiedAnimation() } }, [
                     this.shareUrlText = el('div.modal-copied-text'),
                     this.shareCopied = el('div.modal-copied.share-copied', 'Copied to Clipboard 👌'),
@@ -180,6 +182,9 @@ export class ExportModal extends Modal {
                     el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                     el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ])
+            ]),
+            el('div.modal-layer', [
+                el('div.input-button', { onclick: () => { this.showExport(this.currentCMS); } }, 'Go back'),
             ])
         ]);
     }
@@ -219,15 +224,24 @@ export class ExportModal extends Modal {
     checkWatermark(evt: Event) {
         this.session.setWaterMark(evt.target.checked);
         if (!evt.target.checked) {
-            this.title.textContent = 'Share the love!';
-            this.shareUrlText.textContent = 'https://app.naker.io/'+this.session.engine;
-            unmount(this.control, this.exportContent);
-            unmount(this.control, this.cmsContent);
-            mount(this.control, this.shareContent);
-            unmount(this.control, this.footer);
-            if (!this.pearl)
-                this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'https://d2uret4ukwmuoe.cloudfront.net/qe2qvy7gsehehim68v88t/scene.glb', waterMark: false, hdr: true, material: { metallic: 1, albedocolor: this.session.engineColor } });
+            let shareUrl = 'https://app.naker.io/' + this.session.engine;
+            let shareText = "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:";
+            this.showShare(shareUrl, shareText);
         }
+    }
+    
+    shareUrl: string;
+    showShare(url:string, text: string) {
+        this.title.textContent = 'Share the love!';
+        this.shareUrl = url;
+        this.shareUrlText.textContent = url;
+        this.shareText.textContent = text;
+        unmount(this.control, this.exportContent);
+        unmount(this.control, this.cmsContent);
+        mount(this.control, this.shareContent);
+        unmount(this.control, this.footer);
+        if (!this.pearl)
+            this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'https://d2uret4ukwmuoe.cloudfront.net/qe2qvy7gsehehim68v88t/scene.glb', waterMark: false, hdr: true, material: { metallic: 1, albedocolor: this.session.engineColor } });
     }
 
     setWaterMark(waterMark: boolean) {
@@ -253,25 +267,25 @@ export class ExportModal extends Modal {
         setAttr(this.cmsNavButton, { active: true });
     }
     
-    shareText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
+    socialText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
     shareFacebook() {
         this.session.spy.track('Sharing_Social Click', {network: 'facebook'});
-        let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
-        window.open("https://www.facebook.com/sharer.php?u=" + url + "&t=" + this.shareText);
+        let url = encodeURIComponent(this.shareUrl)
+        window.open("https://www.facebook.com/sharer.php?u=" + url + "&t=" + this.socialText);
         this.showExport(this.currentCMS);
     }
 
     shareTwitter() {
         this.session.spy.track('Sharing_Social Click', {network: 'twitter'});
-        let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
-        window.open("http://www.twitter.com/share?url=" + url + "&text="+this.shareText);
+        let url = encodeURIComponent(this.shareUrl)
+        window.open("http://www.twitter.com/share?url=" + url + "&text="+this.socialText);
         this.showExport(this.currentCMS);
     }
 
     sharePinterest() {
         this.session.spy.track('Sharing_Social Click', {network: 'pinterest'});
-        let url = encodeURIComponent('https://app.naker.io/' + this.engine + '/')
-        window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.shareText);
+        let url = encodeURIComponent(this.shareUrl)
+        window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.socialText);
         this.showExport(this.currentCMS);
     }
 
