@@ -158,17 +158,17 @@ export class ExportModal extends Modal {
 
     shareContent: HTMLElement;
     footer: HTMLElement;
-    shareText: HTMLElement;
-    shareUrlText: HTMLElement;
+    shareUrlEl: HTMLElement;
+    shareTitle: HTMLElement;
     shareCopied: HTMLElement;
     sharePearl: HTMLElement;
     setShare() {
         this.shareContent = el('div.modal-content', [
             this.sharePearl = el('div.modal-pearl'),
             el('div.modal-layer', [
-                this.shareText = el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
+                this.shareTitle = el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
+                this.shareUrlEl = el('div.modal-copied-text'),
                 el('div.modal-code.share-text', { onclick: () => { this.setShareCopiedAnimation() } }, [
-                    this.shareUrlText = el('div.modal-copied-text'),
                     this.shareCopied = el('div.modal-copied.share-copied', 'Copied to Clipboard 👌'),
                     // el('div.icon-copypaste.modal-copyicon',
                     //     [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -180,7 +180,7 @@ export class ExportModal extends Modal {
                 el('div.modal-share-list', [
                     el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                     el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
-                    el('div.modal-share-icon.pinterest-button.icon-twitter', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                    el('div.modal-share-icon.pinterest-button.icon-pinterest', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ])
             ]),
             el('div.modal-layer', [
@@ -225,27 +225,14 @@ export class ExportModal extends Modal {
         this.session.setWaterMark(evt.target.checked);
         if (!evt.target.checked) {
             let shareUrl = 'https://app.naker.io/' + this.session.engine;
-            let shareText = "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:";
-            this.showShare(shareUrl, shareText);
+            let shareTitle = "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:";
+            this.showShare(shareUrl, shareTitle);
         }
     }
     
-    shareUrl: string;
-    showShare(url:string, text: string) {
-        this.title.textContent = 'Share the love!';
-        this.shareUrl = url;
-        this.shareUrlText.textContent = url;
-        this.shareText.textContent = text;
-        unmount(this.control, this.exportContent);
-        unmount(this.control, this.cmsContent);
-        mount(this.control, this.shareContent);
-        unmount(this.control, this.footer);
-        if (!this.pearl)
-            this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'https://d2uret4ukwmuoe.cloudfront.net/qe2qvy7gsehehim68v88t/scene.glb', waterMark: false, hdr: true, material: { metallic: 1, albedocolor: this.session.engineColor } });
-    }
-
     setWaterMark(waterMark: boolean) {
         if (waterMark !== undefined) setAttr(this.waterMarkCheckBox, { checked: waterMark });
+        this.setEmbedCode();
     }
 
     websiteUrl = '';
@@ -266,26 +253,42 @@ export class ExportModal extends Modal {
         setAttr(this.exportNavButton, { active: false });
         setAttr(this.cmsNavButton, { active: true });
     }
+
+    shareUrl: string;
+    shareText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
+    showShare(shareUrl: string, title: string, shareText?: string) {
+        this.title.textContent = 'Share the love!';
+        this.shareUrl = shareUrl;
+        this.shareUrlEl.textContent = shareUrl;
+        this.shareText = shareText;
+        this.shareTitle.textContent = title;
+        unmount(this.control, this.exportContent);
+        unmount(this.control, this.cmsContent);
+        mount(this.control, this.shareContent);
+        unmount(this.control, this.footer);
+        if (!this.pearl)
+            this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'https://d2uret4ukwmuoe.cloudfront.net/qe2qvy7gsehehim68v88t/scene.glb', waterMark: false, hdr: true, material: { metallic: 1, albedocolor: this.session.engineColor } });
+    }
+
     
-    socialText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
     shareFacebook() {
         this.session.spy.track('Sharing_Social Click', {network: 'facebook'});
         let url = encodeURIComponent(this.shareUrl)
-        window.open("https://www.facebook.com/sharer.php?u=" + url + "&t=" + this.socialText);
+        window.open("https://www.facebook.com/sharer.php?u=" + url + "&t=" + this.shareText);
         this.showExport(this.currentCMS);
     }
 
     shareTwitter() {
         this.session.spy.track('Sharing_Social Click', {network: 'twitter'});
         let url = encodeURIComponent(this.shareUrl)
-        window.open("http://www.twitter.com/share?url=" + url + "&text="+this.socialText);
+        window.open("http://www.twitter.com/share?url=" + url + "&text="+this.shareText);
         this.showExport(this.currentCMS);
     }
 
     sharePinterest() {
         this.session.spy.track('Sharing_Social Click', {network: 'pinterest'});
         let url = encodeURIComponent(this.shareUrl)
-        window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.socialText);
+        window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.shareText);
         this.showExport(this.currentCMS);
     }
 
@@ -335,12 +338,13 @@ export class ExportModal extends Modal {
     setEmbedId(evt: Event) {
         this.embedContainer = evt.target.value;
         setAttr(this.classInput, {value : ''});
+        this.setEmbedCode();
     }
 
-    containerId: string;
     setEmbedClass(evt: Event) {
         this.embedContainer = '.'+evt.target.value;
         setAttr(this.idInput, { value: '' });
+        this.setEmbedCode();
     }
 
     setCodeToCopy() {
@@ -352,11 +356,15 @@ export class ExportModal extends Modal {
 
     setEmbedCode() {
         let code = this.getEmbedCode();
+        console.log(code);
+        
         this.copiedCode.textContent = code;
         return code;
     }
 
     getEmbedCode() {
+        console.log(this.embedContainer);
+        
         let idText = (this.embedContainer) ? 'data-container="' + this.embedContainer + '"' : '';
         let waterMark = this.session.getProject().waterMark;
         let JsonString = this.undo.getProjectJsonString({waterMark: waterMark});
