@@ -167,8 +167,8 @@ export class ExportModal extends Modal {
             this.sharePearl = el('div.modal-pearl'),
             el('div.modal-layer', [
                 this.shareTitle = el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
-                this.shareUrlEl = el('div.modal-copied-text'),
                 el('div.modal-code.share-text', { onclick: () => { this.setShareCopiedAnimation() } }, [
+                    this.shareUrlEl = el('div.modal-copied-text.modal-share-copied-text'),
                     this.shareCopied = el('div.modal-copied.share-copied', 'Copied to Clipboard 👌'),
                     // el('div.icon-copypaste.modal-copyicon',
                     //     [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -356,15 +356,11 @@ export class ExportModal extends Modal {
 
     setEmbedCode() {
         let code = this.getEmbedCode();
-        console.log(code);
-        
         this.copiedCode.textContent = code;
         return code;
     }
 
     getEmbedCode() {
-        console.log(this.embedContainer);
-        
         let idText = (this.embedContainer) ? 'data-container="' + this.embedContainer + '"' : '';
         let waterMark = this.session.getProject().waterMark;
         let JsonString = this.undo.getProjectJsonString({waterMark: waterMark});
@@ -390,6 +386,7 @@ export class ExportModal extends Modal {
     }
 
     setShareCopiedAnimation() {
+        this.copyToClipboard(this.shareUrl);
         setStyle(this.shareCopied, { display: 'block' });
         setTimeout(() => {
             setStyle(this.shareCopied, { display: 'none' });

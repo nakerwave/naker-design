@@ -186,7 +186,6 @@ export class Session {
 
     signupUser(data: User) {
         this.setUser(data);
-        // this.spy.alias(data.email);
         this.spy.track("Platform Signup");
     }
 
@@ -220,7 +219,7 @@ export class Session {
     }
 
     sendProjectToListeners(project: ProjectSavedOptions) {
-        for (let i = 0; i < this.saveListeners.length; i++) {
+        for (let i = 0; i < this.projectListeners.length; i++) {
             this.projectListeners[i](project);
         }
     }
@@ -280,9 +279,9 @@ export class Session {
                 if (data.success !== false) {
                     // We don't save engine in database
                     if (!data.engine) data.engine = this.engine;
-                    // Cookie will always have the most recent data
-                    if (cookieParsed) this.projectFound(callback, cookieParsed);
-                    else this.projectFound(callback, data);
+                    // Cookie will always have the most recent json
+                    if (cookieParsed) data.json = cookieParsed.json;
+                    this.projectFound(callback, data);
                 } else {
                     this.setProjectId('');
                     if (cookieParsed) this.projectFound(callback, cookieParsed);
@@ -296,12 +295,11 @@ export class Session {
 
     project: ProjectSavedOptions = {};
     projectFound(callback: Function, project: ProjectSavedOptions) {
-        callback(project);
+        callback(cloneDeep(project));
 
-        this.lastProjectChange = project;
-        
+        this.lastProjectChange = cloneDeep(project);
         this.setProject(project);
-        this.sendProjectToListeners(project);
+        this.sendProjectToListeners(this.project);
 
         // Start auto save after get project to make sure we don't save empty project
         this.startLocalSaving(5);
@@ -435,11 +433,14 @@ export class Session {
     }
     
     lastProjectChange: ProjectSavedOptions = {};
+    keytoCheck = ['name', 'waterMark', 'websiteUrl'];
     checkProjectDataUpdate() {
         let change: ProjectSavedOptions = {};
-        if (this.lastProjectChange.name != this.project.name) change.name = this.project.name;
-        if (this.lastProjectChange.waterMark != this.project.waterMark) change.waterMark = this.project.waterMark;
-        if (this.lastProjectChange.websiteUrl != this.project.websiteUrl) change.websiteUrl = this.project.websiteUrl;
+        for (let i = 0; i < this.keytoCheck.length; i++) {
+            const key = this.keytoCheck[i];
+            if (this.lastProjectChange[key] != this.project[key]) change[key] = this.project[key];
+            this.lastProjectChange[key] = this.project[key];
+        }
         if (Object.keys(change).length != 0) this.updateProjectData(change);
     }
     
