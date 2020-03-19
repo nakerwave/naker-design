@@ -294,7 +294,7 @@ export class ExportModal extends Modal {
 
     addLinkRecord(evt) {
         let url = evt.target.value;
-        if (url == this.session.getProject().websiteUrl) return;
+        if (!url || url == this.session.getProject().websiteUrl) return;
         this.session.setWebsiteUrl(url);
         
         if (this.session.subDomain == 'development') return;        
