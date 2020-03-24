@@ -78,7 +78,9 @@ export class Header {
     goToDashboard() {
         // Save before leave
         this.session.saveOnlineAndLocal(() => {
-            window.location.href = '/dashboard/' + this.session.engine;
+            this.session.saveThumbnail(() => {
+                window.location.href = '/dashboard/' + this.session.engine;
+            });
         });
     }
 

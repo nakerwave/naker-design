@@ -402,7 +402,8 @@ export class ExportModal extends Modal {
         let project = this.session.getProject();
         this.setWaterMark(project.waterMark);
         this.setWebsiteUrl(project.websiteUrl);
-        
+        this.session.saveThumbnail();
+
         this._show();
     }
 }

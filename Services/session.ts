@@ -376,6 +376,7 @@ export class Session {
     startOnlineSaving(frequency: number) {
         this.onlineFrequency = frequency;
         this.lastsave = new Date().getTime();
+        this.stopOnlineSaving();
         this.savingInterval = setInterval(() => {
             if (document.hasFocus()) {
                 if (!this.project.id || !this.engine) {
@@ -383,11 +384,6 @@ export class Session {
                     return console.error("You can't save project online without a projectId and engine");
                 }
                 this.save();
-                if (this.getThumbnailImage) {
-                    this.getThumbnailImage((image) => {
-                        this.uploadImage(image);
-                    });
-                }
             }
         }, frequency * 1000);
     }
@@ -396,14 +392,8 @@ export class Session {
         clearInterval(this.savingInterval);
     }
 
-    setThumbnailFunction(getImage: Function) {
-        this.getThumbnailImage = getImage;
-    }
-
     lastimagesave: any;
     savingImageInterval: any;
-    getThumbnailImage: Function;
-
     errorshown = false;
     save() {
         this.saveOnlineAndLocal((saved) => {
@@ -487,7 +477,20 @@ export class Session {
         });
     }
 
-    uploadImageUrl;
+    getThumbnailImage: Function;
+    setThumbnailFunction(getImage: Function) {
+        this.getThumbnailImage = getImage;
+    }
+
+    saveThumbnail(callback?: Function) {
+        if (this.getThumbnailImage) {
+            this.getThumbnailImage((image) => {
+                this.uploadImage(image);
+                if (callback) callback();
+            });
+        }
+    }
+
     uploadImage(image: string, callback?: Function) {
         var fd = new FormData();
         fd.append("image", image);
