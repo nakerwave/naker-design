@@ -376,6 +376,8 @@ export class Session {
     startOnlineSaving(frequency: number) {
         this.onlineFrequency = frequency;
         this.lastsave = new Date().getTime();
+        this.lastTimeThumbnailSaved = new Date().getTime();
+
         this.stopOnlineSaving();
         this.savingInterval = setInterval(() => {
             if (document.hasFocus()) {
@@ -482,7 +484,12 @@ export class Session {
         this.getThumbnailImage = getImage;
     }
 
+    lastTimeThumbnailSaved;
     saveThumbnail(callback?: Function) {
+        let now = new Date().getTime();
+        if (now - this.lastTimeThumbnailSaved < 60000) return callback(true);
+        this.lastTimeThumbnailSaved = now;
+
         if (this.getThumbnailImage) {
             this.getThumbnailImage((image) => {
                 this.uploadImage(image);
