@@ -1,65 +1,128 @@
 //
-// Siimple - minimal css framework for flat and clean websites
+//Siimple - minimal css framework for flat and clean websites
 // Under the MIT LICENSE.
-// License:    https://github.com/siimple/siimple/blob/master/LICENSE.md
+// License:        https://github.com/siimple/siimple/blob/master/LICENSE.md
 // Repository: https://github.com/siimple
-// Website:    https://www.siimple.xyz
+// Website:        https://www.siimple.xyz
 //
-@import "colors.sass"
+@import "_colors.sass"
 @import '_variables'
 
 //Checkbox variables
-$siimple-checkbox-width: 18px
-$siimple-checkbox-height: 18px
+$checkbox-width: 18px
+$checkbox-height: 25px
 
-//Checkbox class
-.main-checkbox
-    display: inline-block
+.btn-toggle
+    padding: 0
     position: relative
-    width: $siimple-checkbox-width
-    height: $siimple-checkbox-height
-    top: 6px
-    right: $rightinput
-    vertical-align: top
-    //Checkbox label
-    label
-        cursor: pointer
-        width: $siimple-checkbox-width
-        height: $siimple-checkbox-height
-        transition: all 0.3s
-        position: absolute
-        top: 0
-        right: 0
-        border-radius: 2px
-        background: $colorthirdgrey
-        //Tick
+    border: none
+    color: $colormain
+    background: $colorthirdgrey
+
+    &:focus, &.focus, &:focus[checked='true'], &.focus[checked='true']
+        outline: none
+
+    &.btn-sm
+        &:before, &:after
+            line-height: -0.5rem
+            color: $colortext
+            letter-spacing: 0.75px
+            left: 0.4125rem
+            width: 2.325rem
+
+        &:before
+            text-align: right
+
         &:after
-            content: ""
-            opacity: 0.5
-            width: 8px
-            height: 4px
-            transform: rotate(-45deg)
-            transition: all 0.3s
+            text-align: left
+            opacity: 0
+
+        &[checked='true']
+            &:before
+                opacity: 0
+
+            &:after
+                opacity: 1
+
+    &:before, &:after
+        color: $colormain
+
+    &[checked='true']
+        background-color: $colormain
+
+    &.btn-sm
+        padding: 0
+        position: absolute
+        right: 0px
+        top: 3px
+        border: none
+        height: $checkbox-height
+        width: $widthinput
+        border-radius: $borderradius
+
+        &:focus, &.focus, &:focus[checked='true'], &.focus[checked='true']
+            outline: none
+
+        &:before, &:after
+            line-height: 1.5rem
+            width: 0.5rem
+            text-align: center
+            font-size: $fontsizeinput
             position: absolute
-            top: 5px
-            left: 4px
-            background: transparent
-            border: 2px solid $colorlight
-            border-top: 0px
-            border-right: 0px
+            bottom: 0
+            transition: opacity 0.25s
 
-        &:hover::after
-            opacity: 1
+        &:before
+            content: 'Off'
+            font-family: "Noto Sans", sans-serif
+            left: 1rem
 
-    //Input style
-    input[type=checkbox]
-            visibility: hidden
+        &:after
+            content: 'On'
+            font-family: "Noto Sans", sans-serif
+            opacity: 0.5
+            left: 0.5rem
 
-    //Checked -> change tick
-    input[type=checkbox]:checked + label:after
-            opacity: 1
-            border-color: $colorlight
+        > .handle
+            position: absolute
+            top: $border
+            left: $border
+            width: $checkbox-height - (2 * $border)
+            height: $checkbox-height - (2 * $border)
+            border-radius: $borderradius
+            background: $colortext
+            transition: left 0.25s
 
-    //Checked -> change background
-    input[type=checkbox]:checked + label
-            background-color: $colormain
+        &[checked='true']
+            transition: background-color 0.25s
+
+            > .handle
+                left: 2.5rem
+                transition: left 0.25s
+
+            &:before
+                opacity: 0.5
+
+            &:after
+                opacity: 1
+
+        &.btn-sm
+            &:before, &:after
+                line-height: -0.5rem
+                color: $colortext
+                letter-spacing: 0.75px
+                width: 2.325rem
+
+            &:before
+                text-align: right
+
+            &:after
+                text-align: left
+                opacity: 0
+
+            &[checked='true']
+                &:before
+                    opacity: 0
+
+                &:after
+                    opacity: 1
