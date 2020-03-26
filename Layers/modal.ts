@@ -62,10 +62,10 @@ export class Modal {
         }, 20);
     }
 
-    show() {
-        this._show();
+    show(callback?: Function) {
+        this._show(callback);
     }
-    _show() {
+    _show(callback?: Function) {
         for (let i = 0; i < modalList.length; i++) {
             setStyle(modalList[i].back, { display: 'none' });
             setStyle(modalList[i].control, { display: 'none' });
@@ -79,13 +79,14 @@ export class Modal {
         }, () => {
             setStyle(this.back, { opacity: this.backopacity });
             setStyle(this.control, { opacity: 1 });
+            if (callback) callback();
         });
     }
 
-    hide() {
-        this._hide();
+    hide(callback?: Function) {
+        this._hide(callback);
     }
-    _hide() {
+    _hide(callback?: Function) {
         if (this.onModalClose) this.onModalClose();
         this.animate((perc) => {
             let op = (1 - perc) * this.backopacity;
@@ -94,6 +95,7 @@ export class Modal {
         }, () => {
             setStyle(this.back, { display: 'none' });
             setStyle(this.control, { display: 'none' });
+            if (callback) callback();
         });
     }
 }
