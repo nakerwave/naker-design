@@ -163,7 +163,7 @@ export class ExportModal extends Modal {
     shareCopied: HTMLElement;
     sharePearl: HTMLElement;
     setShare() {
-        this.shareContent = el('div.modal-content', [
+        this.shareContent = el('div.modal-content.modal-share', [
             this.sharePearl = el('div.modal-pearl'),
             el('div.modal-layer', [
                 this.shareTitle = el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
