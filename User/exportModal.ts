@@ -122,12 +122,12 @@ export class ExportModal extends Modal {
                     el('div.modal-number', '2.'),
                     el('div.modal-text', 'Put the ID or the Class of the destination container'),
                     this.idInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, placeholder: 'ID' }),
-                    el('div.modal-or', 'or'),
+                    el('div.modal-or', 'OR'),
                     this.classInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedClass(evt) }, placeholder: 'Class' }),
                 ]),
                 el('div.modal-layer', [
                     el('div.modal-number', '3.'),
-                    el('div.modal-text', 'Copy/Paste this snippet in your website head tag following above tutorial.'),
+                    el('div.modal-text', 'Copy/paste this snippet in the head or body tag of your website. Check the tutorial above if needed.'),
                     el('div.modal-code', { onclick: () => { this.setCodeToCopy() } }, [
                         this.copiedCode = el('div.modal-copied-text.editor-scroll'),
                         this.copiedEffect = el('div.modal-copied', 'Copied to Clipboard 👌'),
@@ -136,14 +136,14 @@ export class ExportModal extends Modal {
                         // )
                     ]),
                 ]),
+
                 this.waterMarkLayer = el('div.modal-layer', [
                     el('div.modal-text.modal-watermark-text', 'Naker watermark'),
                     el('div.main-checkbox.modal-watermark',
-                        [
-                            this.waterMarkCheckBox = el('input.checkbox', { type: 'checkbox', checked: true, id: 'waterMarkCheckbox', oninput: (evt) => { this.checkWatermark(evt) } }),
-                            el('label.checkbox', { for: 'waterMarkCheckbox' }),
-                        ]
-                    ),
+                        this.waterMarkCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked:true, onclick: (evt) => { this.checkWatermark(evt) } },
+                            el('div.handle')
+                        )
+                    )
                 ]),
             ]),
             // el('div.modal-right', [
@@ -220,10 +220,12 @@ export class ExportModal extends Modal {
         setAttr(this.cmsNavButton, { active: false });
     }
 
-    pearl;
-    checkWatermark(evt: Event) {
-        this.session.setWaterMark(evt.target.checked);
-        if (!evt.target.checked) {
+    checkWatermark() {
+        let checked = !this.session.getProject().waterMark;
+        this.session.setWaterMark(checked);
+        setAttr(this.waterMarkCheckBox, { checked: checked });
+        this.setEmbedCode();
+        if (!checked) {
             let shareUrl = 'https://app.naker.io/' + this.session.engine;
             let shareTitle = "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:";
             this.showShare(shareUrl, shareTitle);
@@ -256,6 +258,7 @@ export class ExportModal extends Modal {
 
     shareUrl: string;
     shareText = 'My friends, you should check Naker! A platform to design 3D interactive contents for websites. No code.';
+    pearl;
     showShare(shareUrl: string, title: string, shareText?: string) {
         this.title.textContent = 'Share the love!';
         this.shareUrl = shareUrl;

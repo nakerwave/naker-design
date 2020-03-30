@@ -71,7 +71,8 @@ $checkbox-height: 25px
             font-size: $fontsizeinput
             position: absolute
             bottom: 0
-            transition: opacity 0.25s
+            // Removed transition because it bugs due to other canvas animation like screenshot
+            // transition: all 0.1s
 
         &:before
             content: 'Off'
@@ -92,14 +93,11 @@ $checkbox-height: 25px
             height: $checkbox-height - (2 * $border)
             border-radius: $borderradius
             background: $colortext
-            transition: left 0.25s
+            // transition: all 0.1s
 
         &[checked='true']
-            transition: background-color 0.25s
-
             > .handle
                 left: 2.5rem
-                transition: left 0.25s
 
             &:before
                 opacity: 0.5
