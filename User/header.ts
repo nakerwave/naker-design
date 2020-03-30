@@ -3,8 +3,9 @@ import { UserPearl } from '../User/userPearl';
 
 import { el, setStyle, mount, unmount } from 'redom';
 
-import { Undo } from '../Services/undo';
+import { Undo, ProjectSavedOptions } from '../Services/undo';
 import { Session, User } from '../Services/session';
+import { ExportModal } from './exportModal';
 
 /*
   +------------------------------------------------------------------------+
@@ -16,16 +17,17 @@ export class Header {
 
     undo: Undo;
     session: Session;
+    exportModal: ExportModal;
     control: HTMLElement;
     logoEl: HTMLElement;
     loaderEl: HTMLElement;
     projectname: HTMLElement;
     formname: HTMLElement;
-    // projectsave: HTMLElement;
 
-    constructor(session: Session, undo: Undo) {
+    constructor(session: Session, undo: Undo, exportModal: ExportModal) {
         this.undo = undo;
         this.session = session;
+        this.exportModal = exportModal;
 
         this.setContent();
         this._setEvents();
@@ -33,7 +35,10 @@ export class Header {
         this.checkUserAndProject();
         this.setLogo();
 
-        session.getUser((user: User) => {
+        let project = session.getProject();
+        if (project) this.setProject(project);
+
+        session.loadUser((user: User) => {
             if (user) this.setUserPearl(user);
             this.checkUserAndProject();
         });
@@ -66,7 +71,6 @@ export class Header {
                     onkeyup: (evt) => { if (evt.keyCode == 13) evt.target.blur(); }
                 }),
             ),
-            // this.projectsave = el('div.nav-button.presets-button-main.project-save', { onclick: (evt) => { this.loginModal.show(); } }, "Export Project"),
         ]);
         mount(document.body, this.control);
     }
@@ -74,7 +78,9 @@ export class Header {
     goToDashboard() {
         // Save before leave
         this.session.saveOnlineAndLocal(() => {
-            window.location.href = '/dashboard/' + this.session.engine;
+            this.session.saveThumbnail(() => {
+                window.location.href = '/dashboard/' + this.session.engine;
+            });
         });
     }
 
@@ -95,6 +101,10 @@ export class Header {
             this.checkUserAndProject();
         });
 
+        this.session.on('project', (project) => {
+            this.setProject(project);
+        });
+
         window.addEventListener('focus', () => {
             this.loginModal.hide();
             this.checkUserAndProject();
@@ -103,12 +113,10 @@ export class Header {
 
     checkUserAndProject() {
         if (!this.session.api.isConnected() || !this.session.saving) {
-            // mount(this.control, this.projectsave);
             unmount(this.control, this.loaderEl);
             unmount(this.control, this.formname);
             this.userPearl.setIcoSphere();
         } else {
-            // unmount(this.control, this.projectsave);
             mount(this.control, this.loaderEl);
             mount(this.control, this.formname);
             
@@ -128,6 +136,12 @@ export class Header {
         this.currentName = name;
         this.saveAnimation();
         this.session.saveProjectName(name);
+    }
+
+    setProject(project: ProjectSavedOptions) {
+        if (project.name) this.setName(project.name);
+        if (project.waterMark) this.exportModal.setWaterMark(project.waterMark);
+        if (project.websiteUrl) this.exportModal.setWebsiteUrl(project.websiteUrl);
     }
 
     setName(name: string) {

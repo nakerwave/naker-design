@@ -206,7 +206,6 @@ export class Api {
                 }
             }
         }
-
         return obj;
     }
     

@@ -4,16 +4,16 @@
 
 /***************************************** MODAL ****************************************
 $modalZindex: 1000
+$modalRadius: 10px
 
 .modal
     position: absolute
     width: 550px
-    padding: 20px
     height: auto
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
-    border-radius: 10px
+    border-radius: $modalRadius
     background-color: $colorgrey
     color: $colorlight
     z-index: $modalZindex + 1
@@ -32,50 +32,44 @@ $modalZindex: 1000
 
 .modal-title
     position: relative
+    padding: 10px 20px
     top: 0px
     left: 0px
-    font-size: 25px
+    font-size: 22px
     font-weight: 600
-    width: 100%
+    width: calc(100% - 40px)
     text-align: left
     height: auto
     padding-bottom: 10px
-    &:after
-        content: ""
-        position: absolute
-        top: 100%
-        left: 0px
-        width: 150px
-        height: 3px
-        border-radius: 2px
-        background: $colormain
+    background-color: darken($colormain, 20%)
+    filter: contrast(1.4)
+    background-size: 100% 100%
+    background-image: url(https://asset.naker.io/image/main/Fond_Light.png)
+    background-size: cover
+    border-radius: $modalRadius $modalRadius 0px 0px 
 
-.modal-title-background
+.modal-content
+    padding: 20px 40px 20px 20px
     position: relative
-    left: 0px
-    top: 0px
-    width: 100%
-    height: 60px
-    opacity: 1
-    border-radius: $borderradius $borderradius 0px 0px
+
+.cms-list
+    padding: 20px
+    position: relative
 
 .modal-description
     position: relative
+    padding: 0px 20px
+    width: calc(100% - 40px)
     margin-top: 10px
-    font-size: 18px
-    width: 100%
+    font-size: 16px
     height: auto
     text-align: left
     line-height: 1.5
 
 .modal-explanation
-    font-size: 18px
+    font-size: 16px
     padding-bottom: 10px
     line-height: 1.5
-
-.modal-content
-    margin-top: 10px
-    position: relative
 
 .modal-icon
     position: absolute
@@ -101,7 +95,7 @@ $modalZindex: 1000
 .modal-code
     position: relative
     width: auto
-    height: auto
+    height: 50px
     padding: 10px
     margin-top: 10px
     font-size: 14px
@@ -120,9 +114,25 @@ $modalZindex: 1000
     top: 0px
     left: 0px
     border-radius: $borderradius
-    line-height: 160px
+    line-height: 70px
     text-align: center
     background: rgba($colorsuccess, 0.9)
+
+.modal-copied-text
+    text-overflow: ellipsis
+    overflow-x: hidden
+    height: 100%
+    position: relative
+
+.modal-share
+    width: 400px !important
+    left: 50%
+    transform: translate(-50%, 0px)
+
+
+.modal-share-copied-text
+    white-space: nowrap
+    overflow: hidden
 
 .modal-copyicon
     position: absolute
@@ -140,7 +150,7 @@ $modalZindex: 1000
 .modal-input
     left: 0px
     position: relative !important
-    width: 200px !important
+    width: 100% !important
 
 .modal-button
     margin: 10px
@@ -152,11 +162,11 @@ $modalZindex: 1000
     width: calc(100% - 60px)
     position: absolute
     padding: 10px 30px
-    background: $colorthirdgrey
+    background: $colorgrey
     left: 0px
+    bottom: -20px
+    height: 20px
     border-radius: 0px 0px 10px 10px
-    margin-top: 10px
-
 
 .modal-footer-icon
     position: relative
@@ -170,3 +180,113 @@ $modalZindex: 1000
     color: $colortext
     &:hover
         text-decoration: underline
+
+.modal-footer-center
+    position: relative
+    left: 50%
+    transform: translateX(-50%)
+    width: 25px
+    top: 5px
+
+.export-button-nav
+    position: absolute
+    width: 10px
+    height: 10px
+    border-radius: 5px
+    background: $colorthirdgrey
+    display: inline-block
+    cursor: pointer
+    &[active="true"]
+        background: $colorlightgrey
+
+.export-button-nav-right
+    right: 0px
+
+.export-button-nav-left
+    left: 0px
+
+/***************************************** EXPORT MODAL ****************************************
+.modal-export
+    width: 460px
+
+.modal-layer
+    position: relative
+    width: calc(100% - 20px)
+    left: 20px
+    margin-bottom: 10px
+
+.modal-number
+    left: -20px
+    position: absolute
+
+.modal-text
+    position: relative
+    width: 100%
+    margin-bottom: 5px
+
+.modal-small-input
+    position: relative
+    width: 165px !important
+    display: inline-block
+
+.modal-or
+    position: relative
+    width: 50px
+    display: inline-block
+    text-align: center
+
+.cms-button
+    width: 100px
+    padding: 15px
+    height: 48px
+    margin: 5px 10px 5px 0px
+    font-size: 13px
+    display: inline-block
+
+    img
+        width: 30px
+        height: 30px
+
+.modal-watermark-text
+    top: 6px
+    left: 70px
+
+.modal-watermark
+    position: absolute
+    top: 0px
+    left: 60px
+
+.cms-help-button
+    position: relative
+    width: 360px
+    margin-bottom: 10px
+    left: 20px
+    height: 30px
+    padding: 10px
+    font-size: 16px
+
+    img
+        display: inline-block
+        left: 50px
+        position: absolute
+    div
+        display: inline-block
+
+.share-text
+    height: 20px
+
+.share-copied
+    line-height: 40px
+
+.modal-pearl
+    position: relative
+    height: 150px
+
+.modal-share-list
+    width: 150px
+
+.modal-share-icon
+    display: inline-block
+    font-size: 25px
+    margin: 5px
+    cursor: pointer

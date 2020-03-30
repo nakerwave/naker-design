@@ -12,6 +12,13 @@ import mapValues from 'lodash/mapValues';
 
 import hotkeys from 'hotkeys-js';
 
+export interface ProjectSavedOptions {
+    id?: string,
+    name?: string,
+    waterMark?: boolean,
+    websiteUrl?: string,
+}
+
 interface Change {
     back: Object
     forward: Object
@@ -62,15 +69,19 @@ export class Undo {
         this.sendToSaveListeners(forwardChange, this.presentState);
     }
 
-    getProjectJson() {
+    getProjectJson():Object {
         return {};
     }
 
-    getProjectJsonString() {
+    getProjectJsonWithAsset():Object {
         return {};
     }
 
-    getProjectRoundedJson() {
+    getProjectJsonString(options?):string {
+        return '';
+    }
+
+    getProjectRoundedJson():Object {
         return this.limitObjectAccuracy(this.getProjectJson());
     }
 

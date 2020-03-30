@@ -1,13 +1,11 @@
-
 import { Api, Token } from './api';
 import { Spy } from './spy';
-import { Undo } from './undo';
+import { Undo, ProjectSavedOptions } from './undo';
 
 import toastr from 'toastr';
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import Cookies from 'js-cookie';
-
 
 export interface User extends Token {
     id: string;
@@ -19,7 +17,6 @@ export interface User extends Token {
     pearlcolor: Array<number>;
 };
 
-
 export class Session {
 
     saveBeforeUnload = false;
@@ -29,9 +26,7 @@ export class Session {
 
     subDomain: 'app' | 'staging' | 'test' | 'cruise' | 'development';
     engine: 'story' | 'back' | 'form';
-    projectid: string;
     designer: string;
-    name: string;
 
     environments = {
         app: {
@@ -115,7 +110,7 @@ export class Session {
         document.addEventListener('mouseout', (evt) => {
             if (evt.toElement == null && evt.relatedTarget == null) {
                 // Make sure project loaded before save when mouseout
-                if (this.projectid && this.savingInterval) this.saveOnlineAndLocal(() => { });
+                if (this.project.id && this.savingInterval) this.saveOnlineAndLocal(() => { });
             }
         });
 
@@ -145,7 +140,8 @@ export class Session {
         back: 'NB',
         form: 'NF'
     };
-    engineColor = {
+    engineColor: Array<number>;
+    engineColors = {
         story: [0, 153, 255],
         back: [255, 8, 114],
         form: [0, 204, 102],
@@ -153,15 +149,17 @@ export class Session {
 
     setEngine(engine: 'story' | 'back' | 'form') {
         this.engine = engine;
+        this.engineColor = this.engineColors[this.engine]
     }
 
     ///////////////////////// USER /////////////////////////
     user: User;
     setUser(user: User) {
         this.user = user;
+        this.user.id = user._id;
     }
 
-    getUser(callback: Function) {
+    loadUser(callback: Function) {
         if (this.api.isConnected()) {
             this.api.get('user', {}, (data) => {
                 if (data.success !== false) {
@@ -188,17 +186,18 @@ export class Session {
 
     signupUser(data: User) {
         this.setUser(data);
-        // this.spy.alias(data.email);
         this.spy.track("Platform Signup");
     }
 
     connectListeners: Array<Function> = [];
     disconnectListeners: Array<Function> = [];
     saveListeners: Array<Function> = [];
-    on(event: 'connect'|'disconnect'|'save', funct: Function) {
+    projectListeners: Array<Function> = [];
+    on(event: 'connect'|'disconnect'|'save'|'project', funct: Function) {
         if (event == 'connect') this.connectListeners.push(funct);
         if (event == 'disconnect') this.disconnectListeners.push(funct);
         if (event == 'save') this.saveListeners.push(funct);
+        if (event == 'project') this.projectListeners.push(funct);
     }
 
     sendConnectToListeners(data: User) {
@@ -219,6 +218,12 @@ export class Session {
         }
     }
 
+    sendProjectToListeners(project: ProjectSavedOptions) {
+        for (let i = 0; i < this.projectListeners.length; i++) {
+            this.projectListeners[i](project);
+        }
+    }
+
     ///////////////////////// PROJECT /////////////////////////
     checkProjectId() {
         let url = window.location.href;
@@ -227,7 +232,7 @@ export class Session {
             let first = urlArray[i];
             let next = urlArray[i + 1];
             if (this.engineList.indexOf(first) != -1) {
-                this.projectid = next;
+                this.project.id = next;
             }
         }
         
@@ -248,39 +253,39 @@ export class Session {
         }
     }
 
-    setProjectId(projectid:string) {
-        this.projectid = projectid;
-        history.pushState({}, null, '/' + this.engine + '/' + this.projectid);
+    setProjectId(projectId:string) {
+        this.project.id = projectId;
+        history.pushState({}, null, '/' + this.engine + '/' + this.project.id);
     }
 
-    getProject(callback: Function) {
+    loadProject(callback: Function) {
         let cookie = Cookies.get('naker_' + this.engine);
-        let cookieParsed;
+        let cookieParsed:any = {};
         if (cookie) cookieParsed = JSON.parse(cookie);
 
         // If no id in url but one in cookie saved, we take it
-        if (!this.projectid) {
+        if (!this.project.id) {
             if (cookieParsed && cookieParsed.id) {
                 this.setProjectId(cookieParsed.id);
             }
         // If id in url but do not match with cookie saved, we ignore bad cookie
-        } else if (cookieParsed && (this.engine != cookieParsed.engine || this.projectid != cookieParsed.id)) {
+        } else if (cookieParsed && (this.engine != cookieParsed.engine || this.project.id != cookieParsed.id)) {
             cookieParsed = null;
         }
 
         // We make sure project exist in the base
-        if (this.projectid && this.saving) {
-            this.api.get(this.engine, { id: this.projectid }, (data) => {
+        if (this.project.id && this.saving) {
+            this.api.get(this.engine, { id: this.project.id }, (data) => {
                 if (data.success !== false) {
                     // We don't save engine in database
                     if (!data.engine) data.engine = this.engine;
-                    // Cookie will always have the most recent data
-                    if (cookieParsed) this.projectFound(callback, cookieParsed);
-                    else this.projectFound(callback, data);
+                    // Cookie will always have the most recent json
+                    if (cookieParsed) data.json = cookieParsed.json;
+                    this.projectFound(callback, data);
                 } else {
                     this.setProjectId('');
                     if (cookieParsed) this.projectFound(callback, cookieParsed);
-                    else this.projectFound(callback, false);
+                    else this.projectFound(callback, {});
                 }
             });
         } else {
@@ -288,11 +293,17 @@ export class Session {
         }
     }
 
-    projectFound(callback: Function, project: any) {
-        callback(project);
+    project: ProjectSavedOptions = {};
+    projectFound(callback: Function, project: ProjectSavedOptions) {
+        callback(cloneDeep(project));
+
+        this.lastProjectChange = cloneDeep(project);
+        this.setProject(project);
+        this.sendProjectToListeners(this.project);
+
         // Start auto save after get project to make sure we don't save empty project
         this.startLocalSaving(5);
-        if (project && this.projectid) this.startOnlineSaving(30);
+        if (project && this.project.id) this.startOnlineSaving(30);
     }
 
     createNew(callback?: Function) {
@@ -301,25 +312,48 @@ export class Session {
             if (data.success) {
                 this.setProjectId(data.id);
                 this.sendConnectToListeners(this.user);
-                this.startOnlineSaving(30);
-                // this.save();
+                this.startOnlineSaving(30); 
+                this.projectFound(callback, data);
             } else {
                 toastr.error('🤷 Oups, there was an error while saving your project');
+                this.projectFound(callback, {});
             }
-            if (callback) callback(data.sucess);
         });
+    }
+
+    setProject(project: ProjectSavedOptions) {
+        // Do not replace project or it will erase the id
+        // this.project = project;
+        for (const key in project) {
+            this.project[key] = project[key];
+        }
+    }
+
+    setWaterMark(waterMark: boolean) {
+        this.project.waterMark = waterMark;
+    }
+
+    setWebsiteUrl(setWebsiteUrl: string) {
+        this.project.websiteUrl = setWebsiteUrl;
     }
 
     saveProjectName(name: string) {
         if (!this.engine) return;
-        this.api.post(this.engine + '/name', { id: this.projectid, name: name }, {}, (data) => {
-            if (!data.success) {
+        this.updateProjectData({ name: name }, (success) => {
+            if (!success) {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
             } else {
-                this.name = name;
+                this.project.name = name;
                 let projectJson = this.undo.getProjectJson();
                 this.saveLocal(projectJson);
             }
+        });
+    }
+
+    updateProjectData(update, callback?: Function) {
+        update.id = this.project.id;
+        this.api.post(this.engine + '/update', update, {}, (data) => {
+            if (callback) callback(data.success);
         });
     }
 
@@ -342,18 +376,16 @@ export class Session {
     startOnlineSaving(frequency: number) {
         this.onlineFrequency = frequency;
         this.lastsave = new Date().getTime();
+        this.lastTimeThumbnailSaved = new Date().getTime();
+
+        this.stopOnlineSaving();
         this.savingInterval = setInterval(() => {
             if (document.hasFocus()) {
-                if (!this.projectid || !this.engine) {
+                if (!this.project.id || !this.engine) {
                     this.stopOnlineSaving();
-                    return console.error("You can't save project online without a projectid and engine");
+                    return console.error("You can't save project online without a projectId and engine");
                 }
                 this.save();
-                if (this.getThumbnailImage) {
-                    this.getThumbnailImage((image) => {
-                        this.uploadImage(image);
-                    });
-                }
             }
         }, frequency * 1000);
     }
@@ -362,14 +394,8 @@ export class Session {
         clearInterval(this.savingInterval);
     }
 
-    setThumbnailFunction(getImage: Function) {
-        this.getThumbnailImage = getImage;
-    }
-
     lastimagesave: any;
     savingImageInterval: any;
-    getThumbnailImage: Function;
-
     errorshown = false;
     save() {
         this.saveOnlineAndLocal((saved) => {
@@ -390,11 +416,26 @@ export class Session {
         if (isEqual(projectJson, this.lastexport) && this.saved) {
             return callback(true);
         }
+        
         this.saveLocal(projectJson);
-        this.saveOnline(projectJson, callback)
+        this.saveOnline(projectJson, callback);
+        this.checkProjectDataUpdate();
+        
         this.lastexport = cloneDeep(projectJson);
     }
-
+    
+    lastProjectChange: ProjectSavedOptions = {};
+    keytoCheck = ['name', 'waterMark', 'websiteUrl'];
+    checkProjectDataUpdate() {
+        let change: ProjectSavedOptions = {};
+        for (let i = 0; i < this.keytoCheck.length; i++) {
+            const key = this.keytoCheck[i];
+            if (this.lastProjectChange[key] != this.project[key]) change[key] = this.project[key];
+            this.lastProjectChange[key] = this.project[key];
+        }
+        if (Object.keys(change).length != 0) this.updateProjectData(change);
+    }
+    
     setSavingLocal(savingLocal: boolean) {
         this.savingLocal = savingLocal;
     }
@@ -402,14 +443,16 @@ export class Session {
     setSavingOnline(saving: boolean) {
         this.saving = saving;
     }
-
+    
     saveLocal(json) {
         if (!this.savingLocal) return;
         let project: any = {};
         project.json = json;
-        project.name = this.name;
+        project.name = this.project.name;
+        project.waterMark = this.project.waterMark;
+        project.websiteUrl = this.project.websiteUrl;
         project.engine = this.engine;
-        if (this.projectid) project.id = this.projectid;
+        if (this.project.id) project.id = this.project.id;
         Cookies.set('naker_' + this.engine, JSON.stringify(project), { expires: 7 });
     }
 
@@ -428,7 +471,7 @@ export class Session {
 
     requestSaveOnline(json: any, callback: Function) {
         this.sendSaveToListeners();        
-        this.api.post(this.engine + '/save', { id: this.projectid, }, { body: json }, (data) => {
+        this.api.post(this.engine + '/save', { id: this.project.id }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             this.saved = data.success;
             this.checkError(data.success);
@@ -436,13 +479,35 @@ export class Session {
         });
     }
 
-    uploadImageUrl;
+    getThumbnailImage: Function;
+    setThumbnailFunction(getImage: Function) {
+        this.getThumbnailImage = getImage;
+    }
+
+    lastTimeThumbnailSaved = new Date().getTime();
+    saveThumbnail(callback?: Function) {
+        let now = new Date().getTime();
+        // We save the thumbnail maximum every minute
+        if (now - this.lastTimeThumbnailSaved < 60000) {
+            if (callback) callback();
+            return;
+        }
+        this.lastTimeThumbnailSaved = now;
+
+        if (this.getThumbnailImage) {
+            this.getThumbnailImage((image) => {
+                this.uploadImage(image);
+                if (callback) callback();
+            });
+        }
+    }
+
     uploadImage(image: string, callback?: Function) {
         var fd = new FormData();
         fd.append("image", image);
         const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };
         let uploadImageUrl = (this.uploadImageUrl) ? this.uploadImageUrl : this.engine + '/image';
-        this.api.post(uploadImageUrl, { id: this.projectid }, { body: fd, header: header }, (data) => {
+        this.api.post(uploadImageUrl, { id: this.project.id }, { body: fd, header: header }, (data) => {
             if (callback) callback(data.success, data.image);
         });
     }
@@ -483,11 +548,19 @@ export class Session {
     }
 
     isProjectSaved () {
-        return (this.projectid)? true : false;
+        return (this.project.id)? true : false;
     }
 
     getProjectId() {
-        return this.projectid;
+        return this.project.id;
+    }
+
+    getProject():ProjectSavedOptions {
+        return (this.project) ? this.project : {};
+    }
+
+    getUser(): User {
+        return this.user;
     }
 
     getEngine() {

@@ -33,7 +33,7 @@ export class Inventory {
     nameinput: HTMLInputElement;
     nameContainer: HTMLElement;
     setSaveInputs(placeholder: string, parent: HTMLElement) {
-        this.placeholder = placeholder;
+        this.placeholder = placeholder + ' name';
         this.el = el('div.parameter-gorup',
             [
                 this.inventoryContainer = el('div.inventory-container-list editor-scroll', [
@@ -78,7 +78,7 @@ export class Inventory {
         this._addNewValueFromInput();
     }
     _addNewValueFromInput() {
-        if (this.currentname == '' || this.currentname == undefined) this.currentname = this.assetName + ' ' + (this.namelist.length + 1).toString();
+        this.currentname = this.checkName(this.currentname, 1);
         let index = this.namelist.indexOf(this.currentname);
         if (index != -1) return;
         this.setInputValue();
@@ -86,8 +86,12 @@ export class Inventory {
     }
 
     setName(name: string) {
-        this.currentname = name;
-        this.lastButton.childNodes[0].textContent = name;
+        this.currentname = this.checkName(name, 0);
+        this.lastButton.childNodes[0].textContent = this.currentname;
+    }
+
+    checkName(name: string, step: number): string {
+        return (name == '' || name == undefined)? this.assetName + ' ' + (this.namelist.length + step).toString() : name;
     }
 
     onReset: Function;
@@ -106,7 +110,8 @@ export class Inventory {
 
     setInputValue() {
         this.nameinput.value = '';
-        setAttr(this.nameinput, { placeholder: this.placeholder + ' ' + (this.namelist.length + 1).toString() });
+        let placeholder = this.checkName(this.placeholder, 1);
+        setAttr(this.nameinput, { placeholder: placeholder });
     }
 
     lastButton: HTMLElement;

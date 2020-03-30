@@ -22,6 +22,9 @@ export class Modal {
         // We use a form to make sure we have no autocompletion
         this.control = el('form.modal.' + modalclass, { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
             [
+                el('div.modal-close.icon-close', { onclick: () => { this.backgroundClick(); } },
+                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                ),
                 this.title = el('div.modal-title'),
                 this.description = el('div.modal-description', description),
             ]
@@ -31,22 +34,17 @@ export class Modal {
         if (!description) setStyle(this.description, { display: 'none' });
         setStyle(this.control, { display: 'none' });
         mount(document.body, this.control);
-        this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } },
-            el('div.modal-close.icon-close', { onclick: () => { this.backgroundClick(); } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            ),
-        );
+        this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } });
         mount(document.body, this.back);
         modalList.push(this);
     }
 
     back: HTMLElement;
     backopacity = 0.7;
-    onmodalclose: Function;
+    onModalClose: Function;
 
     backgroundClick() {
         this.hide();
-        if (this.onmodalclose) this.onmodalclose();
     }
 
     animInterval: any;
@@ -64,10 +62,10 @@ export class Modal {
         }, 20);
     }
 
-    show() {
-        this._show();
+    show(callback?: Function) {
+        this._show(callback);
     }
-    _show() {
+    _show(callback?: Function) {
         for (let i = 0; i < modalList.length; i++) {
             setStyle(modalList[i].back, { display: 'none' });
             setStyle(modalList[i].control, { display: 'none' });
@@ -81,13 +79,15 @@ export class Modal {
         }, () => {
             setStyle(this.back, { opacity: this.backopacity });
             setStyle(this.control, { opacity: 1 });
+            if (callback) callback();
         });
     }
 
-    hide() {
-        this._hide();
+    hide(callback?: Function) {
+        this._hide(callback);
     }
-    _hide() {
+    _hide(callback?: Function) {
+        if (this.onModalClose) this.onModalClose();
         this.animate((perc) => {
             let op = (1 - perc) * this.backopacity;
             setStyle(this.back, { opacity: op });
@@ -95,6 +95,7 @@ export class Modal {
         }, () => {
             setStyle(this.back, { display: 'none' });
             setStyle(this.control, { display: 'none' });
+            if (callback) callback();
         });
     }
 }
