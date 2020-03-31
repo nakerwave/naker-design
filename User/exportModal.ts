@@ -180,7 +180,8 @@ export class ExportModal extends Modal {
                 el('div.modal-share-list', [
                     el('div.modal-share-icon.facebook-button.icon-facebook', { onclick: () => { this.shareFacebook() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                     el('div.modal-share-icon.twitter-button.icon-twitter', { onclick: () => { this.shareTwitter() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
-                    el('div.modal-share-icon.pinterest-button.icon-pinterest', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
+                    // pinterest not working after test
+                    // el('div.modal-share-icon.pinterest-button.icon-pinterest', { onclick: () => { this.sharePinterest() } }, [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ])
             ]),
             el('div.modal-layer', [
@@ -288,12 +289,12 @@ export class ExportModal extends Modal {
         this.showExport(this.currentCMS);
     }
 
-    sharePinterest() {
-        this.session.spy.track('Sharing_Social Click', {network: 'pinterest'});
-        let url = encodeURIComponent(this.shareUrl)
-        window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.shareText);
-        this.showExport(this.currentCMS);
-    }
+    // sharePinterest() {
+    //     this.session.spy.track('Sharing_Social Click', {network: 'pinterest'});
+    //     let url = encodeURIComponent(this.shareUrl)
+    //     window.open("http://pinterest.com/pin/create/button/?url = " + url + "&description=" + this.shareText);
+    //     this.showExport(this.currentCMS);
+    // }
 
     addLinkRecord(evt) {
         let url = evt.target.value;
