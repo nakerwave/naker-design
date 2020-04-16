@@ -464,7 +464,7 @@ export class Session {
         // Avoid sending a lot of request when focus is back on window for instance
         // Maximum one save every 5 seconds
         let now = new Date().getTime();
-        if (now - this.lastsave < 5000) return callback(true);
+        if (now - this.lastsave < 5000) return callback(this.saved);
         this.lastsave = now;
         this.requestSaveOnline(json, callback);
     }
@@ -473,6 +473,7 @@ export class Session {
         this.sendSaveToListeners();        
         this.api.post(this.engine + '/save', { id: this.project.id }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
+            else console.log('project not successfully saved online');
             this.saved = data.success;
             this.checkError(data.success);
             callback(data.success);
@@ -516,17 +517,18 @@ export class Session {
         if (success) this.failednumber = 0;
         else this.failednumber++;
 
-        if (this.failednumber > 3) {
-            this.failednumber = 0;
+        if (this.failednumber == 2) {
             this.errorshown = true;
             toastr.error('We currently have difficulties saving your project 😱, we will try again later 🕵️');
+        } else if (this.failednumber == 5) {
+            this.errorWithRedirection('Sorry it seems you have been disconnected');
         } else if (this.errorshown) {
             this.errorshown = false;
             toastr.success('We manage to save your project again 👨‍🔧, you are good to go!');
         }
     }
 
-    error(text: string) {
+    errorWithRedirection(text: string) {
         toastr.error('🤷 ' + text + ', you will be redirected to your dashboard');
         if (this.getRedirect()) {
             setTimeout(() => {

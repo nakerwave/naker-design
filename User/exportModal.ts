@@ -65,7 +65,7 @@ export class ExportModal extends Modal {
         },
         {
             name: 'Wordpress',
-            article: 'http://cakewp.com/divi-tutorials/how-to-add-interactive-particles-background/',
+            article: 'https://help.naker.io/en/articles/3420872-integration-in-wordpress',
             logo: 'https://uploads-ssl.webflow.com/5e27764139e887058ca4ece7/5e2d6ece8c2b17a1f9c27b3c_wordpress-1.png',
         },
         {
