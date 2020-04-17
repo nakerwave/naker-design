@@ -520,9 +520,11 @@ export class Session {
         if (this.failednumber == 2) {
             this.errorshown = true;
             toastr.error('We currently have difficulties saving your project 😱, we will try again later 🕵️');
-        } else if (this.failednumber == 5) {
+        }
+        if (this.failednumber == 5) {
             this.errorWithRedirection('Sorry it seems you have been disconnected');
-        } else if (this.errorshown) {
+        }
+        if (success && this.errorshown) {
             this.errorshown = false;
             toastr.success('We manage to save your project again 👨‍🔧, you are good to go!');
         }
