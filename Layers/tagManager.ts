@@ -12,7 +12,7 @@ import { el, setAttr, setChildren, mount } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export let actionPanelWithTag = el('div.layer-right-with-tag');
+export let actionPanelWithTag = el('div.layer-right-with-tag.editor-scroll');
 mount(document.body, actionPanelWithTag);
 
 export interface tagableObject {

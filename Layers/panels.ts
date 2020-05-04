@@ -17,7 +17,7 @@ mount(document.body, actionPanel);
   +------------------------------------------------------------------------+
 */
 // We use a form to make sure we have no autocompletion
-export let actionPanelWithTag = el('form.layer-right-with-tag', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
+export let actionPanelWithTag = el('form.layer-right-with-tag.editor-scroll', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
 
 /*
   +------------------------------------------------------------------------+
