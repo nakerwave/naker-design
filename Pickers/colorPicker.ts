@@ -29,6 +29,7 @@ export interface coloroption {
     removable?: boolean,
     color?: Array<number>,
     slider?: colorslider,
+    removedValue?: Array<number>,
 }
 
 export interface colorslider {
@@ -39,6 +40,7 @@ export interface colorslider {
 export class ColorButton extends Slider {
 
     rgba: Array<number>;
+    removedValue: Array<number>;
     opacity: boolean;
     callback: Function;
     colorel: HTMLElement;
@@ -65,10 +67,11 @@ export class ColorButton extends Slider {
         if (coloroption.slider) this.addOpacitySlider(coloroption.slider);
         if (coloroption.removable === false) setStyle(this.coloricon, { display: 'none' });
         if (coloroption.color) this.setValue(coloroption.color);
+        if (coloroption.removedValue) this.removedValue = coloroption.removedValue;
     }
 
     checkErase() {
-        if (this.rgba !== undefined) this.setValue(undefined, true);
+        if (this.rgba !== undefined) this.erase(true);
         else this.focus();
     }
 
@@ -100,9 +103,9 @@ export class ColorButton extends Slider {
         setAttr(this.coloricon, { class: 'icon-' + icon + ' erase-icon' });
     }
 
-    setValue(rgba: Array<number>, frompicker?: any) {
-        if (rgba == undefined) return this.erase(frompicker);
-        if (rgba[0] == null) return this.erase(frompicker); // history change
+    setValue(rgba: Array<number>, fromPicker?: boolean) {
+        if (rgba == undefined) return this.erase(fromPicker);
+        if (rgba[0] == null) return this.erase(fromPicker); // history change
         if (typeof rgba !== 'object') return console.error('Bad color value sent to ColorButton');
         this.rgba = clone(rgba);
         let stringRgba = clone(rgba);
@@ -111,23 +114,29 @@ export class ColorButton extends Slider {
         let color = 'rgba(' + stringRgba[0] + ', ' + stringRgba[1] + ', ' + stringRgba[2] + ', ' + stringRgba[3] + ')';
         setStyle(this.colorel, { 'background-color': color });
         setAttr(this.coloricon, { active: true });
+        
         if (this.slider) {
-            if (frompicker) {
+            if (fromPicker) {
                 let slidervalue = this.checkSliderCurve(this.lastSliderValue);
                 this.rgba[3] = slidervalue;
             } else {
                 this.setSliderValue(this.rgba[3]);
             }
         }
-        if (this.events.change && frompicker) this.events.change(this.rgba);
+        if (this.events.change && fromPicker) this.events.change(this.rgba);
         return this;
     }
 
-    erase(frompicker?: any) {
-        setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
+    erase(fromPicker?: boolean) {
+        if (this.removedValue !== undefined) {
+            this.setValue(this.removedValue);
+        } else {
+            this.setValue([0, 0, 0, 0]);
+            setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
+        }
         setAttr(this.coloricon, { active: false });
-        if (this.events.change && frompicker) this.events.change(undefined);
-        if (this.events.blur && frompicker) this.events.blur(undefined);
+        if (this.events.change && fromPicker) this.events.change(this.removedValue);
+        if (this.events.blur && fromPicker) this.events.blur(this.removedValue);
     }
 
     events: any = {};
