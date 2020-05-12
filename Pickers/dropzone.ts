@@ -167,19 +167,19 @@ export class NakerDropzone {
         });
 
 
-        this.dropzone.on('sending', (file, xhr, formData) => {
+        this.dropzone.on("sending", (file, xhr, formData) => {
             assetPicker.hide();
             this.sending(file, xhr, formData);
             this.showProgress();
             this.hideDropzone();
         });
 
-        this.dropzone.on('success', (file, response) => {
+        this.dropzone.on("success", (file, response) => {
             this.success(file, response);
             this.hideProgress();
         });
 
-        this.dropzone.on('error', (file, response: any) => {
+        this.dropzone.on("error", (file, response: any) => {
             this.error(file, response);
             this.hideProgress();
         });

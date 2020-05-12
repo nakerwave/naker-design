@@ -9,7 +9,6 @@ import { SelectInput } from './Inputs/select';
 import { Checkbox } from './Inputs/checkbox';
 import { SliderInput } from './Inputs/slider';
 import { InputGroupSwitch } from './Layers/layer';
-// import { undoChannel } from './service/undo';
 
 // import './styles/custom-siimple.sass';
 import './styles/main.sass';

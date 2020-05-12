@@ -1,6 +1,6 @@
 import { Api, Token } from './api';
 import { Spy } from './spy';
-import { Undo, ProjectSavedOptions } from './undo';
+import { Undo, UndoEvent, ProjectSavedOptions } from './undo';
 
 import toastr from 'toastr';
 import isEqual from 'lodash/isEqual';
@@ -123,7 +123,7 @@ export class Session {
             }
         });
 
-        this.undo.on('save', () => {
+        this.undo.on(UndoEvent.Save, () => {
             let projectJson = this.undo.getProjectJson();
             this.saveLocal(projectJson);
         });
@@ -503,6 +503,8 @@ export class Session {
         }
     }
 
+    // For stoy the url is different
+    uploadImageUrl: string;
     uploadImage(image: string, callback?: Function) {
         var fd = new FormData();
         fd.append("image", image);

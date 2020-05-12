@@ -3,7 +3,7 @@ import { UserPearl } from '../User/userPearl';
 
 import { el, setStyle, mount, unmount } from 'redom';
 
-import { Undo, ProjectSavedOptions } from '../Services/undo';
+import { Undo, ProjectSavedOptions, UndoEvent } from '../Services/undo';
 import { Session, User } from '../Services/session';
 import { ExportModal } from './exportModal';
 
@@ -85,11 +85,11 @@ export class Header {
     }
 
     _setEvents() {
-        this.undo.on('save', () => {
+        this.undo.on(UndoEvent.Save, () => {
             this.saveAnimation();
         });
 
-        this.undo.on('change', (change) => {
+        this.undo.on(UndoEvent.Change, (change) => {
             if (change) this.saveAnimation();
         });
 
