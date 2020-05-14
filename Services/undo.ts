@@ -12,6 +12,18 @@ import mapValues from 'lodash/mapValues';
 
 import hotkeys from 'hotkeys-js';
 
+export enum UndoEvent {
+    Change,
+    Save,
+    Undo,
+    Redo,
+}
+
+interface undoObservable {
+    name: UndoEvent,
+    funct: Function,
+}
+
 export interface ProjectSavedOptions {
     id?: string,
     name?: string,
@@ -66,7 +78,7 @@ export class Undo {
         this.pastChange.push({ back: backChange, forward: forwardChange });
         this.futureChange = [];
         this.presentState = projectJson;
-        this.sendToSaveListeners(forwardChange, this.presentState);
+        this.sendToObservable(UndoEvent.Save, forwardChange, this.presentState)
     }
 
     getProjectJson():Object {
@@ -93,7 +105,8 @@ export class Undo {
             let newState = merge(this.presentState, past.back);
             let backState = this.getDifference(newState, past.forward);
             this.presentState = backState;
-            this.sendToUndoListeners(past.back, this.presentState);
+            this.sendToObservable(UndoEvent.Undo, past.back, this.presentState)
+            this.sendToObservable(UndoEvent.Change, past.back, this.presentState)
             return true;
         } else {
             return false;
@@ -108,7 +121,8 @@ export class Undo {
             let newState = merge(this.presentState, future.forward);
             let forwardState = this.getDifference(newState, future.back);
             this.presentState = forwardState;
-            this.sendToRedoListeners(future.forward, this.presentState);
+            this.sendToObservable(UndoEvent.Redo, future.forward, this.presentState)
+            this.sendToObservable(UndoEvent.Change, future.forward, this.presentState)
             return true;
         } else {
             return false;
@@ -154,40 +168,19 @@ export class Undo {
         return Changes(object);
     }
 
-    _changeListeners: Array<Function> = [];
-    _saveListeners: Array<Function> = [];
-    _undoListeners: Array<Function> = [];
-    _redoListeners: Array<Function> = [];
-    on(event: 'change' | 'save' | 'undo' | 'redo', callback: Function) {
-        if (event == 'change') this._changeListeners.push(callback);
-        if (event == 'save') this._saveListeners.push(callback);
-        if (event == 'undo') this._undoListeners.push(callback);
-        if (event == 'redo') this._redoListeners.push(callback);
+    observables: Array<undoObservable> = [];
+    on(event: undoObservable["name"], callback: Function) {
+        let observable: undoObservable = {
+            name: event,
+            funct: callback,
+        };
+        this.observables.push(observable);
     }
 
-    sendToChangeListeners(change: any, newState: any) {
-        for (let i = 0; i < this._changeListeners.length; i++) {
-            this._changeListeners[i](change, newState);
+    sendToObservable(event: undoObservable["name"], change, newState) {
+        for (let i = 0; i < this.observables.length; i++) {
+            let observable = this.observables[i];
+            if (observable.name == event) observable.funct(change, newState);
         }
-    }
-
-    sendToSaveListeners(forwardChange: any, newState: any) {
-        for (let i = 0; i < this._saveListeners.length; i++) {
-            this._saveListeners[i](forwardChange, newState);
-        }
-    }
-
-    sendToUndoListeners(change: any, newState: any) {
-        for (let i = 0; i < this._undoListeners.length; i++) {
-            this._undoListeners[i](change, newState);
-        }
-        this.sendToChangeListeners(change, newState);
-    }
-
-    sendToRedoListeners(change: any, newState: any) {
-        for (let i = 0; i < this._redoListeners.length; i++) {
-            this._redoListeners[i](change, newState);
-        }
-        this.sendToChangeListeners(change, newState);
     }
 }
