@@ -131,7 +131,8 @@ export class ColorButton extends Slider {
         if (this.removedValue !== undefined) {
             this.setValue(this.removedValue);
         } else {
-            this.setValue([0, 0, 0, 0]);
+            // Keep opacity so that we have a result when a color is back
+            this.setValue([0, 0, 0, 1]);
             setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
         }
         setAttr(this.coloricon, { active: false });

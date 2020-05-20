@@ -538,7 +538,7 @@ export class AssetPicker extends UI {
         }
         
         if (removable) {
-            let removebutton = el('div.delete-asset-button.icon-close', {
+            let removebutton = el('div.delete-asset-button.icon-delete', {
                 onclick: (e) => {
                     e.stopPropagation();
                     this.deleteAsset(type, url);

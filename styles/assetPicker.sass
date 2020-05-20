@@ -94,15 +94,20 @@
 
 .delete-asset-button
     position: absolute
-    left: 82px
-    top: -3px
-    width: 13px
-    height: 13px
+    left: 78px
+    top: -4px
+    width: 14px
+    height: 14px
     font-size: 13px
-    background: $colorthirdgrey
-    color: $colormain
-    border-radius: 8px
+    padding: 4px 
+    background: darken($colorerror, 20)
+    color: $colorlightgrey
+    border-radius: 20px
     z-index: 1
+    transition: all ease 200ms
+    &:hover
+        background: $colorerror
+        
 
 /***************************************** IMAGE ASSET BUTTON ****************************************
 
