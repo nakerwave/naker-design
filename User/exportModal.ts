@@ -166,7 +166,7 @@ export class ExportModal extends Modal {
         this.shareContent = el('div.modal-content.modal-share', [
             this.sharePearl = el('div.modal-pearl'),
             el('div.modal-layer', [
-                this.shareTitle = el('div.modal-text', "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:"),
+                this.shareTitle = el('div.modal-text'),
                 el('div.modal-code.share-text', { onclick: () => { this.setShareCopiedAnimation() } }, [
                     this.shareUrlEl = el('div.modal-copied-text.modal-share-copied-text'),
                     this.shareCopied = el('div.modal-copied.share-copied', 'Copied to Clipboard 👌'),
@@ -228,7 +228,7 @@ export class ExportModal extends Modal {
         this.setEmbedCode();
         if (!checked) {
             let shareUrl = 'https://app.naker.io/' + this.session.engine;
-            let shareTitle = "Want to remove the waterMark? Indeed! Share Naker with your friends and let's make the web cool again together:";
+            let shareTitle = "Want to remove the waterMark? Please share Naker with your friends and let's make the web cool again:";
             this.showShare(shareUrl, shareTitle);
         }
     }
