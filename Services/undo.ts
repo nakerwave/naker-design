@@ -32,15 +32,18 @@ export interface ProjectSavedOptions {
 }
 
 interface Change {
-    back: Object
-    forward: Object
+    back: Array<any>
+    forward: Array<any>
 }
 
-export class Undo {
+export abstract class Undo<T> {
 
     presentState: any = {};
     pastChange: Array<Change> = [];
     futureChange: Array<Change> = [];
+
+    abstract getProjectJson(): T;
+    abstract getProjectJsonWithAsset(): T;
 
     constructor() {
         hotkeys('command+z,ctrl+z,⌘+z', (event, param) => {
@@ -53,7 +56,7 @@ export class Undo {
     }
 
     saveState() {
-        let json = this.getProjectRoundedJson();
+        let json:T = this.getProjectRoundedJson();
         // console.log(json);
         this.presentState = cloneDeep(json);
     }
@@ -81,19 +84,7 @@ export class Undo {
         this.sendToObservable(UndoEvent.Save, forwardChange, this.presentState)
     }
 
-    getProjectJson():Object {
-        return {};
-    }
-
-    getProjectJsonWithAsset():Object {
-        return {};
-    }
-
-    getProjectJsonString(options?):string {
-        return '';
-    }
-
-    getProjectRoundedJson():Object {
+    getProjectRoundedJson():T {
         return this.limitObjectAccuracy(this.getProjectJson());
     }
 
@@ -129,8 +120,8 @@ export class Undo {
         }
     }
 
-    limitObjectAccuracy(obj) {
-        return this.mapValuesDeep(obj, (a) => {
+    limitObjectAccuracy(object: T) {
+        return this.mapValuesDeep(object, (a) => {
             if (typeof a == 'number') return this.limitAccuracy(a, 5);
             else return a;
         });
@@ -147,7 +138,7 @@ export class Undo {
         return Math.round(number * powLength) / powLength;
     }
 
-    getDifference(object, base) {
+    getDifference(object: T, base: T) {
         let Changes = (object, base) => {
             return transform(object, (result, value, key) => {
                 if (!isEqual(value, base[key])) {
@@ -158,7 +149,7 @@ export class Undo {
         return Changes(object, base);
     }
 
-    setNullValues(object) {
+    setNullValues(object: T) {
         let Changes = (object) => {
             return transform(object, (result, value, key) => {
                 // Keep null and not undefined or it won't be considered by jsontocontent when back or forward
@@ -169,15 +160,15 @@ export class Undo {
     }
 
     observables: Array<undoObservable> = [];
-    on(event: undoObservable["name"], callback: Function) {
+    on(event: undoObservable["name"], funct: (eventData: T) => void) {
         let observable: undoObservable = {
             name: event,
-            funct: callback,
+            funct: funct,
         };
         this.observables.push(observable);
     }
 
-    sendToObservable(event: undoObservable["name"], change, newState) {
+    sendToObservable(event: undoObservable["name"], change: T, newState: T) {
         for (let i = 0; i < this.observables.length; i++) {
             let observable = this.observables[i];
             if (observable.name == event) observable.funct(change, newState);
