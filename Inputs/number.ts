@@ -22,7 +22,6 @@ export interface numberoption {
 
 export class NumberInput extends ChangeEffectInput {
 
-    unit: any;
     value: number;
     max: number;
     min: number;
@@ -50,10 +49,11 @@ export class NumberInput extends ChangeEffectInput {
         if (number.max !== undefined) setAttr(this.el, { max: number.max });
     }
 
+    unit: HTMLElement;
     setUnit(number: numberoption) {
         this.unit = el('div', { class: 'input-unit' });
         this.unit.textContent = number.unit;
-        mount(this.el.parentNode, this.unit);
+        mount(this.parent, this.unit);
 
         this.on('focus', () => { setStyle(this.unit, { display: 'none' }) });
         this.on('blur', () => { setStyle(this.unit, { display: 'block' }) });

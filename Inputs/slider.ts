@@ -1,7 +1,7 @@
 
 import { Input, inputEvents } from './input';
 
-import { el, mount, setAttr } from 'redom';
+import { el, mount, setAttr, setStyle } from 'redom';
 import noUiSlider from 'nouislider';
 
 /*
@@ -14,6 +14,7 @@ export interface slideroption {
     value: number;
     max: number;
     min: number;
+    unit?: string,
     step?: number;
     power?: number;
     curve?: 'logarithmic' | 'exponential' | 'linear';
@@ -149,17 +150,35 @@ export class SliderInput extends Slider {
         this.createSlider(this.parent, value);
         this.number = el('input.rangenumber.input-parameter', { type: 'number', value: value, min: this.min, max: this.max, step: this.step })
         mount(this.parent, this.number);
+        if (slideroption.unit) this.setUnit(slideroption.unit);
         return this;
     }
 
     setValue(value: number) {
-        if (value == undefined) {
+        if (value === undefined) {
             setAttr(this.number, { value: this.defaultValue });
         } else {
             value = this.checkAccuracy(value);
             setAttr(this.number, { value: value });
         }
         this.setSliderValue(value);
+    }
+
+    unit: HTMLElement;
+    setUnit(unit: string) {
+        this.unit = el('div', { class: 'input-unit' });
+        this.unit.textContent = unit;
+        mount(this.el, this.unit);
+        setAttr(this.number, {
+            onfocus: () => { setStyle(this.unit, { display: 'none' }) },
+            onblur: () => { setStyle(this.unit, { display: 'block' }) }
+        });
+
+        this.updateUnit(unit);
+    }
+
+    updateUnit(unit: string) {
+        this.unit.textContent = unit;
     }
 
     // See page https://refreshless.com/nouislider/events-callbacks/ to understand nouislider events
