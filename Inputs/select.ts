@@ -1,4 +1,3 @@
-
 import { Input, inputEvents } from './input';
 
 import { el, mount } from 'redom';
@@ -11,12 +10,14 @@ import Suggestions from 'suggestions';
 */
 
 export interface selectoption {
-    value: string;
-    list: Array<string>;
+    value: string,
+    list: Array<string>,
+    valueText?: Object,
 }
 
 export class SelectInput extends Input {
     options: Array<string>;
+    valueText: Object;
 
     constructor(parent: HTMLElement, label: string, selectoption: selectoption) {
         super(parent, label)
@@ -27,11 +28,12 @@ export class SelectInput extends Input {
         this.setEvents();
         return this;
     }
-
+    
     selectlabels: Array<any> = [];
     suggestion: Suggestions;
     list: Suggestions["List"];
     setInput(selectoption: selectoption) {
+        if (selectoption.valueText) this.valueText = selectoption.valueText;
         // We trick the suggestion library to be able to use it as select list
         // Classic select style not really beautiful and customizable
         this.suggestion = new Suggestions(this.el, [], {
@@ -42,9 +44,19 @@ export class SelectInput extends Input {
         this.setOptions(selectoption.list);
         this.list.handleMouseUp = (item) => {
             this.list.hide();
-            this.setValue(item.string);
+            let value;
+            if (this.valueText) {
+                for (const key in this.valueText) {
+                    const element = this.valueText[key];
+                    if (item.string == element) value = key;
+                }
+            } else {
+                value = item.string;
+            }
+
+            this.setValue(value);
             for (let i = 0; i < this.changeFunctions.length; i++) {
-                this.changeFunctions[i](item.string, this);
+                this.changeFunctions[i](value, this);
             }
         };
     }
@@ -55,7 +67,8 @@ export class SelectInput extends Input {
         this.list = this.suggestion.list;
         this.list.clear();
         for (var i = 0; i < options.length; i++) {
-            this.list.add({ string: options[i] });
+            let textValue = (this.valueText) ? this.valueText[options[i]] : options[i];
+            this.list.add({ string: textValue });
         }
         this.list.draw();
         this.list.hide();
@@ -85,7 +98,8 @@ export class SelectInput extends Input {
     setValue(value: string) {
         if (value == undefined) value = '';
         this.value = value;
-        this.el.textContent = value;
+        let textValue = (this.valueText) ? this.valueText[value] : value;
+        this.el.textContent = textValue;
     }
 
     inputEvent: inputEvents = {

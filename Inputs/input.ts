@@ -1,5 +1,5 @@
 import { elementEvents, UI } from '../Layers/common';
-import { el, mount, unmount, setAttr, setChildren } from 'redom';
+import { el, mount, unmount, setAttr, setChildren, setStyle } from 'redom';
 
 export let widthinputcontainer = 150;
 export let widthinput = 60;
@@ -55,5 +55,15 @@ export class Input extends UI {
     setLabelIcon(icon: string) {
         setAttr(this.label, {class : 'input-label input-label-icon icon-' + icon});
         setChildren(this.label, [el('span.path1'), el('span.path2'), el('span.path3')]);
+    }
+
+    hide() {
+        setStyle(this.parent, { display: 'none' });
+        return this;
+    }
+
+    show() {
+        setStyle(this.parent, { display: 'inline-block' });
+        return this;
     }
 }
