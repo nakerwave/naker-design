@@ -36,6 +36,7 @@ export class Session {
             intercom: true,
             sentry: true,
             admin: false, // Need to be admin to log and enter
+            debug: false,
         },
         staging: {
             apiurl: 'https://naker-backend-prod.herokuapp.com/',
@@ -44,6 +45,7 @@ export class Session {
             intercom: false,
             sentry: false,
             admin: true,
+            debug: true,
         },
         test: {
             apiurl: 'https://naker-backend.herokuapp.com/',
@@ -52,6 +54,7 @@ export class Session {
             intercom: false,
             sentry: false,
             admin: true,
+            debug: true,
         },
         cruise: {
             apiurl: 'https://naker-backend.herokuapp.com/',
@@ -60,6 +63,7 @@ export class Session {
             intercom: false,
             sentry: false,
             admin: false,
+            debug: true,
         },
         development: {
             apiurl: 'http://localhost:3000/',
@@ -68,6 +72,7 @@ export class Session {
             intercom: false,
             sentry: false,
             admin: false,
+            debug: true,
         },
     };
 
@@ -78,8 +83,9 @@ export class Session {
     intercom: boolean;
     sentry: boolean;
     admin: boolean;
+    debug: boolean;
 
-    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo) {
+    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo<any>) {
         this.setEngine(engine);
         
         this.api = api;
@@ -98,6 +104,7 @@ export class Session {
         this.intercom = this.environments[this.subDomain].intercom;
         this.sentry = this.environments[this.subDomain].sentry;
         this.admin = this.environments[this.subDomain].admin;
+        this.debug = this.environments[this.subDomain].debug;
 
         api.setHost(this.apiurl);
         api.onDisconnected = () => {

@@ -169,7 +169,7 @@ export abstract class Undo<T> {
     }
 
     observers: Array<undoObserver> = [];
-    on(event: undoObserver["name"], funct: (eventData: T) => void, first?: boolean) {
+    on(event: undoObserver["name"], funct: (change: T, state: T) => void, first?: boolean) {
         let newObserver: undoObserver = {
             name: event,
             funct: funct,
