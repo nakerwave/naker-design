@@ -19,7 +19,7 @@ export enum UndoEvent {
     Redo,
 }
 
-interface undoObservable {
+interface undoObserver {
     name: UndoEvent,
     funct: Function,
 }
@@ -42,8 +42,9 @@ export abstract class Undo<T> {
     pastChange: Array<Change> = [];
     futureChange: Array<Change> = [];
 
-    abstract getProjectJson(): T;
-    abstract getProjectJsonWithAsset(): T;
+    abstract getSceneJson(): T;
+    abstract getSceneWithAssetJson(): T;
+    abstract getFullProjectJson(): T;
 
     constructor() {
         hotkeys('command+z,ctrl+z,⌘+z', (event, param) => {
@@ -56,13 +57,13 @@ export abstract class Undo<T> {
     }
 
     saveState() {
-        let json:T = this.getProjectRoundedJson();
+        let json:T = this.getSceneWithAssetRoundedJson();
         // console.log(json);
         this.presentState = cloneDeep(json);
     }
 
     pushState() {
-        let json = this.getProjectRoundedJson();
+        let json = this.getSceneWithAssetRoundedJson();
         // console.log(json);
         
         let projectJson = cloneDeep(json);
@@ -81,11 +82,19 @@ export abstract class Undo<T> {
         this.pastChange.push({ back: backChange, forward: forwardChange });
         this.futureChange = [];
         this.presentState = projectJson;
-        this.sendToObservable(UndoEvent.Save, forwardChange, this.presentState)
+        this.sendToObserver(UndoEvent.Save, forwardChange, this.presentState)
     }
 
-    getProjectRoundedJson():T {
-        return this.limitObjectAccuracy(this.getProjectJson());
+    getSceneWithAssetRoundedJson():T {
+        return this.limitObjectAccuracy(this.getSceneWithAssetJson());
+    }
+
+    getFullProjectRoundedJson(): T {
+        return this.limitObjectAccuracy(this.getFullProjectJson());
+    }
+
+    getSceneRoundedJson(): T {
+        return this.limitObjectAccuracy(this.getSceneJson());
     }
 
     back() {
@@ -96,8 +105,8 @@ export abstract class Undo<T> {
             let newState = merge(this.presentState, past.back);
             let backState = this.getDifference(newState, past.forward);
             this.presentState = backState;
-            this.sendToObservable(UndoEvent.Undo, past.back, this.presentState)
-            this.sendToObservable(UndoEvent.Change, past.back, this.presentState)
+            this.sendToObserver(UndoEvent.Undo, past.back, this.presentState)
+            this.sendToObserver(UndoEvent.Change, past.back, this.presentState)
             return true;
         } else {
             return false;
@@ -112,8 +121,8 @@ export abstract class Undo<T> {
             let newState = merge(this.presentState, future.forward);
             let forwardState = this.getDifference(newState, future.back);
             this.presentState = forwardState;
-            this.sendToObservable(UndoEvent.Redo, future.forward, this.presentState)
-            this.sendToObservable(UndoEvent.Change, future.forward, this.presentState)
+            this.sendToObserver(UndoEvent.Redo, future.forward, this.presentState)
+            this.sendToObserver(UndoEvent.Change, future.forward, this.presentState)
             return true;
         } else {
             return false;
@@ -159,19 +168,23 @@ export abstract class Undo<T> {
         return Changes(object);
     }
 
-    observables: Array<undoObservable> = [];
-    on(event: undoObservable["name"], funct: (eventData: T) => void) {
-        let observable: undoObservable = {
+    observers: Array<undoObserver> = [];
+    on(event: undoObserver["name"], funct: (eventData: T) => void, first?: boolean) {
+        let newObserver: undoObserver = {
             name: event,
             funct: funct,
         };
-        this.observables.push(observable);
+        if (first) {
+            this.observers.unshift(newObserver);
+        } else {
+            this.observers.push(newObserver);
+        }
     }
 
-    sendToObservable(event: undoObservable["name"], change: T, newState: T) {
-        for (let i = 0; i < this.observables.length; i++) {
-            let observable = this.observables[i];
-            if (observable.name == event) observable.funct(change, newState);
+    sendToObserver(event: undoObserver["name"], change: T, newState: T) {
+        for (let i = 0; i < this.observers.length; i++) {
+            let observer = this.observers[i];
+            if (observer.name == event) observer.funct(change, newState);
         }
     }
 }

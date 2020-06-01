@@ -22,7 +22,7 @@ export class Session {
     saveBeforeUnload = false;
     api: Api;
     spy: Spy;
-    undo: Undo;
+    undo: Undo<any>;
 
     subDomain: 'app' | 'staging' | 'test' | 'cruise' | 'development';
     engine: 'story' | 'back' | 'form';
@@ -124,7 +124,7 @@ export class Session {
         });
 
         this.undo.on(UndoEvent.Save, () => {
-            let projectJson = this.undo.getProjectJson();
+            let projectJson = this.undo.getFullProjectRoundedJson();
             this.saveLocal(projectJson);
         });
     }
@@ -344,7 +344,7 @@ export class Session {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
             } else {
                 this.project.name = name;
-                let projectJson = this.undo.getProjectJson();
+                let projectJson = this.undo.getFullProjectRoundedJson();
                 this.saveLocal(projectJson);
             }
         });
@@ -366,7 +366,7 @@ export class Session {
                 let now = new Date().getTime();
                 if (now - this.lastlocalsave < localfrequency * 800) return;
                 this.lastlocalsave = now;
-                let projectJson = this.undo.getProjectJson();
+                let projectJson = this.undo.getFullProjectRoundedJson();
                 this.saveLocal(projectJson);
             }
         }, localfrequency * 1000);
@@ -411,7 +411,7 @@ export class Session {
 
     lastexport = {};
     saveOnlineAndLocal(callback: Function) {
-        let projectJson = this.undo.getProjectJson();
+        let projectJson = this.undo.getFullProjectRoundedJson();
         // Nothing has changed and previus saved has worked
         if (isEqual(projectJson, this.lastexport) && this.saved) {
             return callback(true);
