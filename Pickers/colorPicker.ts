@@ -107,6 +107,12 @@ export class ColorButton extends Slider {
         if (rgba == undefined) return this.erase(fromPicker);
         if (rgba[0] == null) return this.erase(fromPicker); // history change
         if (typeof rgba !== 'object') return console.error('Bad color value sent to ColorButton');
+        this.setInputValue(rgba, fromPicker);
+        if (this.events.change && fromPicker) this.events.change(this.rgba);
+        return this;
+    }
+    
+    setInputValue(rgba: Array<number>, fromPicker?: boolean) {
         this.rgba = clone(rgba);
         let stringRgba = clone(rgba);
         if (rgba[3] == undefined) stringRgba[3] = 1;
@@ -114,7 +120,7 @@ export class ColorButton extends Slider {
         let color = 'rgba(' + stringRgba[0] + ', ' + stringRgba[1] + ', ' + stringRgba[2] + ', ' + stringRgba[3] + ')';
         setStyle(this.colorel, { 'background-color': color });
         setAttr(this.coloricon, { active: true });
-        
+
         if (this.slider) {
             if (fromPicker) {
                 let slidervalue = this.checkSliderCurve(this.lastSliderValue);
@@ -123,21 +129,21 @@ export class ColorButton extends Slider {
                 this.setSliderValue(this.rgba[3]);
             }
         }
-        if (this.events.change && fromPicker) this.events.change(this.rgba);
-        return this;
     }
 
     erase(fromPicker?: boolean) {
         if (this.removedValue !== undefined) {
-            this.setValue(this.removedValue);
+            this.setInputValue(this.removedValue);
         } else {
             // Keep opacity so that we have a result when a color is back
-            this.setValue([0, 0, 0, 1]);
+            this.setInputValue([0, 0, 0, 1]);
             setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
         }
         setAttr(this.coloricon, { active: false });
-        if (this.events.change && fromPicker) this.events.change(this.removedValue);
-        if (this.events.blur && fromPicker) this.events.blur(this.removedValue);
+
+        // Do return undefined, return value is only for design purpose
+        if (this.events.change && fromPicker) this.events.change(undefined);
+        if (this.events.blur && fromPicker) this.events.blur(undefined);
     }
 
     events: any = {};
