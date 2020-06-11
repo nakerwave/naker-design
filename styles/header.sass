@@ -1,3 +1,5 @@
+@import '_variables'
+
 .preset-layer
     z-index: 10
     position: fixed
@@ -89,8 +91,9 @@
 
 .nav-button
     display: inline-block
-    height: 60px
-    line-height: 60px
+    margin: 8px
+    height: 44px
+    line-height: 44px
     color: $colortext
     text-align: center
     font-size: 15px
@@ -99,5 +102,6 @@
     padding: 0px 10px
     transition: all 200ms ease
     opacity: 0.9
+    border-radius: $border
     &:hover
         opacity: 1
