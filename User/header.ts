@@ -15,7 +15,7 @@ import { ExportModal } from './exportModal';
 
 export class Header {
 
-    undo: Undo;
+    undo: Undo<any>;
     session: Session;
     exportModal: ExportModal;
     control: HTMLElement;
@@ -24,7 +24,7 @@ export class Header {
     projectname: HTMLElement;
     formname: HTMLElement;
 
-    constructor(session: Session, undo: Undo, exportModal: ExportModal) {
+    constructor(session: Session, undo: Undo<any>, exportModal: ExportModal) {
         this.undo = undo;
         this.session = session;
         this.exportModal = exportModal;

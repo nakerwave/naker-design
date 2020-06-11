@@ -25,7 +25,7 @@ export class Session {
     undo: Undo<any>;
 
     subDomain: 'app' | 'staging' | 'test' | 'cruise' | 'development';
-    engine: 'story' | 'back' | 'form';
+    engine: 'studio' | 'story' | 'back' | 'form';
     designer: string;
 
     environments = {
@@ -85,7 +85,7 @@ export class Session {
     admin: boolean;
     debug: boolean;
 
-    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo<any>) {
+    constructor(engine: 'studio' | 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo<any>) {
         this.setEngine(engine);
         
         this.api = api;
@@ -136,25 +136,28 @@ export class Session {
         });
     }
 
-    engineList = ['back', 'form', 'story'];
+    engineList = ['back', 'form', 'story', 'studio'];
     sentryIds = {
+        studio: 'https://64462014944f48b3bc58327feb758f7c@sentry.io/1522591',
         story: 'https://64462014944f48b3bc58327feb758f7c@sentry.io/1522591',
         back: 'https://7e62b4e539db4d2ba599726125f742e2@sentry.io/1539712',
         // form: 'https://7e62b4e539db4d2ba599726125f742e2@sentry.io/1539712'
     };
     spyPrefix = {
+        studio: 'NST',
         story: 'NS',
         back: 'NB',
         form: 'NF'
     };
     engineColor: Array<number>;
     engineColors = {
+        studio: [102, 51, 255],
         story: [0, 153, 255],
         back: [255, 8, 114],
         form: [0, 204, 102],
     };
 
-    setEngine(engine: 'story' | 'back' | 'form') {
+    setEngine(engine: 'studio' | 'story' | 'back' | 'form') {
         this.engine = engine;
         this.engineColor = this.engineColors[this.engine]
     }
