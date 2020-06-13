@@ -23,7 +23,7 @@ body
     width: 250px
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: $borderradius 0px 0px 0px
+    border-radius: $layerradius 0px 0px 0px
     overflow-y: auto
     overflow-x: hidden
     .layer-right
@@ -38,7 +38,7 @@ body
     width: 220px
     height: 100%
     transition: width 100ms ease
-    border-radius: 0px $borderradius 0px 0px
+    border-radius: 0px $layerradius 0px 0px
     background: $colorgrey
 
 .layer-right
@@ -49,7 +49,7 @@ body
     height: 100%
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: $borderradius 0px 0px 0px
+    border-radius: $layerradius 0px 0px 0px
 
 .layer-center-height
     position: absolute
@@ -63,10 +63,10 @@ body
         width: 5px
         height: 5px
     &::-webkit-scrollbar-track
-        border-radius: $borderradius
+        border-radius: $radiusinput
         background: $colorgrey
     &::-webkit-scrollbar-thumb
-        border-radius: $borderradius
+        border-radius: $radiusinput
         background: $colormain
     // Firefox
     scrollbar-color: $colormain $colorgrey
