@@ -31,7 +31,6 @@ export class NakerDropzone {
         this.createElements(formats),
         this.setAssetEvent();
         this.addDropZone(type, formats, maxWeight);
-        this.setinPicker();
         this.addTitle();
         this.hide();
         dropzoneList[type] = this;
