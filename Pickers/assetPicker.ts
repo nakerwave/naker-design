@@ -481,6 +481,7 @@ export class AssetPicker extends UI {
         this.type = type;
         this.setAssetList(type);
         this.showPicker();
+        this.hideRemoveAssetButton();
     }
 
     waitingAsset: string = null;
@@ -500,7 +501,7 @@ export class AssetPicker extends UI {
         this.eraseWaiting();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {        
         if (!url) return console.error('Missing asset '+type+' url');
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
@@ -520,6 +521,8 @@ export class AssetPicker extends UI {
     addAssetMode = false;
     addAssetFunction: Function;
     addButton(type: string, url: string, image: string, removable: boolean) {
+        console.log(type, url, image);
+
         if (removable === undefined) removable = true;
         let button: HTMLElement;
         let extension = image.substr(image.lastIndexOf('.') + 1);
