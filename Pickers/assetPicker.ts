@@ -281,8 +281,13 @@ export class AssetPicker extends UI {
                 )
             ) 
         ]);
-        this.hide();
 
+        this.setEvents();
+        this.addRemoveAssetButton();
+        this.hide();
+    }
+    
+    setClickOutside() {
         // Click outside asset picker will always hide it
         window.addEventListener("click", (e) => {
             // Is it a click outside and not on a dropzone input
@@ -290,9 +295,6 @@ export class AssetPicker extends UI {
                 if (this.shown) this.hidePicker(true);
             }
         });
-
-        this.setEvents();
-        this.addRemoveAssetButton();
     }
 
     addIconButton(type:asset['type'], icon:string, callback: Function) {
@@ -526,10 +528,12 @@ export class AssetPicker extends UI {
         if (removable === undefined) removable = true;
         let button: HTMLElement;
         let extension = image.substr(image.lastIndexOf('.') + 1);
-        if (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1) {
+        let isImageUrl = (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1)
+        // Google content soesn't have extension
+        if ( isImageUrl || image.indexOf('googleusercontent') != -1 ) {
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
                 // Draggable set to false or it can show drag zone
-                el('img', { draggable: false, src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
+                el('img', { draggable: false, src: image }),
             );
         } else {
             button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [

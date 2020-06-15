@@ -44,7 +44,7 @@
 
 .asset-button
     position: relative
-    width: 115px
+    width: 125px
     height: 75px
     border: 2px solid $colorthirdgrey
     background: $colorgrey
@@ -52,13 +52,17 @@
     margin: 2px
     display: inline-block
     float: left
-    padding: 5px
     overflow-wrap: break-word
     cursor: pointer
     background-size: cover
     transition: all ease 200ms
     &:hover
         border: 2px solid $colormain
+
+    img
+        width: 100%
+        height: 100%
+        object-fit: cover
 
     .asset-text
         position: relative
@@ -67,6 +71,7 @@
         text-overflow: ellipsis
         height: 100%
         overflow: hidden
+        margin: 5px
 
     .backicon
         font-size: 50px
