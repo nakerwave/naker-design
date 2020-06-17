@@ -46,7 +46,7 @@
     position: relative
     width: 125px
     height: 75px
-    border: 2px solid $colorthirdgrey
+    // border: 2px solid $colorthirdgrey
     background: $colorgrey
     color: $colortext
     margin: 2px
@@ -57,7 +57,8 @@
     background-size: cover
     transition: all ease 200ms
     &:hover
-        border: 2px solid $colormain
+        .hover-button-layer
+            opacity: 1
 
     img
         width: 100%
@@ -86,6 +87,46 @@
         z-index: 0
         color: $colorlightgrey
 
+    .hover-button-layer
+        position: absolute
+        top: 0px
+        left: 0px
+        width: 100%
+        height: 100%
+        opacity: 0
+        transition: all 100ms ease
+        z-index: 10
+
+        .add-text
+            position: absolute
+            top: 5px
+            right: 5px
+            border-radius: 5px
+            font-size: 12px
+            padding: 3px 5px
+            background: rgba($colordarkgrey, 0.7)
+            &:hover
+                background: $colordarkgrey
+
+        img
+            position: absolute
+            bottom: 5px
+            right: 5px
+            width: 20px
+            height: 20px
+            object-fit: cover
+
+        .delete-asset-button
+            position: absolute
+            top: 5px
+            left: 5px
+            border-radius: 5px
+            font-size: 12px
+            padding: 3px 5px
+            background: rgba($colorerror, 0.7)
+            &:hover
+                background: $colorerror
+
 .no-asset-button
     font-size: 60px
     color: $colormain
@@ -96,22 +137,6 @@
     height: calc(100% - 20px)
     background-repeat: no-repeat !important
     background-size: contain !important
-
-.delete-asset-button
-    position: absolute
-    left: 106px
-    top: -4px
-    width: 14px
-    height: 14px
-    font-size: 13px
-    padding: 4px 
-    background: darken($colorerror, 20)
-    color: $colorlightgrey
-    border-radius: 20px
-    z-index: 10
-    transition: all ease 200ms
-    &:hover
-        background: $colorerror
 
 /***************************************** IMAGE ASSET BUTTON ****************************************/
 

@@ -14,6 +14,7 @@ export interface asset {
     type: string,
     url: string,
     thumbnail?: string,
+    apiLogo?: string,
     removable?: boolean,
     saved?: boolean,
     button?: HTMLElement,
@@ -466,7 +467,7 @@ export class AssetPicker extends UI {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let asset = assetsType[i];
-            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail, asset.removable);
+            if (!asset.button) assetsType[i].button = this.addButton(asset);
         }
     }
 
@@ -512,7 +513,7 @@ export class AssetPicker extends UI {
             if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
                 let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
                 if (this.shown) {
-                    let button = this.addButton(type, url, thumbnail, removable);
+                    let button = this.addButton(newAsset);
                     newAsset.button = button;
                 }
                 this.thumbnails.push(newAsset);
@@ -522,42 +523,60 @@ export class AssetPicker extends UI {
 
     addAssetMode = false;
     addAssetFunction: Function;
-    addButton(type: string, url: string, image: string, removable: boolean) {
-        console.log(type, url, image);
+    addButton(asset: asset) {
+        console.log(asset.type, asset.url, asset.thumbnail);
+        if (asset.removable === undefined) asset.removable = true;
+        let button = this.buildButton(asset, () => {
+            this.selectAsset(asset.url);
+        });
+        mount(this.assetlist, button);
+        return button;
+    }
 
-        if (removable === undefined) removable = true;
+    buildButton(asset: asset, callback: Function) {
         let button: HTMLElement;
+        let image = asset.thumbnail;
         let extension = image.substr(image.lastIndexOf('.') + 1);
         let isImageUrl = (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1)
         // Google content soesn't have extension
-        if ( isImageUrl || image.indexOf('googleusercontent') != -1 ) {
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
+        if (isImageUrl || image.indexOf('googleusercontent') != -1) {
+            button = el('div.asset-button', { onclick: () => { callback() } },
                 // Draggable set to false or it can show drag zone
                 el('img', { draggable: false, src: image }),
             );
         } else {
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
+            button = el('div.asset-button', { onclick: () => { callback() } }, [
                 el('div.asset-text', image),
-                el('div.backicon.icon-' + type,
+                el('div.backicon.icon-' + asset.type,
                     [el('span.path1'), el('span.path2'), el('span.path3')]
-                ),
+                )
             ]);
         }
-        
-        if (removable) {
-            let removebutton = el('div.delete-asset-button.icon-delete', {
+
+        let logo = (asset.apiLogo) ? asset.apiLogo : 'https://asset.naker.io/image/main/logo-without-margin.png';
+        if (asset.removable) this.addHoverLayer(button, logo, asset);
+        else this.addHoverLayer(button, logo);
+        return button;
+    }
+
+    addHoverLayer(button: HTMLElement, icon: string, removableAsset?: asset) {
+        let hover = el('div.hover-button-layer', [
+            el('div.add-text', 'Add'),
+            el('img', { src: icon }),
+        ]);
+        if (removableAsset) {
+            let removebutton = el('div.delete-asset-button', {
                 onclick: (e) => {
                     e.stopPropagation();
-                    this.deleteAsset(type, url);
+                    this.deleteAsset(removableAsset.type, removableAsset.url);
                 },
                 onmouseover: (e) => {
                     e.stopPropagation(); // Not working
                 }
-            }, [el('span.path1'), el('span.path2'), el('span.path3')])
-            mount(button, removebutton);
+            }, 'Delete')
+            mount(hover, removebutton);
         }
-        mount(this.assetlist, button);
-        return button;
+        mount(button, hover);
     }
 
     selectAsset(url: string) {
