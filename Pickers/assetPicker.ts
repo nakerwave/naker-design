@@ -1,5 +1,5 @@
 
-import { widthinputcontainer, Input } from '../Inputs/input';
+import { Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle, unmount } from 'redom';
@@ -10,21 +10,26 @@ import filter from 'lodash/filter';
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
 
+export interface logoData {
+    image: string,
+    link?: string,
+}
+
 export interface asset {
     type: string,
     url: string,
     thumbnail?: string,
-    apiLogo?: string,
+    apiLogo?: logoData,
     removable?: boolean,
     saved?: boolean,
     button?: HTMLElement,
-};
+}
 
 export interface assetEvents {
     change?: Function,
     focus?: Function,
     blur?: Function,
-};
+}
 
 export class BaseAssetButton extends Input {
     url: string;
@@ -524,7 +529,6 @@ export class AssetPicker extends UI {
     addAssetMode = false;
     addAssetFunction: Function;
     addButton(asset: asset) {
-        console.log(asset.type, asset.url, asset.thumbnail);
         if (asset.removable === undefined) asset.removable = true;
         let button = this.buildButton(asset, () => {
             this.selectAsset(asset.url);
@@ -537,9 +541,11 @@ export class AssetPicker extends UI {
         let button: HTMLElement;
         let image = asset.thumbnail;
         let extension = image.substr(image.lastIndexOf('.') + 1);
-        let isImageUrl = (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1)
+        let isImageUrl = (image.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
+        let isFrommPoly = (image.indexOf('googleusercontent') != -1);
+        let isFrommClara = (image.indexOf('resources.clara.io') != -1);
         // Google content soesn't have extension
-        if (isImageUrl || image.indexOf('googleusercontent') != -1) {
+        if (isImageUrl || isFrommPoly || isFrommClara) {
             button = el('div.asset-button', { onclick: () => { callback() } },
                 // Draggable set to false or it can show drag zone
                 el('img', { draggable: false, src: image }),
@@ -553,16 +559,21 @@ export class AssetPicker extends UI {
             ]);
         }
 
-        let logo = (asset.apiLogo) ? asset.apiLogo : 'https://asset.naker.io/image/main/logo-without-margin.png';
+        let logo = (asset.apiLogo) ? asset.apiLogo : {image: 'https://asset.naker.io/image/main/logo-without-margin.png'};
         if (asset.removable) this.addHoverLayer(button, logo, asset);
         else this.addHoverLayer(button, logo);
         return button;
     }
 
-    addHoverLayer(button: HTMLElement, icon: string, removableAsset?: asset) {
+    addHoverLayer(button: HTMLElement, icon: logoData, removableAsset?: asset) {
         let hover = el('div.hover-button-layer', [
             el('div.add-text', 'Add'),
-            el('img', { src: icon }),
+            el('img', { src: icon.image, onclick: (e) => {
+                if (icon.link) {
+                    e.stopPropagation();
+                    window.open(icon.link, '_blank');
+                }
+            }, }),
         ]);
         if (removableAsset) {
             let removebutton = el('div.delete-asset-button', {
