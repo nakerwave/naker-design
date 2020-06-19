@@ -29,7 +29,6 @@ export class NakerDropzone {
         this.maxWeight = maxWeight;
         this.callback = callback;
         this.createElements(formats),
-        this.setAssetEvent();
         this.addDropZone(type, formats, maxWeight);
         this.addTitle();
         this.hide();
@@ -56,20 +55,37 @@ export class NakerDropzone {
         ]);
     }
 
+    parent: HTMLElement;
+    setParent(parent: HTMLElement) {
+        this.parent = parent;
+        mount(parent, this.dropzoneEl);
+        this.setAssetEvent();
+    }
+
     setAssetEvent() {
-        assetPicker.on('blur', (type: string) => {
-            this.hide();
+        this.parent.addEventListener('dragover', () => {
+            if (this.visible) this.showDropzone();
         });
 
-        assetPicker.on('focus', (type: string) => {
-            if (type == this.type) this.show();
+        this.parent.addEventListener('dragenter', () => {
+            if (this.visible) this.showDropzone();
         });
 
-        assetPicker.on('drag', (type: string, event: string) => {
-            if (type == this.type) {
-                if (event == 'start') this.showDropzone();
-            }
+        this.parent.addEventListener('dragleave', () => {
+            if (this.visible) this.hideDropzone();
         });
+
+        this.parent.addEventListener('dragend', () => {
+            if (this.visible) this.hideDropzone();
+        });
+
+        // assetPicker.on('blur', (type: string) => {
+        //     this.hide();
+        // });
+
+        // assetPicker.on('focus', (type: string) => {
+        //     if (type == this.type) this.show();
+        // });
     }
     
     addTitle() {
@@ -117,7 +133,7 @@ export class NakerDropzone {
     
     setinPicker() {
         mount(assetPicker.assetlist, this.el);
-        mount(assetPicker, this.dropzoneEl);
+        this.setParent(assetPicker.el);
         setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker' });
     }
 
@@ -238,12 +254,15 @@ export class NakerDropzone {
         setStyle(this.dropzoneEl, { display: 'none' });
     }
 
+    visible = false;
     show() {
+        this.visible = true;
         setStyle(this.el, { display: 'block' });
         setAttr(this.text, { error: false });
     }
 
     hide() {
+        this.visible = false;
         this._hide();
     }
     
