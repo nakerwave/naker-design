@@ -1,174 +1,41 @@
+import { assetPicker } from './assetPicker';
+
 import toastr from 'toastr';
 import Dropzone from 'dropzone';
 import { el, setStyle, setAttr, mount } from 'redom';
-import ProgressBar from 'progressbar.js';
 
-import { assetPicker } from './assetPicker';
-
-export let dropzoneList: any = {};
+export let dropzoneList: Array<DropUi> = [];
 export let hideDropzones = () => {
     for (let i = 0; i < dropzoneList.length; i++) {
         dropzoneList[i].hide();
     }
 }
 
-export class NakerDropzone {
-
-    el: HTMLElement;
-    dropzoneEl: HTMLElement;
-    text: HTMLElement;
+export class DropLogic extends Dropzone {
 
     type: string;
+    uploadUrl: string;
     formats: Array<string>;
     maxWeight: number;
     callback: Function;
 
-    constructor(type: string, formats: Array<string>, maxWeight: number, callback?: Function) {
-        this.type = type;
-        this.formats = formats;
-        this.maxWeight = maxWeight;
-        this.callback = callback;
-        this.createElements(formats),
-        this.addDropZone(type, formats, maxWeight);
-        this.addTitle();
-        this.hide();
-        dropzoneList[type] = this;
-    }
-
-    createElements(formats: Array<string>) {
-        let formattext = this.getFormatText(formats);
-        this.el = el('div.no-asset-button.asset-button', { onclick: (evt) => { evt.stopPropagation(); } },
-            el('div.no-asset-icon.icon-upload', { style: { 'pointer-events': 'none' } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            )
-        );
-
-        this.el.addEventListener('click', () => {
-            this.dropzoneEl.click();
-        });
-
-        this.dropzoneEl = el('div.upload_dropzone', [
-            this.text = el('div.download', formattext),
-            el('div.icon-upload', { style: { 'pointer-events': 'none' } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
-            )
-        ]);
-    }
-
-    parent: HTMLElement;
-    setParent(parent: HTMLElement) {
-        this.parent = parent;
-        mount(parent, this.dropzoneEl);
-        this.setAssetEvent();
-    }
-
-    setAssetEvent() {
-        this.parent.addEventListener('dragover', () => {
-            if (this.visible) this.showDropzone();
-        });
-
-        this.parent.addEventListener('dragenter', () => {
-            if (this.visible) this.showDropzone();
-        });
-
-        this.parent.addEventListener('dragleave', () => {
-            if (this.visible) this.hideDropzone();
-        });
-
-        this.parent.addEventListener('dragend', () => {
-            if (this.visible) this.hideDropzone();
-        });
-
-        // assetPicker.on('blur', (type: string) => {
-        //     this.hide();
-        // });
-
-        // assetPicker.on('focus', (type: string) => {
-        //     if (type == this.type) this.show();
-        // });
-    }
-    
-    addTitle() {
-        let title = el('div.upload_title.upload_title', 'Upload new ' + this.type);
-        mount(this.dropzoneEl, title);
-    }
-
-    loadingBar: ProgressBar;
-    loadingBarEl: HTMLElement;
-    loadingBarText: HTMLElement;
-    addProgressBar(container: HTMLElement, color: string) {
-        this.loadingBarEl = el('div.asset-loading-bar', {style: { display: 'none'}})
-        this.loadingBar = new ProgressBar.Line(this.loadingBarEl, {
-            strokeWidth: 20,
-            easing: 'easeInOut',
-            duration: 200,
-            trailColor: '.asset-loading-bar',
-            color: color,
-            svgStyle: { width: '100%', height: '100%' },
-            // from: { color: color },
-            // to: { color: colormain },
-            // step: (state, bar) => {
-            //     bar.path.setAttribute('stroke', state.color);
-            // }
-        });
-        mount(container, this.loadingBarEl);
-        // this.loadingBarText = el('div.loadingBarText'),
-        // mount(container, this.loadingBarEl);
-    }
-    
-    showProgress() {
-        if ( !this.loadingBar ) return;
-        this.loadingBar.set(0);
-        setStyle(this.loadingBarEl, { display: 'block' });
-        this.loadingBar.animate(0.1);
-    }
-
-    hideProgress() {
-        if ( !this.loadingBar ) return;
-        this.loadingBar.animate(1);
-        setTimeout(() => {
-            setStyle(this.loadingBarEl, { display: 'none' });
-        }, 1000);
-    }
-    
-    setinPicker() {
-        mount(assetPicker.assetlist, this.el);
-        this.setParent(assetPicker.el);
-        setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker' });
-    }
-
-    getFormatText(formats: Array<string>) {
-        return 'Supported formats: ' + formats.join(', ');
-    }
-
-    uploadurl: string;
-    dropzone: Dropzone;
-    uploading = false;
-    addDropZone(type: string, formats: Array<string>, maxWeight: number) {
-        let uploadUrl = 'https://api.cloudinary.com/v1_1/naker-io/' + type + '/upload';
-        this._addDropZone(uploadUrl, formats, maxWeight)
-    }
-    _addDropZone(uploadUrl: string, formats: Array<string>, maxWeight: number) {
-        var that = this;
-        this.dropzone = new Dropzone(this.dropzoneEl, {
+    constructor(type: string, uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
+        super(el('div'), {
             uploadMultiple: false,
             acceptedFiles: '.' + formats.join(',.'),
             timeout: 300000,
             autoProcessQueue: true,
             parallelUploads: 1,
             createImageThumbnails: false,
+            url: uploadUrl,
             // NOTE Keep "function" to have access to that
             init: function () {
                 this.on("error", (file, errorMessage) => {
                     this.uploading = false;
                     if (typeof (errorMessage) === 'string') {
-                        if (errorMessage == "You can't upload files of this type.") errorMessage = that.getFormatText(that.formats);
-                        that.errorBeforeUpload(errorMessage);
+                        if (errorMessage == "You can't upload files of this type.") errorMessage = this.getFormatText(this.formats);
+                        this.errorBeforeUpload(errorMessage);
                     }
-                });
-
-                this.on("dragleave", () => {
-                    that.hideDropzone();
                 });
             },
             accept: (file, done) => {
@@ -178,25 +45,31 @@ export class NakerDropzone {
                     done();
                 }
             },
-            url: uploadUrl,
         });
+        this.type = type;
+        this.formats = formats;
+        this.uploadUrl = uploadUrl;
+        this.maxWeight = maxWeight;
+        this.callback = callback;
+        this.addEvent();
+    }
 
+    getFormatText() {
+        return 'Supported formats: ' + this.formats.join(', ');
+    }
 
-        this.dropzone.on("sending", (file, xhr, formData) => {
-            assetPicker.hide();
+    uploading = false;
+    addEvent() {
+        this.on("sending", (file, xhr, formData) => {
             this.sending(file, xhr, formData);
-            this.showProgress();
-            this.hideDropzone();
         });
 
-        this.dropzone.on("success", (file, response) => {
+        this.on("success", (file, response) => {
             this.success(file, response);
-            this.hideProgress();
         });
 
-        this.dropzone.on("error", (file, response: any) => {
+        this.on("error", (file, response: any) => {
             this.error(file, response);
-            this.hideProgress();
         });
     }
 
@@ -217,14 +90,12 @@ export class NakerDropzone {
 
     errorBeforeUpload(error: string) {
         toastr.error(error);
-        this.hide();
     }
 
     sending(file, xhr, formData) {
         // Add naker key for cloudinary
         formData.append('timestamp', Date.now() / 1000 | 0);
         formData.append('upload_preset', 'hdtmkzvn');
-        this.hide();
     }
 
     success(file, response) {
@@ -245,28 +116,99 @@ export class NakerDropzone {
         else
             toastr.error(response);
     }
+}
 
-    showDropzone() {
-        setStyle(this.dropzoneEl, { display: 'block' });
+export class DropUi {
+
+    container: HTMLElement;
+    text: HTMLElement;
+
+    constructor() {
+        this.createElements();
+        this.addTitle();
+        this.hide();
+        dropzoneList.push(this);
     }
 
-    hideDropzone() {
-        setStyle(this.dropzoneEl, { display: 'none' });
+    createElements() {
+        this.container = el('div.upload_dropzone', [
+            this.text = el('div.download'),
+            el('div.icon-upload', { style: { 'pointer-events': 'none' } },
+                [el('span.path1'), el('span.path2'), el('span.path3')]
+            )
+        ]);
     }
 
-    visible = false;
+    parent: HTMLElement;
+    setParent(parent: HTMLElement) {
+        this.parent = parent;
+        mount(parent, this.container);
+        this.setAssetEvent();
+    }
+
+    setAssetEvent() {
+        this.parent.addEventListener('dragover', (evt) => {
+            this.noPropagation(evt);
+            this.show();
+        }, false);
+
+        this.parent.addEventListener('dragenter', (evt) => {
+            this.noPropagation(evt);
+            this.show();
+        }, false);
+
+        this.parent.addEventListener('dragleave', (evt) => {
+            this.noPropagation(evt);
+            this.hide();
+        }, false);
+
+        this.parent.addEventListener('dragend', (evt) => {
+            this.noPropagation(evt);
+            this.hide();
+        }, false);
+
+        // assetPicker.on('blur', (type: string) => {
+        //     this.hide();
+        // });
+
+        // assetPicker.on('focus', (type: string) => {
+        //     if (type == this.type) this.show();
+        // });
+    }
+
+    noPropagation(evt: DragEvent) {
+        evt.stopPropagation();
+        if (evt.preventDefault) {
+            return evt.preventDefault();
+        } else {
+            return evt.returnValue = false;
+        }
+    }
+
+    addTitle() {
+        let title = el('div.upload_title.upload_title', 'Upload');
+        mount(this.container, title);
+    }
+
+    setinPicker() {
+        this.setParent(assetPicker.el);
+        setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker' });
+    }
+
+    // errorBeforeUpload(error: string) {
+    //     toastr.error(error);
+    //     this.hide();
+    // }
+
+    showError(error: string) {
+        toastr.error(error);
+    }
+
     show() {
-        this.visible = true;
-        setStyle(this.el, { display: 'block' });
-        setAttr(this.text, { error: false });
+        setStyle(this.container, { display: 'block' });
     }
 
     hide() {
-        this.visible = false;
-        this._hide();
-    }
-    
-    _hide() {
-        setStyle(this.el, { display: 'none' });
+        setStyle(this.container, { display: 'none' });
     }
 }

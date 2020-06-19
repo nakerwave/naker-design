@@ -18,64 +18,63 @@
         left: calc(50% + 250px)
 
 
-.asset-picker
+.upload_dropzone
+    display: none
+    position: absolute
+    width: calc(100% - #{2*$border})
+    height: calc(100% - #{2*$border})
+    top: 0px
+    z-index: 10
+    cursor: pointer
+    background: rgba($colordarkgrey, 0.6)
+    border: $border solid $colormain
+    border-radius: 10px
+    pointer-events: none
 
-    .upload_dropzone
+    .dz-preview
         display: none
+
+    .upload_title
         position: absolute
-        width: calc(100% - #{2*$border})
-        height: calc(100% - #{2*$border})
-        top: 0px
-        z-index: 10
+        top: calc(50% + 50px)
+        left: 50%
+        transform: translate(-50%, -50%)
+        width: 100%
+        text-align: center
+        pointer-events: none
+        color: $colortext
+        font-family: 'Noto Sans', sans-serif
+        font-weight: 600
+        font-size: 20px
+
+    .download
+        position: absolute
+        width: 100%
+        pointer-events: none
+        color: $colortext
+        font-family: 'Noto Sans', sans-serif
+        font-weight: 600
+        font-size: 20px
+        top: calc(50% + 80px)
+        left: 50%
+        transform: translate(-50%, -50%)
         cursor: pointer
-        background: rgba($colordarkgrey, 0.8)
-        border: $border solid $colormain
-        border-radius: 10px
+        text-align: center
+        color: $colortext
 
-        .dz-preview
-            display: none
+        &[error="true"]
+            color: $colorerror
 
-        .upload_title
-            position: absolute
-            top: calc(50% + 50px)
-            left: 50%
-            transform: translate(-50%, -50%)
-            width: 100%
-            text-align: center
-            pointer-events: none
-            color: $colortext
-            font-family: 'Noto Sans', sans-serif
-            font-weight: 600
-            font-size: 20px
-
-        .download
-            position: absolute
-            width: 100%
-            pointer-events: none
-            color: $colortext
-            font-family: 'Noto Sans', sans-serif
-            font-weight: 600
-            font-size: 20px
-            top: calc(50% + 80px)
-            left: 50%
-            transform: translate(-50%, -50%)
-            cursor: pointer
-            text-align: center
-            color: $colortext
-
-            &[error="true"]
-                color: $colorerror
-
-        .icon-add
-            position: absolute
-            top: 50%
-            left: 50%
-            transform: translate(-50%, -50%)
-            font-size: 50px
-            color: $colortext
+    .icon-upload
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        font-size: 50px
+        color: $colortext
 
 
-/***************************************** LOADING BAR ****************************************
+/***************************************** LOADING BAR ****************************************/
 
 .asset-loading-bar
     position: absolute
