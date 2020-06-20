@@ -33,7 +33,6 @@ export class Header {
         this._setEvents();
         this.addLoginModal();
         this.checkUserAndProject();
-        this.setLogo();
 
         let project = session.getProject();
         if (project) this.setProject(project);
@@ -44,9 +43,8 @@ export class Header {
         });
     }
 
-    setLogo() {
+    addLogo() {
         let EngineName = this.session.engine.charAt(0).toUpperCase() + this.session.engine.slice(1);
-        
         let logo = el('div.naker-engine', 'Naker', {
                 onclick: (evt) => { this.goToDashboard(); },
             },
