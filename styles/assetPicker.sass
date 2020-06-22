@@ -99,11 +99,16 @@
 
         .add-text
             position: absolute
+            max-width: calc(100% - 20px)
+            height: 18px
             top: 5px
             right: 5px
             border-radius: 5px
             font-size: 12px
             padding: 3px 5px
+            text-overflow: ellipsis
+            white-space: nowrap
+            overflow: hidden
             background: rgba($colordarkgrey, 0.7)
             &:hover
                 background: $colordarkgrey

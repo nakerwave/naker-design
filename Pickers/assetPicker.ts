@@ -10,16 +10,17 @@ import filter from 'lodash/filter';
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
 
-export interface logoData {
-    image: string,
+export interface LabelData {
+    image?: string,
+    text?: string,
     link?: string,
 }
 
 export interface asset {
     type: string,
-    url: string,
+    url?: string,
     thumbnail?: string,
-    apiLogo?: logoData,
+    label?: LabelData,
     removable?: boolean,
     saved?: boolean,
     button?: HTMLElement,
@@ -559,19 +560,21 @@ export class AssetPicker extends UI {
             ]);
         }
 
-        let logo = (asset.apiLogo) ? asset.apiLogo : {image: 'https://asset.naker.io/image/main/logo-without-margin.png'};
+        let logo = (asset.label) ? asset.label : {};
         if (asset.removable) this.addHoverLayer(button, logo, asset);
         else this.addHoverLayer(button, logo);
         return button;
     }
 
-    addHoverLayer(button: HTMLElement, icon: logoData, removableAsset?: asset) {
+    addHoverLayer(button: HTMLElement, labelData: LabelData, removableAsset?: asset) {
+        let text = (labelData.text) ? labelData.text : 'Add';
+        let image = (labelData.image) ? labelData.image : 'https://asset.naker.io/image/main/logo-without-margin.png';
         let hover = el('div.hover-button-layer', [
-            el('div.add-text', 'Add'),
-            el('img', { src: icon.image, onclick: (e) => {
-                if (icon.link) {
+            el('div.add-text', text),
+            el('img', { src: image, onclick: (e) => {
+                if (labelData.link) {
                     e.stopPropagation();
-                    window.open(icon.link, '_blank');
+                    window.open(labelData.link, '_blank');
                 }
             }, }),
         ]);
