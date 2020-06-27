@@ -567,10 +567,10 @@ export class AssetPicker extends UI {
     }
 
     addHoverLayer(button: HTMLElement, labelData: LabelData, removableAsset?: asset) {
-        let text = (labelData.text) ? labelData.text : 'Add';
+        let text = labelData.text;
         let image = (labelData.image) ? labelData.image : 'https://asset.naker.io/image/main/logo-without-margin.png';
         let hover = el('div.hover-button-layer', [
-            el('div.add-text', text),
+            (text)? el('div.add-text', text) : null,
             el('img', { src: image, onclick: (e) => {
                 if (labelData.link) {
                     e.stopPropagation();
