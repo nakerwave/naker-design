@@ -26,7 +26,7 @@ import { el, mount, unmount, setStyle, setAttr } from 'redom';
 export class InputGroup extends UI {
 
     el: HTMLElement;
-    undo: Undo;
+    undo: Undo<any>;
     // Force name in order to be able to have analytics with heap
     constructor(name:string, parent: HTMLElement, undo: Undo) {
         super();
@@ -251,7 +251,7 @@ export class InputGroupSwitch extends InputGroup {
     title: HTMLElement;
     expand: HTMLElement;
 
-    constructor(title: string, undo: Undo, expandable?: boolean) {
+    constructor(title: string, undo: Undo<any>, expandable?: boolean) {
         super(title, actionPanel, undo);
         if (title) this.addTitle(title);
         // if (expandable === false) {
