@@ -197,7 +197,7 @@ export class ImageAssetButton extends BaseAssetButton {
             let image: string;
             if (!thumbnail) image = url;
             else image = thumbnail;
-            let extension = image.substr(image.lastIndexOf('.') + 1);
+            let extension = assetPicker.getExtension(image);
             if (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1) {
                 setStyle(this.image, { display: 'block' });
                 setStyle(this.textDisplay, { display: 'none' });
@@ -292,6 +292,10 @@ export class AssetPicker extends UI {
         this.setEvents();
         this.addRemoveAssetButton();
         this.hide();
+    }
+
+    getExtension(filename: string) {
+        return filename.substr(filename.lastIndexOf('.') + 1);
     }
     
     setClickOutside() {
@@ -541,7 +545,7 @@ export class AssetPicker extends UI {
     buildButton(asset: asset, callback: Function) {
         let button: HTMLElement;
         let image = asset.thumbnail;
-        let extension = image.substr(image.lastIndexOf('.') + 1);
+        let extension = this.getExtension(image);
         let isImageUrl = (image.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
         let isFrommPoly = (image.indexOf('googleusercontent') != -1);
         let isFrommClara = (image.indexOf('resources.clara.io') != -1);
