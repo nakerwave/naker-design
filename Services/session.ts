@@ -71,7 +71,7 @@ export class Session {
             redirect: true,
             intercom: false,
             sentry: false,
-            admin: false,
+            admin: true,
             debug: true,
         },
     };
