@@ -343,6 +343,10 @@ export class Session {
         this.project.waterMark = waterMark;
     }
 
+    setPushQuality(pushQuality: boolean) {
+        this.project.pushQuality = pushQuality;
+    }
+
     setWebsiteUrl(setWebsiteUrl: string) {
         this.project.websiteUrl = setWebsiteUrl;
     }
@@ -435,7 +439,7 @@ export class Session {
     }
     
     lastProjectChange: ProjectSavedOptions = {};
-    keytoCheck = ['name', 'waterMark', 'websiteUrl'];
+    keytoCheck = ['name', 'waterMark', 'websiteUrl', 'pushQuality'];
     checkProjectDataUpdate() {
         let change: ProjectSavedOptions = {};
         for (let i = 0; i < this.keytoCheck.length; i++) {
@@ -460,6 +464,7 @@ export class Session {
         project.json = json;
         project.name = this.project.name;
         project.waterMark = this.project.waterMark;
+        project.pushQuality = this.project.pushQuality;
         project.websiteUrl = this.project.websiteUrl;
         project.engine = this.engine;
         if (this.project.id) project.id = this.project.id;

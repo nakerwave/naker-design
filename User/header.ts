@@ -139,6 +139,7 @@ export class Header {
     setProject(project: ProjectSavedOptions) {
         if (project.name) this.setName(project.name);
         if (project.waterMark) this.exportModal.setWaterMark(project.waterMark);
+        if (project.pushQuality) this.exportModal.setPushQuality(project.pushQuality);
         if (project.websiteUrl) this.exportModal.setWebsiteUrl(project.websiteUrl);
     }
 

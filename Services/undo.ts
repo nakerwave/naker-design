@@ -28,6 +28,7 @@ export interface ProjectSavedOptions {
     id?: string,
     name?: string,
     waterMark?: boolean,
+    pushQuality?: boolean,
     websiteUrl?: string,
 }
 
