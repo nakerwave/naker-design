@@ -361,7 +361,7 @@ export class AssetPicker extends UI {
     }
     
     showRemoveAssetButton() {
-        setStyle(this.removeAssetButton, { display: 'block' });
+        setStyle(this.removeAssetButton, { display: 'inline-block' });
     }
 
     hideRemoveAssetButton() {
@@ -468,7 +468,7 @@ export class AssetPicker extends UI {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let button = assetsType[i].button;
-            setStyle(button, { display: 'block' });
+            setStyle(button, { display: 'inline-block' });
         }
         return this;
     }
