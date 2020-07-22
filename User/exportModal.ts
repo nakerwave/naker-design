@@ -40,7 +40,7 @@ export class ExportModal extends Modal {
     CMSList: Array<cms> = [
         {
             name: 'export',
-            article: 'https://help.naker.io/en/articles/3560328-integration-in-webflow',
+            article: 'https://help.naker.io/en/collections/2457130-integration-and-export',
             logo: 'https://asset.naker.io/image/cms/script.png',
         },
         {
