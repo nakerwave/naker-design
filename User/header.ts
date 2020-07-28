@@ -31,7 +31,6 @@ export class Header {
 
         this.setContent();
         this._setEvents();
-        this.addLoginModal();
         this.checkUserAndProject();
 
         let project = session.getProject();
@@ -104,7 +103,7 @@ export class Header {
         });
 
         window.addEventListener('focus', () => {
-            this.loginModal.hide();
+            if (this.loginModal) this.loginModal.hide();
             this.checkUserAndProject();
         });
     }
@@ -167,12 +166,15 @@ export class Header {
     copiedEffect: HTMLElement;
 
     addLoginModal() {
-        this.userPearl = new UserPearl(this.logoEl, this.session);
         this.loginModal = new LoginModal(this.session, this.userPearl);
     }
 
+    addUserPearl() {
+        this.userPearl = new UserPearl(this.logoEl, this.session);
+    }
+
     setUserPearl(data: User) {
-        if (data.pearl && data.pearl.length != 0) {
+        if (this.userPearl && data.pearl && data.pearl.length != 0) {
             this.userPearl.updatePearl(data.pearl);
             let color = data.pearlcolor;
             let pearlColor = (color && color.length != 0) ? color : [255, 255, 255];
