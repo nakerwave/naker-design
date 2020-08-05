@@ -140,10 +140,8 @@ export class ColorButton extends Slider {
             setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
         }
         setAttr(this.coloricon, { active: false });
-
-        // Do return undefined, return value is only for design purpose
-        if (this.events.change && fromPicker) this.events.change(undefined);
-        if (this.events.blur && fromPicker) this.events.blur(undefined);
+        if (this.events.change && fromPicker) this.events.change(this.removedValue);
+        if (this.events.blur && fromPicker) this.events.blur(this.removedValue);
     }
 
     events: any = {};
