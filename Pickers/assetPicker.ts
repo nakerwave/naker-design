@@ -280,7 +280,7 @@ export class AssetPicker extends UI {
     constructor() {
         super();
         this.el = el('div.asset-picker', [
-            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(true); } }, 
+            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker' }, 
             ),
             this.fixedel = el('div.fixed-asset-part', 
                 el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(true); } },
@@ -294,8 +294,12 @@ export class AssetPicker extends UI {
         this.hide();
     }
 
-    getExtension(filename: string) {
-        return filename.substr(filename.lastIndexOf('.') + 1);
+    getExtension(url: string) {
+        return url.substr(url.lastIndexOf('.') + 1);
+    }
+
+    getFileName(url: string) {
+        return url.substr(url.lastIndexOf('/') + 1);
     }
     
     setClickOutside() {
@@ -544,20 +548,22 @@ export class AssetPicker extends UI {
 
     buildButton(asset: asset, callback: Function) {
         let button: HTMLElement;
-        let image = asset.thumbnail;
-        let extension = this.getExtension(image);
-        let isImageUrl = (image.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
-        let isFrommPoly = (image.indexOf('googleusercontent') != -1);
-        let isFrommClara = (image.indexOf('resources.clara.io') != -1);
+        let thumbnail = asset.thumbnail;
+        let extension = this.getExtension(thumbnail);
+        let isImageUrl = (thumbnail.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
+        let isFrommPoly = (thumbnail.indexOf('googleusercontent') != -1);
+        let isFrommClara = (thumbnail.indexOf('resources.clara.io') != -1);
         // Google content soesn't have extension
         if (isImageUrl || isFrommPoly || isFrommClara) {
             button = el('div.asset-button', { onclick: () => { callback() } },
                 // Draggable set to false or it can show drag zone
-                el('img', { draggable: false, src: image }),
+                el('img', { draggable: false, src: thumbnail }),
             );
         } else {
+            let isUrl = (thumbnail.indexOf('http') != -1);
+            if (isUrl) thumbnail = this.getFileName(thumbnail);
             button = el('div.asset-button', { onclick: () => { callback() } }, [
-                el('div.asset-text', image),
+                el('div.asset-text', thumbnail),
                 el('div.backicon.icon-' + asset.type,
                     [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
