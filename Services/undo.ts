@@ -59,27 +59,25 @@ export abstract class Undo<T> {
 
     saveState() {
         let json:T = this.getSceneWithAssetRoundedJson();
-        // console.log(json);
         this.presentState = cloneDeep(json);
     }
 
     pushState() {
         let json = this.getSceneWithAssetRoundedJson();
-        // console.log(json);
-        
         let projectJson = cloneDeep(json);
         if (isEqual(projectJson, this.presentState)) return; // Nothing has Change
+
         let backChange = this.getDifference(this.presentState, projectJson);
         let forwardChange = this.getDifference(projectJson, this.presentState);
+        
         // Set default value to null in case new values added so that we can go back to null/undefined value
-
         let backDefault = this.setNullValues(backChange);
         let forwardDefault = this.setNullValues(forwardChange);
         // clone otherwise back object will match with forward object
         backChange = cloneDeep(defaultsDeep(backChange, forwardDefault));
         forwardChange = cloneDeep(defaultsDeep(forwardChange, backDefault));
-
         // console.log({back:backChange, forward:forwardChange});
+
         this.pastChange.push({ back: backChange, forward: forwardChange });
         this.futureChange = [];
         this.presentState = projectJson;
@@ -101,11 +99,10 @@ export abstract class Undo<T> {
     back() {
         if (this.pastChange.length != 0) {
             let past = last(this.pastChange);
-            // console.log(past.back)
+            // console.log(past.back);
             this.futureChange.unshift(this.pastChange.pop());
-            let newState = merge(this.presentState, past.back);
-            let backState = this.getDifference(newState, past.forward);
-            this.presentState = backState;
+            let newState = merge(cloneDeep(past.back), this.presentState);
+            this.presentState = this.getDifference(newState, past.forward);
             this.sendToObserver(UndoEvent.Undo, past.back, this.presentState)
             this.sendToObserver(UndoEvent.Change, past.back, this.presentState)
             return true;
@@ -120,8 +117,7 @@ export abstract class Undo<T> {
             // console.log(future.forward)
             this.pastChange.push(this.futureChange.shift());
             let newState = merge(this.presentState, future.forward);
-            let forwardState = this.getDifference(newState, future.back);
-            this.presentState = forwardState;
+            this.presentState = this.getDifference(newState, future.back);
             this.sendToObserver(UndoEvent.Redo, future.forward, this.presentState)
             this.sendToObserver(UndoEvent.Change, future.forward, this.presentState)
             return true;
@@ -132,7 +128,7 @@ export abstract class Undo<T> {
 
     limitObjectAccuracy(object: T) {
         return this.mapValuesDeep(object, (a) => {
-            if (typeof a == 'number') return this.limitAccuracy(a, 5);
+            if (typeof a == 'number') return this.limitAccuracy(a, 2);
             else return a;
         });
     }
@@ -152,7 +148,24 @@ export abstract class Undo<T> {
         let Changes = (object, base) => {
             return transform(object, (result, value, key) => {
                 if (!isEqual(value, base[key])) {
-                    result[key] = (isPlainObject(value) && isPlainObject(base[key])) ? Changes(value, base[key]) : value;
+                    if (isPlainObject(value) && isPlainObject(base[key])) {
+                        result[key] = Changes(value, base[key]);
+                    } else if (isArray(value) && isArray(base[key])) {
+                        result[key] = [];
+                        for (let i = 0; i < value.length; i++) {
+                            // Can't do that as value[i] not always an object
+                            // result[key][i] = Changes(value[i], base[key][i]);
+                            if (!isEqual(value[i], base[key][i])) {
+                                if (isPlainObject(value[i]) && isPlainObject(base[key][i])) {
+                                    result[key][i] = Changes(value[i], base[key][i]);
+                                } else {
+                                    result[key][i] = value[i];
+                                }
+                            }
+                        }
+                    } else {
+                        result[key] = value;
+                    }
                 }
             });
         }

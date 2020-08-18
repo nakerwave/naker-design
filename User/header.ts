@@ -170,7 +170,7 @@ export class Header {
     }
 
     addUserPearl() {
-        this.userPearl = new UserPearl(this.logoEl, this.session);
+        if (!this.userPearl) this.userPearl = new UserPearl(this.logoEl, this.session);
     }
 
     setUserPearl(data: User) {
