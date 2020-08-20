@@ -144,7 +144,7 @@ export abstract class Undo<T> {
         return Math.round(number * powLength) / powLength;
     }
 
-    getDifference(object: T, base: T) {
+    getDifference(object: Object, base: Object) {
         let Changes = (object, base) => {
             return transform(object, (result, value, key) => {
                 if (!isEqual(value, base[key])) {
@@ -155,7 +155,10 @@ export abstract class Undo<T> {
                         for (let i = 0; i < value.length; i++) {
                             // Can't do that as value[i] not always an object
                             // result[key][i] = Changes(value[i], base[key][i]);
-                            if (!isEqual(value[i], base[key][i])) {
+                            // If not an object and not an array, keep the number or string value
+                            if (!isPlainObject(value[i]) && !isPlainObject(base[key][i]) && !isArray(value[i]) && !isArray(base[key][i])) {
+                                result[key][i] = value[i];
+                            } else if (!isEqual(value[i], base[key][i])) {
                                 if (isPlainObject(value[i]) && isPlainObject(base[key][i])) {
                                     result[key][i] = Changes(value[i], base[key][i]);
                                 } else {
