@@ -1,5 +1,4 @@
-
-import { el, setStyle, mount } from 'redom';
+import { el, setStyle, mount, setAttr } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
@@ -32,7 +31,6 @@ export class Modal {
         if (!title) setStyle(this.title, { display: 'none' });
         else this.title.innerHTML = title;
         if (!description) setStyle(this.description, { display: 'none' });
-        setStyle(this.control, { display: 'none' });
         mount(document.body, this.control);
         this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } });
         mount(document.body, this.back);
@@ -40,62 +38,30 @@ export class Modal {
     }
 
     back: HTMLElement;
-    backopacity = 0.7;
     onModalClose: Function;
 
     backgroundClick() {
         this.hide();
     }
 
-    animInterval: any;
-    animate(funct1: Function, funct2: Function) {
-        clearInterval(this.animInterval);
-        let i = 0;
-        this.animInterval = setInterval(() => {
-            let perc = Math.pow(i / 10, 2);
-            funct1(perc);
-            if (i == 10) {
-                clearInterval(this.animInterval);
-                funct2();
-            }
-            i++;
-        }, 20);
+    show() {
+        this._show();
     }
-
-    show(callback?: Function) {
-        this._show(callback);
-    }
-    _show(callback?: Function) {
+    _show() {
         for (let i = 0; i < modalList.length; i++) {
-            setStyle(modalList[i].back, { display: 'none' });
-            setStyle(modalList[i].control, { display: 'none' });
+            setAttr(modalList[i].back, { visible: false });
+            setAttr(modalList[i].control, { visible: false });
+            
         }
-        setStyle(this.back, { display: 'block', opacity: 0 });
-        setStyle(this.control, { display: 'block', opacity: 0 });
-        this.animate((perc) => {
-            let op = perc * this.backopacity;
-            setStyle(this.back, { opacity: op });
-            setStyle(this.control, { opacity: op });
-        }, () => {
-            setStyle(this.back, { opacity: this.backopacity });
-            setStyle(this.control, { opacity: 1 });
-            if (callback) callback();
-        });
+        setAttr(this.back, { visible: true });
+        setAttr(this.control, { visible: true });
     }
 
-    hide(callback?: Function) {
-        this._hide(callback);
+    hide() {
+        this._hide();
     }
-    _hide(callback?: Function) {
-        if (this.onModalClose) this.onModalClose();
-        this.animate((perc) => {
-            let op = (1 - perc) * this.backopacity;
-            setStyle(this.back, { opacity: op });
-            setStyle(this.control, { opacity: op });
-        }, () => {
-            setStyle(this.back, { display: 'none' });
-            setStyle(this.control, { display: 'none' });
-            if (callback) callback();
-        });
+    _hide() {
+        setAttr(this.back, { visible: false });
+        setAttr(this.control, { visible: false });
     }
 }
