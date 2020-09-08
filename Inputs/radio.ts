@@ -108,7 +108,7 @@ export class RadioIconInput extends Input {
         mount(this.parent, this.el);
         setAttr(this.parent, {class:''});
         // setStyle(this.parent, { height: (this.linenumber * heightinput + 2).toString() + 'px' });
-        setStyle(this.el, { height: (this.linenumber * (heightinput + 5)).toString() + 'px' });
+        setStyle(this.el, { height: (30 + this.linenumber * (heightinput + 5)).toString() + 'px' });
         setStyle(this.el, { 'z-index': 2 });
         this.setInput(radiooption);
         return this;

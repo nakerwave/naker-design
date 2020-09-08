@@ -24,7 +24,7 @@ export class Header {
     projectname: HTMLElement;
     formname: HTMLElement;
 
-    constructor(session: Session, undo: Undo<any>, exportModal: ExportModal) {
+    constructor(session: Session, undo: Undo<any>, exportModal?: ExportModal) {
         this.undo = undo;
         this.session = session;
         this.exportModal = exportModal;
@@ -137,9 +137,9 @@ export class Header {
 
     setProject(project: ProjectSavedOptions) {
         if (project.name) this.setName(project.name);
-        if (project.waterMark) this.exportModal.setWaterMark(project.waterMark);
-        if (project.pushQuality) this.exportModal.setPushQuality(project.pushQuality);
-        if (project.websiteUrl) this.exportModal.setWebsiteUrl(project.websiteUrl);
+        if (project.waterMark && this.exportModal) this.exportModal.setWaterMark(project.waterMark);
+        if (project.pushQuality && this.exportModal) this.exportModal.setPushQuality(project.pushQuality);
+        if (project.websiteUrl && this.exportModal) this.exportModal.setWebsiteUrl(project.websiteUrl);
     }
 
     setName(name: string) {
