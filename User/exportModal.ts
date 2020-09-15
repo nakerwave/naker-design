@@ -447,8 +447,7 @@ export class ExportModal extends Modal {
         this.setPushQuality(project.pushQuality);
         this.setWebsiteUrl(project.websiteUrl);
         
-        this._show(() => {
-            this.session.saveThumbnail();
-        });
+        this._show();
+        this.session.saveThumbnail();
     }
 }
