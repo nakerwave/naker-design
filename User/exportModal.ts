@@ -115,10 +115,22 @@ export class ExportModal extends Modal {
     pushQualityCheckBox: HTMLElement;
     setExport() {
         this.exportContent = el('div.modal-content', [
-            el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
-                this.helpImage = el('img'),
-                this.helpLink = el('div')
-            ),
+            // this.waterMarkLayer = el('div.modal-layer', [
+            //     el('div.modal-text.modal-checkbox-text', 'Naker watermark'),
+            //     el('div.main-checkbox.modal-checkbox',
+            //         this.waterMarkCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked: true, onclick: () => { this.checkWatermark() } },
+            //             el('div.handle')
+            //         )
+            //     )
+            // ]),
+            // this.pushQualityLayer = el('div.modal-layer', [
+            //     el('div.modal-text.modal-checkbox-text', 'Keep HD (Hard on CPU)'),
+            //     el('div.main-checkbox.modal-checkbox',
+            //         this.pushQualityCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked: false, onclick: () => { this.checkPushQuality() } },
+            //             el('div.handle')
+            //         )
+            //     )
+            // ]),
             el('div.modal-layer', [
                 // el('div.modal-number', '1.'),
                 el('div.modal-text', 'Link of your website'),
@@ -131,22 +143,6 @@ export class ExportModal extends Modal {
                 el('div.modal-or', 'OR'),
                 this.classInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedClass(evt) }, placeholder: 'Class' }),
             ]),
-            this.waterMarkLayer = el('div.modal-layer', [
-                el('div.modal-text.modal-checkbox-text', 'Naker watermark'),
-                el('div.main-checkbox.modal-checkbox',
-                    this.waterMarkCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked: true, onclick: () => { this.checkWatermark() } },
-                        el('div.handle')
-                    )
-                )
-            ]),
-            this.pushQualityLayer = el('div.modal-layer', [
-                el('div.modal-text.modal-checkbox-text', 'Keep HD (Hard on CPU)'),
-                el('div.main-checkbox.modal-checkbox',
-                    this.pushQualityCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked: false, onclick: () => { this.checkPushQuality() } },
-                        el('div.handle')
-                    )
-                )
-            ]),
             el('div.modal-layer', [
                 // el('div.modal-number', '3.'),
                 el('div.modal-text', 'Copy/paste this snippet in the head or body tag of your website. Check the tutorial above if needed.'),
@@ -158,16 +154,43 @@ export class ExportModal extends Modal {
                     // )
                 ]),
             ]),
+            el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+                this.helpImage = el('img'),
+                this.helpLink = el('div')
+            ),
         ]);
+    }
+
+    addCheckBox(label: string, value: boolean, callback: Function, index?: number) {
+        let checked = value;
+        let checkboxButton: HTMLElement;
+        let checkbox = [
+            el('div.modal-text.modal-checkbox-text', label),
+            el('div.main-checkbox.modal-checkbox',
+                checkboxButton = el('button.btn.btn-sm.btn-toggle', {
+                    type: 'button', 
+                    'aria-pressed': 'false', 
+                    autocomplete: 'off',
+                    checked: value,
+                    onclick: (evt) => {
+                        checked = !checked;
+                        setAttr(checkboxButton, { checked: checked }); 
+                        callback(checked); } 
+                    },
+                    el('div.handle')
+                )
+            )
+        ]
+        this.addLayer(checkbox, index);
     }
 
     addLayer(children: Array<HTMLElement> | HTMLElement, index?: number) {
         let newLayer = el('div.modal-layer', children);
-        if (index) {
+        if (index !== undefined) {
             let beforChild = this.exportContent.childNodes[index];
             this.exportContent.insertBefore(newLayer, beforChild);
         } else {
-            mount(this.control, newLayer)
+            mount(this.exportContent, newLayer)
         }
     }
 
@@ -248,11 +271,13 @@ export class ExportModal extends Modal {
         this.session.setWaterMark(checked);
         setAttr(this.waterMarkCheckBox, { checked: checked });
         this.setEmbedCode();
-        if (!checked) {
-            let shareUrl = 'https://app.naker.io/' + this.session.engine;
-            let shareTitle = "Want to remove the waterMark? Please share Naker with your friends and let's make the web cool again:";
-            this.showShare(shareUrl, shareTitle);
-        }
+        if (!checked) this.showShareAfterWatermark();
+    }
+
+    showShareAfterWatermark() {
+        let shareUrl = 'https://app.naker.io/' + this.session.engine;
+        let shareTitle = "Want to remove the waterMark? Please share Naker with your friends and let's make the web cool again:";
+        this.showShare(shareUrl, shareTitle);
     }
     
     setWaterMark(waterMark: boolean) {
@@ -265,11 +290,7 @@ export class ExportModal extends Modal {
         this.session.setPushQuality(checked);
         setAttr(this.pushQualityCheckBox, { checked: checked });
         this.setEmbedCode();
-        if (!checked) {
-            let shareUrl = 'https://app.naker.io/' + this.session.engine;
-            let shareTitle = "Want to have a better rendering quality? Please share Naker with your friends and let's make the web cool again:";
-            this.showShare(shareUrl, shareTitle);
-        }
+
     }
 
     setPushQuality(pushQuality: boolean) {
