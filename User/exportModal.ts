@@ -39,7 +39,7 @@ export class ExportModal extends Modal {
 
     CMSList: Array<cms> = [
         {
-            name: 'export',
+            name: 'Embed',
             article: 'https://help.naker.io/en/collections/2457130-integration-and-export',
             logo: 'https://asset.naker.io/image/cms/script.png',
         },
@@ -246,7 +246,7 @@ export class ExportModal extends Modal {
     }
 
     showMainExport() {
-        let cms = find(this.CMSList, (cms) => { return cms.name == 'export' });
+        let cms = find(this.CMSList, (cms) => { return cms.name == 'Embed' });
         this.showExport(cms);
         unmount(this.control, this.footer);
 
