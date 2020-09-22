@@ -268,7 +268,7 @@ export class ExportModal extends Modal {
 
     checkWatermark() {
         let checked = !this.session.getProject().waterMark;
-        this.session.setWaterMark(checked);
+        this.session.setProjectOption('waterMark', checked);
         setAttr(this.waterMarkCheckBox, { checked: checked });
         this.setEmbedCode();
         if (!checked) this.showShareAfterWatermark();
@@ -287,10 +287,9 @@ export class ExportModal extends Modal {
 
     checkPushQuality() {
         let checked = !this.session.getProject().pushQuality;
-        this.session.setPushQuality(checked);
+        this.session.setProjectOption('pushQuality', checked);
         setAttr(this.pushQualityCheckBox, { checked: checked });
         this.setEmbedCode();
-
     }
 
     setPushQuality(pushQuality: boolean) {
@@ -359,7 +358,7 @@ export class ExportModal extends Modal {
     addLinkRecord(evt) {
         let url = evt.target.value;
         if (!url || url == this.session.getProject().websiteUrl) return;
-        this.session.setWebsiteUrl(url);
+        this.session.setProjectOption('websiteUrl', url);
         
         if (this.session.subDomain == 'development') return;        
         let project = this.session.getProject();

@@ -339,16 +339,20 @@ export class Session {
         }
     }
 
-    setWaterMark(waterMark: boolean) {
-        this.project.waterMark = waterMark;
-    }
+    // setWaterMark(waterMark: boolean) {
+    //     this.project.waterMark = waterMark;
+    // }
 
-    setPushQuality(pushQuality: boolean) {
-        this.project.pushQuality = pushQuality;
-    }
+    // setPushQuality(pushQuality: boolean) {
+    //     this.project.pushQuality = pushQuality;
+    // }
 
-    setWebsiteUrl(setWebsiteUrl: string) {
-        this.project.websiteUrl = setWebsiteUrl;
+    // setWebsiteUrl(setWebsiteUrl: string) {
+    //     this.project.websiteUrl = setWebsiteUrl;
+    // }
+
+    setProjectOption(key: string, value) {
+        this.project[key] = value;
     }
 
     saveProjectName(name: string) {
