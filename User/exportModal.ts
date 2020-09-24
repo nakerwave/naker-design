@@ -2,7 +2,7 @@ import { Modal } from '../Layers/modal';
 import { Session } from '../Services/session';
 import { Undo } from '../Services/undo';
 
-import { el, mount, setStyle, setAttr, unmount } from 'redom';
+import { el, mount, setStyle, setAttr, unmount, setChildren } from 'redom';
 import { Event } from '@sentry/browser';
 import find from 'lodash/find';
 import Airtable from 'airtable';
@@ -161,10 +161,10 @@ export class ExportModal extends Modal {
         ]);
     }
 
-    addCheckBox(label: string, value: boolean, callback: Function, index?: number) {
+    addCheckBox(layer: HTMLElement, label: string, value: boolean, callback: Function): HTMLElement {
         let checked = value;
         let checkboxButton: HTMLElement;
-        let checkbox = [
+        let checkbox = el('div.modal-checkbox-container', [
             el('div.modal-text.modal-checkbox-text', label),
             el('div.main-checkbox.modal-checkbox',
                 checkboxButton = el('button.btn.btn-sm.btn-toggle', {
@@ -180,11 +180,12 @@ export class ExportModal extends Modal {
                     el('div.handle')
                 )
             )
-        ]
-        this.addLayer(checkbox, index);
+        ]);
+        mount(layer, checkbox);
+        return checkbox;
     }
 
-    addLayer(children: Array<HTMLElement> | HTMLElement, index?: number) {
+    addLayer(children: Array<HTMLElement> | HTMLElement, index?: number): HTMLElement {
         let newLayer = el('div.modal-layer', children);
         if (index !== undefined) {
             let beforChild = this.exportContent.childNodes[index];
@@ -192,6 +193,7 @@ export class ExportModal extends Modal {
         } else {
             mount(this.exportContent, newLayer)
         }
+        return newLayer;
     }
 
     shareContent: HTMLElement;
