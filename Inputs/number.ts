@@ -152,6 +152,7 @@ interface VectorInterface {
     y?: number;
     z?: number;
 }
+
 export class VectorInput extends Input<VectorInterface> {
 
     x: NumberInput;

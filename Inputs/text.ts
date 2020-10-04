@@ -1,7 +1,7 @@
 
 import { Input, inputEvents } from './input';
 
-import { el, mount, setAttr } from 'redom';
+import { el, mount, setAttr, setStyle } from 'redom';
 
 /*
   +------------------------------------------------------------------------+
@@ -25,19 +25,28 @@ export abstract class ChangeEffectInput<T> extends Input<T> {
   +------------------------------------------------------------------------+
 */
 
+export interface textoption {
+    value: string,
+    placeholder?:string,
+    size?: number,
+}
+
 export class TextInput extends ChangeEffectInput<string> {
 
     value: string;
 
-    constructor(parent: HTMLElement, label: string, text: string, className?: string) {
+    constructor(parent: HTMLElement, label: string, textoptions: textoption, className?: string) {
         super(parent, label)
-        if (!className) className = 'input-parameter input-text'
+        if (!className) className = 'input-parameter input-text';
+        if (!textoptions.placeholder) textoptions.placeholder = '';
+        if (!textoptions.value) textoptions.value = '';
+        
         this.el = el('input', { class: className });
         mount(this.parent, this.el);
-        setAttr(this.el, { type: 'text', placeholder: text.toString(), onfocus: () => { this.el.select() } });
-        this.value = text.toString();
+        setAttr(this.el, { type: 'text', placeholder: textoptions.placeholder.toString(), onfocus: () => { this.el.select() } });
+        this.value = textoptions.value.toString();
         this.setEvents();
-        return this;
+        if (textoptions.size) this.setSize(textoptions.size);
     }
 
     setValue(value: string) {
@@ -47,6 +56,10 @@ export class TextInput extends ChangeEffectInput<string> {
         setAttr(this.el, { value: value });
         this.changedEffect();
         return this;
+    }
+
+    setSize(size: number) {
+        setStyle(this.el, { width: size + 'px' });
     }
 
     setPlaceholder(text: string) {
@@ -103,17 +116,17 @@ export class ParagraphInput extends ChangeEffectInput<string> {
     value: string;
     max = 300;
 
-    constructor(parent: HTMLElement, label: string, text: string, className?: string) {
+    constructor(parent: HTMLElement, label: string, textoptions: textoption, className?: string) {
         super(parent, label);
         if (this.label) setAttr(this.label, { class: 'input-label input-label-paragraph' });
         if (!className) className = 'input-paragraph input-large-width editor-scroll';
+        if (!textoptions.placeholder) textoptions.placeholder = '';
         this.el = el('textarea', { class: className, maxlength: this.max });
         mount(this.parent, this.el);
-        setAttr(this.el, { placeholder: text.toString() });
-        this.value = text.toString();
+        setAttr(this.el, { placeholder: textoptions.value.toString() });
+        this.value = textoptions.value.toString();
         this.setEvents();
         this.setCount();
-        return this;
     }
 
     count: any;
@@ -176,3 +189,47 @@ export class ParagraphInput extends ChangeEffectInput<string> {
         return this;
     }
 }
+
+
+/*
+  +------------------------------------------------------------------------+
+  | LINK INPUT                                                             |
+  +------------------------------------------------------------------------+
+*/
+
+export interface LinkInterface {
+    text?: string;
+    href?: string;
+}
+
+export class LinkInput extends ChangeEffectInput<LinkInterface> {
+    value: LinkInterface;
+    textInput: TextInput;
+    hrefInput: TextInput;
+
+    constructor(parent: HTMLElement, label: string, linkoptions: LinkInterface, className?: string) {
+        super(parent, label);
+        this.textInput = new TextInput(parent, 'text', { value: linkoptions.text, size: 232 }, className);
+        this.hrefInput = new TextInput(parent, 'href', { value: linkoptions.href, size: 190, placeholder: '#' }, className);
+    }
+
+    currentValue: LinkInterface;
+    setValue(value: LinkInterface) {
+        this.currentValue = value;
+        this.textInput.setValue(value.text);
+        this.hrefInput.setValue(value.href);
+    }
+
+    on(event: string, funct: Function) {
+        this.textInput.on(event, (value, t, evt) => {
+            this.currentValue.text = value;
+            funct(this.currentValue, this, evt);
+        });
+        this.hrefInput.on(event, (value, t, evt) => {
+            this.currentValue.href = value;
+            funct(this.currentValue, this, evt);
+        });
+        return this;
+    }
+}
+

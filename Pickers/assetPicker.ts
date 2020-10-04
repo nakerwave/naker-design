@@ -32,7 +32,7 @@ export interface assetEvents {
     blur?: Function,
 }
 
-export class BaseAssetButton extends Input {
+export class BaseAssetButton extends Input<string> {
     url: string;
     type: string;
     removable = true;

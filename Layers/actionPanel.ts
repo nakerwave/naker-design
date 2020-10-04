@@ -2,7 +2,7 @@
 import { Undo } from '../Services/undo';
 import { Input } from '../Inputs/input';
 import { textnode, Button } from '../Inputs/button';
-import { TextInput, ParagraphInput } from '../Inputs/text';
+import { TextInput, ParagraphInput, LinkInput } from '../Inputs/text';
 import { NumberInput, numberoption, VectorInput } from '../Inputs/number';
 import { CheckboxInput } from '../Inputs/checkbox';
 import { SliderInput, slideroption } from '../Inputs/slider';
@@ -74,6 +74,17 @@ export class InputGroup extends UI {
             callback(text);
         });
         return textInput;
+    }
+
+    addLinkInput(label: string, link: LinkInterface, callback: Function) {
+        let linkInput = new LinkInput(this.el, label, link);
+        linkInput.on('blur', (link) => {
+            this.undo.pushState();
+        });
+        linkInput.on('change', (link) => {
+            callback(link);
+        });
+        return linkInput;
     }
 
     addParagraphInput(label: string, paragraph: string, callback: Function) {

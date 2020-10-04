@@ -13,10 +13,13 @@ import find from 'lodash/find';
 
 export interface InputInterface {
     name: string,
+    label?: string,
     type: 
+    'title' |
     'link' | 
     'icon' | 
-    'button' | 
+    'button' |
+    'imagebutton' | 
     'text' | 
     'paragraph' | 
     'color' | 
@@ -71,6 +74,24 @@ export class Settings<T> extends InputGroup {
                     break;
                 case 'text':
                     newinput = this.addTextInput(input.name, input.options, (value) => {
+                        this.currentValues[input.name] = value;
+                        this.currentObject.checkValues(this.currentValues);
+                    });
+                    break;
+                case 'paragraph':
+                    newinput = this.addParagraphInput(input.name, input.options, (value) => {
+                        this.currentValues[input.name] = value;
+                        this.currentObject.checkValues(this.currentValues);
+                    });
+                    break;
+                case 'link':
+                    newinput = this.addLinkInput(input.name, input.options, (value) => {
+                        this.currentValues[input.name] = value;
+                        this.currentObject.checkValues(this.currentValues);
+                    });
+                    break;
+                case 'imagebutton':
+                    newinput = this.addImageAssetInput(input.name, input.options, (value) => {
                         this.currentValues[input.name] = value;
                         this.currentObject.checkValues(this.currentValues);
                     });
