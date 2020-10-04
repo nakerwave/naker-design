@@ -27,14 +27,15 @@ export class InputGroup extends UI {
 
     el: HTMLElement;
     undo: Undo<any>;
+    name: string;
     // Force name in order to be able to have analytics with heap
-    constructor(name:string, parent: HTMLElement, undo: Undo) {
+    constructor(name: string, undo: Undo<any>, parent?: HTMLElement) {
         super();
         // Add block class in order to be able to set HEAP events
-        name = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-        this.el = el('div.parameter-group.' + name + '_block');
+        this.name = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+        this.el = el('div.parameter-group.' + this.name + '_block');
         if (parent) mount(parent, this.el);
-        if (undo) this.undo = undo;
+        this.undo = undo;
     }
 
     addText(text: string, className: string) {
@@ -242,7 +243,7 @@ export class InputGroup extends UI {
 
 /*
   +------------------------------------------------------------------------+
-  | DESIGN MANAGER                                                         |
+  | INPUT GROUP SWITCH                                                     |
   +------------------------------------------------------------------------+
 */
 
@@ -252,7 +253,7 @@ export class InputGroupSwitch extends InputGroup {
     expand: HTMLElement;
 
     constructor(title: string, undo: Undo<any>, expandable?: boolean) {
-        super(title, actionPanel, undo);
+        super(title, undo, actionPanel);
         if (title) this.addTitle(title);
         // if (expandable === false) {
         //     if (title) {
