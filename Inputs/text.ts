@@ -9,9 +9,9 @@ import { el, mount, setAttr } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export class ChangeEffectInput extends Input {
+export abstract class ChangeEffectInput<T> extends Input<T> {
 
-    valueChangedTimeout: any;
+    valueChangedTimeout;
     changedEffect() {
         if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
         setAttr(this.el, { changed: true });
@@ -25,7 +25,7 @@ export class ChangeEffectInput extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class TextInput extends ChangeEffectInput {
+export class TextInput extends ChangeEffectInput<string> {
 
     value: string;
 
@@ -99,7 +99,7 @@ export class TextInput extends ChangeEffectInput {
   +------------------------------------------------------------------------+
 */
 
-export class ParagraphInput extends ChangeEffectInput {
+export class ParagraphInput extends ChangeEffectInput<string> {
     value: string;
     max = 300;
 

@@ -14,7 +14,7 @@ export interface radiooption {
     list: Array<string>;
 }
 
-export class RadioInput extends Input {
+export class RadioInput extends Input<string> {
     option: Array<string>;
 
     constructor(parent: HTMLElement, label: string, radiooption: radiooption) {
@@ -88,7 +88,7 @@ export interface radioiconoption {
     tooltipLink?: Object;
 }
 
-export class RadioIconInput extends Input {
+export class RadioIconInput extends Input<string> {
     option: Array<string>;
     iconLink: Object;
     tooltipLink: Object;

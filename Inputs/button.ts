@@ -14,7 +14,7 @@ export interface textnode {
     text: string;
 }
 
-export class Button extends Input {
+export class Button extends Input<any> {
     textnode: textnode;
 
     constructor(parent: HTMLElement, textnode: textnode, className?: string) {
@@ -36,6 +36,14 @@ export class Button extends Input {
         }
     }
 
+    setValue() {
+
+    }
+
+    on() {
+
+    }
+
     setText(text: string) {
         this.el.textContent = text;
     }
@@ -47,7 +55,7 @@ export class Button extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class ImageButton extends Input {
+export class ImageButton extends Input<any> {
     image: HTMLElement;
 
     constructor(parent: HTMLElement, label:string, imageurl: string, className?: string) {
@@ -57,6 +65,14 @@ export class ImageButton extends Input {
         this.el = el('div', { class: className });
         mount(this.parent, this.el);
         this.setImage(imageurl);
+    }
+
+    setValue() {
+
+    }
+
+    on() {
+
     }
 
     setImage(imageurl: string) {

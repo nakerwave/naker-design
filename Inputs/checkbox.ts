@@ -13,7 +13,7 @@ import { el, mount, setAttr } from 'redom';
 //     <div class="handle" > </div>
 //         < /button>
 
-export class CheckboxInput extends Input {
+export class CheckboxInput extends Input<boolean> {
 
     constructor(parent: HTMLElement, label: string, checked: boolean) {
         super(parent, label);

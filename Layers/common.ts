@@ -42,16 +42,13 @@ export class UI {
     // TODO delete all eventlistenner properly
     destroy() {
         if (this.el.parentNode) unmount(this.el.parentNode, this.el);
-        return this;
     }
 
     hide() {
         setStyle(this.el, { display: 'none' });
-        return this;
     }
 
     show() {
         setStyle(this.el, { display: 'block' });
-        return this;
     }
 }

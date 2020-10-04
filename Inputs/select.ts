@@ -15,7 +15,7 @@ export interface selectoption {
     valueText?: Object,
 }
 
-export class SelectInput extends Input {
+export class SelectInput extends Input<string> {
     options: Array<string>;
     valueText: Object;
 
