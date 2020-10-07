@@ -33,7 +33,7 @@ export class Header {
         this._setEvents();
         this.checkUserAndProject();
 
-        let project = session.getProject();
+        let project = undo.getProjectOptions();
         if (project) this.setProject(project);
 
         session.loadUser((user: User) => {

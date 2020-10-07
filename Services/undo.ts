@@ -57,6 +57,23 @@ export abstract class Undo<T> {
         });
     }
 
+    projectOptions: ProjectSavedOptions = {};
+    setProjectOptions(project: ProjectSavedOptions) {
+        // !Do not replace project or it will erase the id
+        // this.project = project;
+        for (const key in project) {
+            this.projectOptions[key] = project[key];
+        }
+    }
+
+    setProjectOption(key: string, value) {
+        this.projectOptions[key] = value;
+    }
+
+    getProjectOptions(): ProjectSavedOptions {
+        return (this.projectOptions) ? this.projectOptions : {};
+    }
+
     saveState() {
         let json:T = this.getSceneWithAssetRoundedJson();
         this.presentState = cloneDeep(json);

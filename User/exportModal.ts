@@ -1,6 +1,7 @@
 import { Modal } from '../Layers/modal';
 import { Session } from '../Services/session';
 import { Undo } from '../Services/undo';
+import { CheckboxInput } from '../Inputs/checkbox';
 
 import { el, mount, setStyle, setAttr, unmount, setChildren } from 'redom';
 import { Event } from '@sentry/browser';
@@ -161,28 +162,39 @@ export class ExportModal extends Modal {
         ]);
     }
 
-    addCheckBox(layer: HTMLElement, label: string, value: boolean, callback: Function): HTMLElement {
-        let checked = value;
-        let checkboxButton: HTMLElement;
-        let checkbox = el('div.modal-checkbox-container', [
-            el('div.modal-text.modal-checkbox-text', label),
-            el('div.main-checkbox.modal-checkbox',
-                checkboxButton = el('button.btn.btn-sm.btn-toggle', {
-                    type: 'button', 
-                    'aria-pressed': 'false', 
-                    autocomplete: 'off',
-                    checked: value,
-                    onclick: (evt) => {
-                        checked = !checked;
-                        setAttr(checkboxButton, { checked: checked }); 
-                        callback(checked); } 
-                    },
-                    el('div.handle')
-                )
-            )
-        ]);
-        mount(layer, checkbox);
-        return checkbox;
+    addCheckBox(layer: HTMLElement, label: string, value: boolean, callback: Function): CheckboxInput {
+        // let checked = value;
+        // let checkboxButton: HTMLElement;
+        // let checkbox = el('div.modal-checkbox-container', [
+        //     el('div.modal-text.modal-checkbox-text', label),
+        //     el('div.main-checkbox.modal-checkbox',
+        //         checkboxButton = el('button.btn.btn-sm.btn-toggle', {
+        //             type: 'button', 
+        //             'aria-pressed': 'false', 
+        //             autocomplete: 'off',
+        //             checked: value,
+        //             onclick: (evt) => {
+        //                 checked = !checkboxButton.getAttribute('checked');
+        //                 console.log(checkboxButton.getAttribute('checked'));
+                        
+        //                 setAttr(checkboxButton, { checked: checked }); 
+        //                 console.log(checkboxButton.getAttribute('checked'));
+        //                 callback(checked);
+        //             } 
+        //             },
+        //             el('div.handle')
+        //         )
+        //     )
+        // ]);
+        // mount(layer, checkbox);
+
+        let checkboxInput = new CheckboxInput(layer, label, value);
+        checkboxInput.on('change', (checked) => {
+            callback(checked);
+            this.undo.pushState();
+        });
+        return checkboxInput;
+        // return checkboxButton;
     }
 
     addLayer(children: Array<HTMLElement> | HTMLElement, index?: number): HTMLElement {
@@ -269,8 +281,8 @@ export class ExportModal extends Modal {
     }
 
     checkWatermark() {
-        let checked = !this.session.getProject().waterMark;
-        this.session.setProjectOption('waterMark', checked);
+        let checked = !this.undo.getProjectOptions().waterMark;
+        this.undo.setProjectOption('waterMark', checked);
         setAttr(this.waterMarkCheckBox, { checked: checked });
         this.setEmbedCode();
         if (!checked) this.showShareAfterWatermark();
@@ -288,8 +300,8 @@ export class ExportModal extends Modal {
     }
 
     checkPushQuality() {
-        let checked = !this.session.getProject().pushQuality;
-        this.session.setProjectOption('pushQuality', checked);
+        let checked = !this.undo.getProjectOptions().pushQuality;
+        this.undo.setProjectOption('pushQuality', checked);
         setAttr(this.pushQualityCheckBox, { checked: checked });
         this.setEmbedCode();
     }
@@ -359,11 +371,11 @@ export class ExportModal extends Modal {
 
     addLinkRecord(evt) {
         let url = evt.target.value;
-        if (!url || url == this.session.getProject().websiteUrl) return;
-        this.session.setProjectOption('websiteUrl', url);
+        if (!url || url == this.undo.getProjectOptions().websiteUrl) return;
+        this.undo.setProjectOption('websiteUrl', url);
         
         if (this.session.subDomain == 'development') return;        
-        let project = this.session.getProject();
+        let project = this.undo.getProjectOptions();
         let user = this.session.getUser();
         
         airtableBase('URL from export modal').create([
@@ -391,7 +403,7 @@ export class ExportModal extends Modal {
     footerText: HTMLElement;
     copyLink() {
         this.session.saveOnlineAndLocal(() => {
-            this.copyToClipboard('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId());
+            this.copyToClipboard('https://harbor.naker.io/' + this.engine + '/' + this.undo.getProjectOptionsId());
             this.footerText.innerText = 'Link copied';
             setTimeout(() => {
                 this.footerText.innerText = 'Share Project';
@@ -427,7 +439,7 @@ export class ExportModal extends Modal {
 
     getEmbedCode() {
         let idText = (this.embedContainer) ? 'data-container="' + this.embedContainer + '"' : '';
-        let waterMark = this.session.getProject().waterMark;
+        let waterMark = this.undo.getProjectOptions().waterMark;
         let JsonString = this.undo.getProjectJsonString({waterMark: waterMark});
         let viewerUrl = 'https://d23jutsnau9x47.cloudfront.net/' + this.engine + '/' + this.version + '/viewer.js';
         let text = '<script data-who="💎 Made with naker.io 💎" src="' + viewerUrl + '" data-option="' + JsonString + '" ' + idText + '></script>';
@@ -464,7 +476,7 @@ export class ExportModal extends Modal {
     show() {
         if (this.currentCMS) this.showExport(this.currentCMS);
         else this.showCMSList();
-        let project = this.session.getProject();
+        let project = this.undo.getProjectOptions();
         this.setWaterMark(project.waterMark);
         this.setPushQuality(project.pushQuality);
         this.setWebsiteUrl(project.websiteUrl);
