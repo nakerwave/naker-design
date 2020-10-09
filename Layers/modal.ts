@@ -35,6 +35,7 @@ export class Modal {
         this.back = el('div.modal-background', { onclick: () => { this.backgroundClick(); } });
         mount(document.body, this.back);
         modalList.push(this);
+        this._hide();
     }
 
     back: HTMLElement;
@@ -48,10 +49,9 @@ export class Modal {
         this._show();
     }
     _show() {
+        setStyle(this.control, { display: 'block' });
         for (let i = 0; i < modalList.length; i++) {
-            setAttr(modalList[i].back, { visible: false });
-            setAttr(modalList[i].control, { visible: false });
-            
+            if (modalList[i] != this) modalList[i]._hide();
         }
         setAttr(this.back, { visible: true });
         setAttr(this.control, { visible: true });
@@ -63,5 +63,10 @@ export class Modal {
     _hide() {
         setAttr(this.back, { visible: false });
         setAttr(this.control, { visible: false });
+        // ! Otherwise some element in the modal can still be clickable
+        // Opcity 0 is not enough
+        setTimeout(() => {
+            setStyle(this.control, { display: 'none' });
+        }, 300);
     }
 }
