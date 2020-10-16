@@ -62,12 +62,18 @@ export abstract class Undo<T> {
         // !Do not replace project or it will erase the id
         // this.project = project;
         for (const key in project) {
-            this.projectOptions[key] = project[key];
+            this.setProjectOption(key, project[key]);
         }
     }
 
+    projectOptionKeys = [
+        'name',
+        'waterMark',
+        'pushQuality',
+        'websiteUrl'
+    ];
     setProjectOption(key: string, value) {
-        this.projectOptions[key] = value;
+        if (this.projectOptionKeys.indexOf(key) != -1) this.projectOptions[key] = value;
     }
 
     getProjectOptions(): ProjectSavedOptions {
