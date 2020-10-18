@@ -2,7 +2,9 @@
 import { Undo } from '../Services/undo';
 import { Input } from '../Inputs/input';
 import { textnode, Button } from '../Inputs/button';
-import { TextInput, ParagraphInput, LinkInput } from '../Inputs/text';
+import { TextInput } from '../Inputs/text';
+import { ParagraphInput } from '../Inputs/paragraph';
+import { LinkInput } from '../Inputs/link';
 import { NumberInput, numberoption, VectorInput } from '../Inputs/number';
 import { CheckboxInput } from '../Inputs/checkbox';
 import { SliderInput, slideroption } from '../Inputs/slider';
