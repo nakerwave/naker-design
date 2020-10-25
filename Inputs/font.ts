@@ -1,4 +1,3 @@
-
 import { TextInput, textoption } from './text';
 import { inputEvents } from './input';
 
@@ -11,6 +10,34 @@ import map from 'lodash/map';
   | FONT INPUT                                                             |
   +------------------------------------------------------------------------+
 */
+
+export let fontNames: Array<string>;
+let fontListLoading = false;
+let fontInputList: Array<FontInput> = [];
+let loadedCallback: Array<Function> = [];
+
+export let getGoogleFonts = (callback?: Function) => {
+    if (callback) loadedCallback.push(callback);
+    if (fontListLoading) return;
+    fontListLoading = true;
+    axios.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyDwXUFOSFMF44soDpKz2WbHKelntWtl9yU')
+        .then((response) => {
+            let res = response.data;
+            let fontlist = res.items;
+            fontNames = map(fontlist, 'family');
+            for (let i = 0; i < fontInputList.length; i++) {
+                const input = fontInputList[i];
+                input.fontNames = fontNames;
+            }
+            for (let i = 0; i < loadedCallback.length; i++) {
+                const callback = loadedCallback[i];
+                callback(fontNames);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
 
 export interface FontInterface {
     text?: string;
@@ -34,7 +61,11 @@ export class FontInput extends TextInput {
             minLength: 0,
             limit: 20,
         });
-        this.getGoogleFonts();
+
+        if (fontInputList.length) this.fontNames = fontNames;
+        else getGoogleFonts();
+
+        fontInputList.push(this);
     }
 
     inputEvent: inputEvents = {
@@ -46,15 +77,5 @@ export class FontInput extends TextInput {
         enterkey: 'enterkey',
     };
     fontNames: Array<string> = [];
-    getGoogleFonts() {
-        axios.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyDwXUFOSFMF44soDpKz2WbHKelntWtl9yU')
-            .then((response) => {
-                let res = response.data;
-                let fontlist = res.items;
-                this.fontNames = map(fontlist, 'family');
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+
 }
