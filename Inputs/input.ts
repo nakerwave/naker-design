@@ -47,6 +47,10 @@ export abstract class Input<T> extends UI {
         }
     }
 
+    setBoldLabel() {
+        setStyle(this.label, {'font-weight': 600 });
+    }
+
     hideLabel() {
         unmount(this.parent, this.label);
     }

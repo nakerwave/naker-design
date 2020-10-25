@@ -19,6 +19,7 @@ export class LinkInput extends ChangeEffectInput<LinkInterface> {
 
     constructor(parent: HTMLElement, label: string, linkoptions: LinkInterface, className?: string) {
         super(parent, label);
+        this.setBoldLabel();
         this.textInput = new TextInput(parent, 'text', { value: linkoptions.text, size: 232 }, className);
         this.hrefInput = new TextInput(parent, 'href', { value: linkoptions.href, size: 190, placeholder: '#' }, className);
     }
