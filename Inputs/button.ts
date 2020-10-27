@@ -1,5 +1,5 @@
 
-import { Input } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, mount, setChildren } from 'redom';
 
@@ -40,8 +40,14 @@ export class Button extends Input<any> {
 
     }
 
-    on() {
-
+    inputEvent: inputEvents = {
+        click: 'click',
+    };
+    on(event: string, funct: Function) {
+        this.el.addEventListener(this.inputEvent[event], (evt) => {
+            funct(evt.target.value, this, evt);
+        });
+        return this;
     }
 
     setText(text: string) {
@@ -67,16 +73,22 @@ export class ImageButton extends Input<any> {
         this.setImage(imageurl);
     }
 
-    setValue() {
-
+    setValue(url: string) {
+        this.setImage(url)
     }
 
-    on() {
-
+    inputEvent: inputEvents = {
+        click: 'click',
+    };
+    on(event: string, funct: Function) {
+        this.el.addEventListener(this.inputEvent[event], (evt) => {
+            funct(evt.target.value, this, evt);
+        });
+        return this;
     }
 
-    setImage(imageurl: string) {
-        this.image = el('img', { src: imageurl, style: { width: '100%', height: '100%', 'object-fit': 'contain' } });
+    setImage(url: string) {
+        this.image = el('img', { src: url, style: { width: '100%', height: '100%', 'object-fit': 'contain' } });
         setChildren(this.el, [this.image]);
     }
 }
