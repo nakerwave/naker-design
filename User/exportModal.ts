@@ -263,7 +263,6 @@ export class ExportModal extends Modal {
         let cms = find(this.CMSList, (cms) => { return cms.name == 'Embed' });
         this.showExport(cms);
         unmount(this.control, this.footer);
-
     }
     
     currentCMS: cms;
