@@ -11,6 +11,7 @@ import isArray from 'lodash/isArray';
 import mapValues from 'lodash/mapValues';
 
 import hotkeys from 'hotkeys-js';
+import clone from 'lodash/clone';
 
 export enum UndoEvent {
     Change,
@@ -70,14 +71,14 @@ export abstract class Undo<T> {
         'name',
         'waterMark',
         'pushQuality',
-        'websiteUrl'
+        'websiteUrl',
     ];
     setProjectOption(key: string, value) {
         if (this.projectOptionKeys.indexOf(key) != -1) this.projectOptions[key] = value;
     }
 
     getProjectOptions(): ProjectSavedOptions {
-        return (this.projectOptions) ? this.projectOptions : {};
+        return (this.projectOptions) ? clone(this.projectOptions) : {};
     }
 
     saveState() {
