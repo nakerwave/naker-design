@@ -122,12 +122,14 @@ export class DropUi {
 
     container: HTMLElement;
     text: HTMLElement;
+    manageDrop: Function;
 
-    constructor() {
+    constructor(callback: Function) {
         this.createElements();
         this.addTitle();
         this.hide();
         dropzoneList.push(this);
+        this.manageDrop = callback;
     }
 
     createElements() {
@@ -174,6 +176,12 @@ export class DropUi {
         // assetPicker.on('focus', (type: string) => {
         //     if (type == this.type) this.show();
         // });
+
+        this.parent.addEventListener('drop', (evt) => {
+            this.noPropagation(evt);
+            this.manageDrop(evt);
+            this.hide();
+        }, false);
     }
 
     noPropagation(evt: DragEvent) {
@@ -211,4 +219,15 @@ export class DropUi {
     hide() {
         setStyle(this.container, { display: 'none' });
     }
+}
+
+export class SimpleDropzone extends DropLogic {
+
+    dropUi: DropUi;
+
+    constructor(type: string, uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
+        super(type, uploadUrl, formats, maxWeight, callback);
+        this.dropUi = new DropUi((evt) => { this.drop(evt) });
+    }
+
 }

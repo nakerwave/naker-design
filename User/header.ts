@@ -112,7 +112,7 @@ export class Header {
         if (!this.session.api.isConnected() || !this.session.saving) {
             unmount(this.control, this.loaderEl);
             unmount(this.control, this.formname);
-            this.userPearl.setIcoSphere();
+            if (this.userPearl) this.userPearl.setIcoSphere();
         } else {
             mount(this.control, this.loaderEl);
             mount(this.control, this.formname);

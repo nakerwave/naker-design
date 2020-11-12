@@ -138,8 +138,10 @@ export class LoginModal extends Modal {
                     this.loginUser(data);
                     if (!data.pearl || (data.pearl && data.pearl.length == 0)) {
                         this.session.signupUser(data);
-                        this.userPearl.updatePearl();
-                        this.userPearl.savePearl(false);
+                        if (this.userPearl) {
+                            this.userPearl.updatePearl();
+                            this.userPearl.savePearl(false);
+                        } 
                     }
                 } else {
                     this.hideLoader();
