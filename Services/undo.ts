@@ -47,6 +47,7 @@ export abstract class Undo<T> {
     abstract getSceneJson(): T;
     abstract getSceneWithAssetJson(): T;
     abstract getFullProjectJson(): T;
+    abstract getProjectJsonString(options?): string;
 
     constructor() {
         hotkeys('command+z,ctrl+z,⌘+z', (event, param) => {
