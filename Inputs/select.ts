@@ -15,13 +15,15 @@ export interface selectoption {
     valueText?: Object,
 }
 
-export class SelectInput extends Input {
+export class SelectInput extends Input<string> {
     options: Array<string>;
     valueText: Object;
 
-    constructor(parent: HTMLElement, label: string, selectoption: selectoption) {
-        super(parent, label)
-        this.el = el('div.select.siimple-select.input-parameter');
+    constructor(parent: HTMLElement, label: string, selectoption: selectoption, className?: string) {
+        super(parent, label);
+        if (!className) className = 'select siimple-select input-parameter';
+
+        this.el = el('div', { class: className });
         mount(this.parent, this.el);
         this.el.textContent = selectoption.value;
         this.setInput(selectoption);

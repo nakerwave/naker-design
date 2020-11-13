@@ -2,7 +2,9 @@
 import { Undo } from '../Services/undo';
 import { Input } from '../Inputs/input';
 import { textnode, Button } from '../Inputs/button';
-import { TextInput, ParagraphInput } from '../Inputs/text';
+import { TextInput } from '../Inputs/text';
+import { ParagraphInput } from '../Inputs/paragraph';
+import { LinkInput } from '../Inputs/link';
 import { NumberInput, numberoption, VectorInput } from '../Inputs/number';
 import { CheckboxInput } from '../Inputs/checkbox';
 import { SliderInput, slideroption } from '../Inputs/slider';
@@ -26,15 +28,16 @@ import { el, mount, unmount, setStyle, setAttr } from 'redom';
 export class InputGroup extends UI {
 
     el: HTMLElement;
-    undo: Undo;
+    undo: Undo<any>;
+    name: string;
     // Force name in order to be able to have analytics with heap
-    constructor(name:string, parent: HTMLElement, undo: Undo) {
+    constructor(name: string, undo: Undo<any>, parent?: HTMLElement) {
         super();
         // Add block class in order to be able to set HEAP events
-        name = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-        this.el = el('div.parameter-group.' + name + '_block');
+        this.name = name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+        this.el = el('div.parameter-group.' + this.name + '_block');
         if (parent) mount(parent, this.el);
-        if (undo) this.undo = undo;
+        this.undo = undo;
     }
 
     addText(text: string, className: string) {
@@ -73,6 +76,17 @@ export class InputGroup extends UI {
             callback(text);
         });
         return textInput;
+    }
+
+    addLinkInput(label: string, link: LinkInterface, callback: Function) {
+        let linkInput = new LinkInput(this.el, label, link);
+        linkInput.on('blur', (link) => {
+            this.undo.pushState();
+        });
+        linkInput.on('change', (link) => {
+            callback(link);
+        });
+        return linkInput;
     }
 
     addParagraphInput(label: string, paragraph: string, callback: Function) {
@@ -242,7 +256,7 @@ export class InputGroup extends UI {
 
 /*
   +------------------------------------------------------------------------+
-  | DESIGN MANAGER                                                         |
+  | INPUT GROUP SWITCH                                                     |
   +------------------------------------------------------------------------+
 */
 
@@ -251,8 +265,8 @@ export class InputGroupSwitch extends InputGroup {
     title: HTMLElement;
     expand: HTMLElement;
 
-    constructor(title: string, undo: Undo, expandable?: boolean) {
-        super(title, actionPanel, undo);
+    constructor(title: string, undo: Undo<any>, expandable?: boolean) {
+        super(title, undo, actionPanel);
         if (title) this.addTitle(title);
         // if (expandable === false) {
         //     if (title) {

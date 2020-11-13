@@ -9,17 +9,17 @@
     width: 300px
     height: auto
     top: 10px
-    left: 10px
+    right: 10px
     border-radius: $layerradius
     overflow: hidden
     z-index: 4
     pointer-events: none
 
 .tool-box div:first-child
-    border-radius: $layerradius $layerradius 0px 0px !important
+    border-radius: 0px $layerradius $layerradius 0px !important
 
 .tool-box div:last-child
-    border-radius: 0px 0px $layerradius $layerradius !important
+    border-radius: $layerradius 0px 0px $layerradius !important
 
 .tool-button
     position: relative
@@ -27,7 +27,7 @@
     height: 30px
     background: $colorgrey
     color: $colortext
-    float: center
+    float: right
     font-size: 17px
     text-align: center
     pointer-events: visible
@@ -54,7 +54,7 @@
     right: 10px
     width: 150px
     height: auto
-    background: $colorthirdgrey
+    background: $colorsecondgrey
     z-index: 100
     border-radius: $layerradius
     padding: 5px
@@ -64,7 +64,7 @@
     width: 150px
     left: 0px
     color: $colortext
-    background: $colorthirdgrey
+    background: $colorsecondgrey
     height: 25px
     padding: 0px
     border-bottom: none !important
@@ -139,7 +139,7 @@
     background: none
     pointer-events: none
 [aria-label][role~="tooltip"]::after
-    background: $colorthirdgrey
+    background: $colorsecondgrey
     max-height: 15px
     line-height: 15px
     pointer-events: none

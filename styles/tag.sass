@@ -1,61 +1,56 @@
 
 @import '_colors'
+@import '_variables'
 
 /***************************************** TAG MANAGER ****************************************/
 
-$tagPadding: 20px
-.tag-container
-    position: sticky
-    width: calc(100% - #{2 * $tagPadding})
-    height: auto
-    top: 0px
-    background: $colorgrey
-    z-index: 100
-    padding: $tagPadding
-    border-bottom: 2px solid $colordarkgrey
-    box-shadow: 0px 0px 5px $colordarkgrey
-
+.sortable-button
     .input-container
+        position: absolute !important
+        left: 26px !important
+        width: calc(100% - 29px) !important
+        pointer-events: visible
         margin: 0px
+        top: 2px
+        z-index: 20
 
-    .tag-option-container
-        position: relative
-        display: inline-block
-        top: 0px
-        left: 0px
-        width: 100%
-        height: 30px
-        font-size: 18px
-        margin-top: 20px
-
-        .tag-option-button
-            position: absolute
-            width: calc(50% - #{$tagPadding / 2})
+        input
+            background: $colorinputbackground
+            height: $heightinput - 4px
+            width: 100%
+            padding-left: 2px
             top: 0px
-            color: $colortext
-            display: inline-block
-            z-index: 10
-            float: left
-            font-size: 17px
+            // transition: all 200ms ease
+            border: 2px solid $colormain
+            pointer-events: visible
 
-        .input-delete
-            background: rgba($colorerror, 0.3)
-            &:hover
-                background: rgba($colorerror, 0.7) !important
-                
+.tag-option-container
+    position: absolute
+    display: inline-block
+    top: 7px
+    right: 5px
+    width: 120px
+    height: 24px
+    font-size: 14px
 
-    .tag-input
+    .tag-option-button
         position: relative
+        margin-left: 5px
+        width: 25px
+        height: 20px !important
+        color: $colortext
         display: inline-block
-        float: left
-        left: 0px
-        top: 0px
-        width: 100% !important
+        z-index: 10
+        float: right
+        pointer-events: visible
 
-    .copy-icon
-        font-size: 20px
-        right: 18px
-        position: absolute
-        top: 5px
-        color: $colormain
+        .input-button-icon
+            font-size: 13px !important
+            height: 20px !important
+            line-height: 20px !important
+
+    .input-delete
+        background: rgba($colorerror, 0.3)
+        &:hover
+            background: rgba($colorerror, 0.7) !important
 

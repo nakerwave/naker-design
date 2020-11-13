@@ -1,5 +1,5 @@
 
-import { widthinputcontainer, Input } from '../Inputs/input';
+import { Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
 
 import { el, mount, setAttr, setStyle, unmount } from 'redom';
@@ -10,22 +10,29 @@ import filter from 'lodash/filter';
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
 
+export interface LabelData {
+    image?: string,
+    text?: string,
+    link?: string,
+}
+
 export interface asset {
     type: string,
-    url: string,
+    url?: string,
     thumbnail?: string,
+    label?: LabelData,
     removable?: boolean,
     saved?: boolean,
     button?: HTMLElement,
-};
+}
 
 export interface assetEvents {
     change?: Function,
     focus?: Function,
     blur?: Function,
-};
+}
 
-export class BaseAssetButton extends Input {
+export class BaseAssetButton extends Input<string> {
     url: string;
     type: string;
     removable = true;
@@ -190,7 +197,7 @@ export class ImageAssetButton extends BaseAssetButton {
             let image: string;
             if (!thumbnail) image = url;
             else image = thumbnail;
-            let extension = image.substr(image.lastIndexOf('.') + 1);
+            let extension = assetPicker.getExtension(image);
             if (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1) {
                 setStyle(this.image, { display: 'block' });
                 setStyle(this.textDisplay, { display: 'none' });
@@ -273,7 +280,7 @@ export class AssetPicker extends UI {
     constructor() {
         super();
         this.el = el('div.asset-picker', [
-            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker', onclick: (evt) => { evt.stopPropagation(); this.hidePicker(true); } }, 
+            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker' }, 
             ),
             this.fixedel = el('div.fixed-asset-part', 
                 el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(true); } },
@@ -281,8 +288,21 @@ export class AssetPicker extends UI {
                 )
             ) 
         ]);
-        this.hide();
 
+        this.setEvents();
+        this.addRemoveAssetButton();
+        this.hide();
+    }
+
+    getExtension(url: string) {
+        return url.substr(url.lastIndexOf('.') + 1);
+    }
+
+    getFileName(url: string) {
+        return url.substr(url.lastIndexOf('/') + 1);
+    }
+    
+    setClickOutside() {
         // Click outside asset picker will always hide it
         window.addEventListener("click", (e) => {
             // Is it a click outside and not on a dropzone input
@@ -290,9 +310,6 @@ export class AssetPicker extends UI {
                 if (this.shown) this.hidePicker(true);
             }
         });
-
-        this.setEvents();
-        this.addRemoveAssetButton();
     }
 
     addIconButton(type:asset['type'], icon:string, callback: Function) {
@@ -348,7 +365,7 @@ export class AssetPicker extends UI {
     }
     
     showRemoveAssetButton() {
-        setStyle(this.removeAssetButton, { display: 'block' });
+        setStyle(this.removeAssetButton, { display: 'inline-block' });
     }
 
     hideRemoveAssetButton() {
@@ -455,7 +472,7 @@ export class AssetPicker extends UI {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let button = assetsType[i].button;
-            setStyle(button, { display: 'block' });
+            setStyle(button, { display: 'inline-block' });
         }
         return this;
     }
@@ -464,7 +481,7 @@ export class AssetPicker extends UI {
         let assetsType = filter(this.thumbnails, (a) => { return a.type == type });
         for (let i = 0; i < assetsType.length; i++) {
             let asset = assetsType[i];
-            if (!asset.button) assetsType[i].button = this.addButton(type, asset.url, asset.thumbnail, asset.removable);
+            if (!asset.button) assetsType[i].button = this.addButton(asset);
         }
     }
 
@@ -481,6 +498,7 @@ export class AssetPicker extends UI {
         this.type = type;
         this.setAssetList(type);
         this.showPicker();
+        this.hideRemoveAssetButton();
     }
 
     waitingAsset: string = null;
@@ -500,7 +518,7 @@ export class AssetPicker extends UI {
         this.eraseWaiting();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {        
         if (!url) return console.error('Missing asset '+type+' url');
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
@@ -509,7 +527,7 @@ export class AssetPicker extends UI {
             if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
                 let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
                 if (this.shown) {
-                    let button = this.addButton(type, url, thumbnail, removable);
+                    let button = this.addButton(newAsset);
                     newAsset.button = button;
                 }
                 this.thumbnails.push(newAsset);
@@ -519,38 +537,70 @@ export class AssetPicker extends UI {
 
     addAssetMode = false;
     addAssetFunction: Function;
-    addButton(type: string, url: string, image: string, removable: boolean) {
-        if (removable === undefined) removable = true;
+    addButton(asset: asset) {
+        if (asset.removable === undefined) asset.removable = true;
+        let button = this.buildButton(asset, () => {
+            this.selectAsset(asset.url);
+        });
+        mount(this.assetlist, button);
+        return button;
+    }
+
+    buildButton(asset: asset, callback: Function) {
         let button: HTMLElement;
-        let extension = image.substr(image.lastIndexOf('.') + 1);
-        if (image.indexOf('http') != -1 && ['png', 'jpg'].indexOf(extension) != -1) {
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, 
+        let thumbnail = asset.thumbnail;
+        let extension = this.getExtension(thumbnail);
+        let isImageUrl = (thumbnail.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
+        let isFrommPoly = (thumbnail.indexOf('googleusercontent') != -1);
+        let isFrommClara = (thumbnail.indexOf('resources.clara.io') != -1);
+        // Google content soesn't have extension
+        if (isImageUrl || isFrommPoly || isFrommClara) {
+            button = el('div.asset-button', { onclick: () => { callback() } },
                 // Draggable set to false or it can show drag zone
-                el('img', { draggable: false, src: image, style: { width: '100%', height: '100%', 'object-fit': 'contain' } }),
+                el('img', { draggable: false, src: thumbnail }),
             );
         } else {
-            button = el('div.asset-button', { onclick: () => { this.selectAsset(url) } }, [
-                el('div.asset-text', image),
-                el('div.backicon.icon-' + type,
+            let isUrl = (thumbnail.indexOf('http') != -1);
+            if (isUrl) thumbnail = this.getFileName(thumbnail);
+            button = el('div.asset-button', { onclick: () => { callback() } }, [
+                el('div.asset-text', thumbnail),
+                el('div.backicon.icon-' + asset.type,
                     [el('span.path1'), el('span.path2'), el('span.path3')]
-                ),
+                )
             ]);
         }
-        
-        if (removable) {
-            let removebutton = el('div.delete-asset-button.icon-delete', {
+
+        let logo = (asset.label) ? asset.label : {};
+        if (asset.removable) this.addHoverLayer(button, logo, asset);
+        else this.addHoverLayer(button, logo);
+        return button;
+    }
+
+    addHoverLayer(button: HTMLElement, labelData: LabelData, removableAsset?: asset) {
+        let text = labelData.text;
+        let image = (labelData.image) ? labelData.image : 'https://asset.naker.io/image/main/logo-without-margin.png';
+        let hover = el('div.hover-button-layer', [
+            (text)? el('div.add-text', text) : null,
+            el('img', { src: image, onclick: (e) => {
+                if (labelData.link) {
+                    e.stopPropagation();
+                    window.open(labelData.link, '_blank');
+                }
+            }, }),
+        ]);
+        if (removableAsset) {
+            let removebutton = el('div.delete-asset-button', {
                 onclick: (e) => {
                     e.stopPropagation();
-                    this.deleteAsset(type, url);
+                    this.deleteAsset(removableAsset.type, removableAsset.url);
                 },
                 onmouseover: (e) => {
                     e.stopPropagation(); // Not working
                 }
-            }, [el('span.path1'), el('span.path2'), el('span.path3')])
-            mount(button, removebutton);
+            }, 'Delete')
+            mount(hover, removebutton);
         }
-        mount(this.assetlist, button);
-        return button;
+        mount(button, hover);
     }
 
     selectAsset(url: string) {

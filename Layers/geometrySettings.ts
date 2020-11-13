@@ -37,8 +37,8 @@ export interface geometryObject {
 
 export class GeometrySettings extends InputGroupSwitch {
 
-    constructor(undo?: Undo) {
-        super('Geometry', false, undo);
+    constructor(undo?: Undo<any>) {
+        super('Geometry', undo, false);
         let copybutton = el('div.right-icon.copy-icon.icon-copypaste', { onclick: () => { this.checkCopyPaste() }, onmouseenter: () => { this.title.textContent = 'Copy/Paste Geometry' }, onmouseleave: () => { this.title.textContent = 'Main settings' } },
             [el('span.path1'), el('span.path2'), el('span.path3')]
         );

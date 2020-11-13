@@ -15,7 +15,7 @@ import { ExportModal } from './exportModal';
 
 export class Header {
 
-    undo: Undo;
+    undo: Undo<any>;
     session: Session;
     exportModal: ExportModal;
     control: HTMLElement;
@@ -24,18 +24,16 @@ export class Header {
     projectname: HTMLElement;
     formname: HTMLElement;
 
-    constructor(session: Session, undo: Undo, exportModal: ExportModal) {
+    constructor(session: Session, undo: Undo<any>, exportModal?: ExportModal) {
         this.undo = undo;
         this.session = session;
         this.exportModal = exportModal;
 
         this.setContent();
         this._setEvents();
-        this.addLoginModal();
         this.checkUserAndProject();
-        this.setLogo();
 
-        let project = session.getProject();
+        let project = undo.getProjectOptions();
         if (project) this.setProject(project);
 
         session.loadUser((user: User) => {
@@ -44,9 +42,8 @@ export class Header {
         });
     }
 
-    setLogo() {
+    addLogo() {
         let EngineName = this.session.engine.charAt(0).toUpperCase() + this.session.engine.slice(1);
-        
         let logo = el('div.naker-engine', 'Naker', {
                 onclick: (evt) => { this.goToDashboard(); },
             },
@@ -106,7 +103,7 @@ export class Header {
         });
 
         window.addEventListener('focus', () => {
-            this.loginModal.hide();
+            if (this.loginModal) this.loginModal.hide();
             this.checkUserAndProject();
         });
     }
@@ -115,7 +112,7 @@ export class Header {
         if (!this.session.api.isConnected() || !this.session.saving) {
             unmount(this.control, this.loaderEl);
             unmount(this.control, this.formname);
-            this.userPearl.setIcoSphere();
+            if (this.userPearl) this.userPearl.setIcoSphere();
         } else {
             mount(this.control, this.loaderEl);
             mount(this.control, this.formname);
@@ -140,8 +137,9 @@ export class Header {
 
     setProject(project: ProjectSavedOptions) {
         if (project.name) this.setName(project.name);
-        if (project.waterMark) this.exportModal.setWaterMark(project.waterMark);
-        if (project.websiteUrl) this.exportModal.setWebsiteUrl(project.websiteUrl);
+        if (project.waterMark && this.exportModal) this.exportModal.setWaterMark(project.waterMark);
+        if (project.pushQuality && this.exportModal) this.exportModal.setPushQuality(project.pushQuality);
+        if (project.websiteUrl && this.exportModal) this.exportModal.setWebsiteUrl(project.websiteUrl);
     }
 
     setName(name: string) {
@@ -168,12 +166,15 @@ export class Header {
     copiedEffect: HTMLElement;
 
     addLoginModal() {
-        this.userPearl = new UserPearl(this.logoEl, this.session);
         this.loginModal = new LoginModal(this.session, this.userPearl);
     }
 
+    addUserPearl() {
+        if (!this.userPearl) this.userPearl = new UserPearl(this.logoEl, this.session);
+    }
+
     setUserPearl(data: User) {
-        if (data.pearl && data.pearl.length != 0) {
+        if (this.userPearl && data.pearl && data.pearl.length != 0) {
             this.userPearl.updatePearl(data.pearl);
             let color = data.pearlcolor;
             let pearlColor = (color && color.length != 0) ? color : [255, 255, 255];

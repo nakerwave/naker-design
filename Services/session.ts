@@ -25,7 +25,7 @@ export class Session {
     undo: Undo<any>;
 
     subDomain: 'app' | 'staging' | 'test' | 'cruise' | 'development';
-    engine: 'story' | 'back' | 'form';
+    engine: 'studio' | 'story' | 'back' | 'form';
     designer: string;
 
     environments = {
@@ -71,7 +71,7 @@ export class Session {
             redirect: true,
             intercom: false,
             sentry: false,
-            admin: false,
+            admin: true,
             debug: true,
         },
     };
@@ -85,7 +85,7 @@ export class Session {
     admin: boolean;
     debug: boolean;
 
-    constructor(engine: 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo<any>) {
+    constructor(engine: 'studio' | 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo<any>) {
         this.setEngine(engine);
         
         this.api = api;
@@ -117,7 +117,7 @@ export class Session {
         document.addEventListener('mouseout', (evt) => {
             if (evt.toElement == null && evt.relatedTarget == null) {
                 // Make sure project loaded before save when mouseout
-                if (this.project.id && this.savingInterval) this.saveOnlineAndLocal(() => { });
+                if (this.projectId && this.savingInterval) this.saveOnlineAndLocal(() => { });
             }
         });
 
@@ -136,25 +136,28 @@ export class Session {
         });
     }
 
-    engineList = ['back', 'form', 'story'];
+    engineList = ['back', 'form', 'story', 'studio'];
     sentryIds = {
+        studio: 'https://64462014944f48b3bc58327feb758f7c@sentry.io/1522591',
         story: 'https://64462014944f48b3bc58327feb758f7c@sentry.io/1522591',
         back: 'https://7e62b4e539db4d2ba599726125f742e2@sentry.io/1539712',
         // form: 'https://7e62b4e539db4d2ba599726125f742e2@sentry.io/1539712'
     };
     spyPrefix = {
+        studio: 'NST',
         story: 'NS',
         back: 'NB',
         form: 'NF'
     };
     engineColor: Array<number>;
     engineColors = {
+        studio: [102, 51, 255],
         story: [0, 153, 255],
         back: [255, 8, 114],
         form: [0, 204, 102],
     };
 
-    setEngine(engine: 'story' | 'back' | 'form') {
+    setEngine(engine: 'studio' | 'story' | 'back' | 'form') {
         this.engine = engine;
         this.engineColor = this.engineColors[this.engine]
     }
@@ -239,7 +242,7 @@ export class Session {
             let first = urlArray[i];
             let next = urlArray[i + 1];
             if (this.engineList.indexOf(first) != -1) {
-                this.project.id = next;
+                this.projectId = next;
             }
         }
         
@@ -261,8 +264,8 @@ export class Session {
     }
 
     setProjectId(projectId:string) {
-        this.project.id = projectId;
-        history.pushState({}, null, '/' + this.engine + '/' + this.project.id);
+        this.projectId = projectId;
+        history.pushState({}, null, '/' + this.engine + '/' + this.projectId);
     }
 
     loadProject(callback: Function) {
@@ -271,46 +274,47 @@ export class Session {
         if (cookie) cookieParsed = JSON.parse(cookie);
 
         // If no id in url but one in cookie saved, we take it
-        if (!this.project.id) {
+        if (!this.projectId) {
             if (cookieParsed && cookieParsed.id) {
                 this.setProjectId(cookieParsed.id);
             }
         // If id in url but do not match with cookie saved, we ignore bad cookie
-        } else if (cookieParsed && (this.engine != cookieParsed.engine || this.project.id != cookieParsed.id)) {
+        } else if (cookieParsed && (this.engine != cookieParsed.engine || this.projectId != cookieParsed.id)) {
             cookieParsed = null;
         }
 
         // We make sure project exist in the base
-        if (this.project.id && this.saving) {
-            this.api.get(this.engine, { id: this.project.id }, (data) => {
+        if (this.projectId && this.saving) {
+            this.api.get(this.engine, { id: this.projectId }, (data) => {
                 if (data.success !== false) {
                     // We don't save engine in database
                     if (!data.engine) data.engine = this.engine;
                     // Cookie will always have the most recent json
                     if (cookieParsed) data.json = cookieParsed.json;
-                    this.projectFound(callback, data);
+                    this.projectFound(data, callback);
                 } else {
                     this.setProjectId('');
-                    if (cookieParsed) this.projectFound(callback, cookieParsed);
-                    else this.projectFound(callback, {});
+                    if (cookieParsed) this.projectFound(cookieParsed, callback);
+                    else this.projectFound({}, callback);
                 }
             });
         } else {
-            this.projectFound(callback, cookieParsed);
+            this.projectFound(cookieParsed, callback);
         }
     }
 
-    project: ProjectSavedOptions = {};
-    projectFound(callback: Function, project: ProjectSavedOptions) {
-        callback(cloneDeep(project));
-
-        this.lastProjectChange = cloneDeep(project);
-        this.setProject(project);
-        this.sendProjectToListeners(this.project);
+    projectId: string;
+    projectFound(project: ProjectSavedOptions, callback?: Function) {
+        let clonedProject = cloneDeep(project);
+        
+        this.lastProjectChange = clonedProject;
+        this.undo.setProjectOptions(clonedProject);
+        this.sendProjectToListeners(clonedProject);
+        if (callback) callback(clonedProject);
 
         // Start auto save after get project to make sure we don't save empty project
         this.startLocalSaving(5);
-        if (project && this.project.id) this.startOnlineSaving(30);
+        if (project && this.projectId) this.startOnlineSaving(30);
     }
 
     createNew(callback?: Function) {
@@ -320,28 +324,12 @@ export class Session {
                 this.setProjectId(data.id);
                 this.sendConnectToListeners(this.user);
                 this.startOnlineSaving(30); 
-                this.projectFound(callback, data);
+                this.projectFound(data, callback);
             } else {
                 toastr.error('🤷 Oups, there was an error while saving your project');
-                this.projectFound(callback, {});
+                this.projectFound({}, callback);
             }
         });
-    }
-
-    setProject(project: ProjectSavedOptions) {
-        // Do not replace project or it will erase the id
-        // this.project = project;
-        for (const key in project) {
-            this.project[key] = project[key];
-        }
-    }
-
-    setWaterMark(waterMark: boolean) {
-        this.project.waterMark = waterMark;
-    }
-
-    setWebsiteUrl(setWebsiteUrl: string) {
-        this.project.websiteUrl = setWebsiteUrl;
     }
 
     saveProjectName(name: string) {
@@ -350,7 +338,7 @@ export class Session {
             if (!success) {
                 toastr.error('🤷 Oups, there was an error while saving the new name');
             } else {
-                this.project.name = name;
+                this.undo.setProjectOption('name', name);
                 let projectJson = this.undo.getFullProjectRoundedJson();
                 this.saveLocal(projectJson);
             }
@@ -358,7 +346,7 @@ export class Session {
     }
 
     updateProjectData(update, callback?: Function) {
-        update.id = this.project.id;
+        update.id = this.projectId;
         this.api.post(this.engine + '/update', update, {}, (data) => {
             if (callback) callback(data.success);
         });
@@ -388,7 +376,7 @@ export class Session {
         this.stopOnlineSaving();
         this.savingInterval = setInterval(() => {
             if (document.hasFocus()) {
-                if (!this.project.id || !this.engine) {
+                if (!this.projectId || !this.engine) {
                     this.stopOnlineSaving();
                     return console.error("You can't save project online without a projectId and engine");
                 }
@@ -432,13 +420,14 @@ export class Session {
     }
     
     lastProjectChange: ProjectSavedOptions = {};
-    keytoCheck = ['name', 'waterMark', 'websiteUrl'];
+    keytoCheck = ['name', 'waterMark', 'websiteUrl', 'pushQuality'];
     checkProjectDataUpdate() {
         let change: ProjectSavedOptions = {};
+        let projectOption = this.undo.getProjectOptions();
         for (let i = 0; i < this.keytoCheck.length; i++) {
             const key = this.keytoCheck[i];
-            if (this.lastProjectChange[key] != this.project[key]) change[key] = this.project[key];
-            this.lastProjectChange[key] = this.project[key];
+            if (this.lastProjectChange[key] != projectOption[key]) change[key] = projectOption[key];
+            this.lastProjectChange[key] = projectOption[key];
         }
         if (Object.keys(change).length != 0) this.updateProjectData(change);
     }
@@ -455,11 +444,13 @@ export class Session {
         if (!this.savingLocal) return;
         let project: any = {};
         project.json = json;
-        project.name = this.project.name;
-        project.waterMark = this.project.waterMark;
-        project.websiteUrl = this.project.websiteUrl;
+        let projectOption = this.undo.getProjectOptions();
+        project.name = projectOption.name;
+        project.waterMark = projectOption.waterMark;
+        project.pushQuality = projectOption.pushQuality;
+        project.websiteUrl = projectOption.websiteUrl;
         project.engine = this.engine;
-        if (this.project.id) project.id = this.project.id;
+        if (this.projectId) project.id = this.projectId;
         Cookies.set('naker_' + this.engine, JSON.stringify(project), { expires: 7 });
     }
 
@@ -478,7 +469,7 @@ export class Session {
 
     requestSaveOnline(json: any, callback: Function) {
         this.sendSaveToListeners();        
-        this.api.post(this.engine + '/save', { id: this.project.id }, { body: json }, (data) => {
+        this.api.post(this.engine + '/save', { id: this.projectId }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             else console.log('project not successfully saved online');
             this.saved = data.success;
@@ -517,7 +508,7 @@ export class Session {
         fd.append("image", image);
         const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };
         let uploadImageUrl = (this.uploadImageUrl) ? this.uploadImageUrl : this.engine + '/image';
-        this.api.post(uploadImageUrl, { id: this.project.id }, { body: fd, header: header }, (data) => {
+        this.api.post(uploadImageUrl, { id: this.projectId }, { body: fd, header: header }, (data) => {
             if (callback) callback(data.success, data.image);
         });
     }
@@ -561,15 +552,11 @@ export class Session {
     }
 
     isProjectSaved () {
-        return (this.project.id)? true : false;
+        return (this.projectId)? true : false;
     }
 
     getProjectId() {
-        return this.project.id;
-    }
-
-    getProject():ProjectSavedOptions {
-        return (this.project) ? this.project : {};
+        return this.projectId;
     }
 
     getUser(): User {

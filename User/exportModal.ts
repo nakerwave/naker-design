@@ -1,8 +1,9 @@
 import { Modal } from '../Layers/modal';
 import { Session } from '../Services/session';
 import { Undo } from '../Services/undo';
+import { CheckboxInput } from '../Inputs/checkbox';
 
-import { el, mount, setStyle, setAttr, unmount } from 'redom';
+import { el, mount, setStyle, setAttr, unmount, setChildren } from 'redom';
 import { Event } from '@sentry/browser';
 import find from 'lodash/find';
 import Airtable from 'airtable';
@@ -20,11 +21,11 @@ var airtableBase = new Airtable({ apiKey: 'keyvYd17RuctTa2Ln' }).base('appTmDsoa
 export class ExportModal extends Modal {
     
     session: Session;
-    undo: Undo;
-    engine: 'back' | 'form' | 'story';
+    undo: Undo<any>;
+    engine: 'back' | 'form' | 'story' | 'studio';
     version: string
     
-    constructor(session: Session, undo: Undo, engine: 'back' | 'form' | 'story', version:string) {
+    constructor(session: Session, undo: Undo<any>, engine: 'back' | 'form' | 'story' | 'studio', version:string) {
         super('Embed your Design!', "", 'modal-export');
         this.session = session;
         this.undo = undo;
@@ -38,6 +39,11 @@ export class ExportModal extends Modal {
     }
 
     CMSList: Array<cms> = [
+        {
+            name: 'Embed',
+            article: 'https://help.naker.io/en/collections/2457130-integration-and-export',
+            logo: 'https://asset.naker.io/image/cms/script.png',
+        },
         {
             name: 'Webflow',
             article: 'https://help.naker.io/en/articles/3560328-integration-in-webflow',
@@ -98,7 +104,6 @@ export class ExportModal extends Modal {
         mount(this.control, this.cmsContent);
     }
 
-    waterMarkCheckBox: HTMLElement;
     websiteUrlInput: HTMLElement;
     exportContent: HTMLElement;
     helpLink: HTMLElement;
@@ -106,54 +111,101 @@ export class ExportModal extends Modal {
     idInput: HTMLElement;
     classInput: HTMLElement;
     waterMarkLayer: HTMLElement;
+    waterMarkCheckBox: HTMLElement;
+    pushQualityLayer: HTMLElement;
+    pushQualityCheckBox: HTMLElement;
     setExport() {
         this.exportContent = el('div.modal-content', [
-            el('div', [
-                el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
-                    this.helpImage = el('img'),
-                    this.helpLink = el('div')
-                ),
-                el('div.modal-layer', [
-                    el('div.modal-number', '1.'),
-                    el('div.modal-text', 'Link of your website'),
-                    this.websiteUrlInput = el('input.modal-input', { type: 'text', onblur: (evt) => { this.addLinkRecord(evt) }, placeholder: 'https://' }),
-                ]),
-                el('div.modal-layer', [
-                    el('div.modal-number', '2.'),
-                    el('div.modal-text', 'Put the ID or the Class of the destination container'),
-                    this.idInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, placeholder: 'ID' }),
-                    el('div.modal-or', 'OR'),
-                    this.classInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedClass(evt) }, placeholder: 'Class' }),
-                ]),
-                el('div.modal-layer', [
-                    el('div.modal-number', '3.'),
-                    el('div.modal-text', 'Copy/paste this snippet in the head or body tag of your website. Check the tutorial above if needed.'),
-                    el('div.modal-code', { onclick: () => { this.setCodeToCopy() } }, [
-                        this.copiedCode = el('div.modal-copied-text.editor-scroll'),
-                        this.copiedEffect = el('div.modal-copied', 'Copied to Clipboard 👌'),
-                        // el('div.icon-copypaste.modal-copyicon',
-                        //     [el('span.path1'), el('span.path2'), el('span.path3')]
-                        // )
-                    ]),
-                ]),
-
-                this.waterMarkLayer = el('div.modal-layer', [
-                    el('div.modal-text.modal-watermark-text', 'Naker watermark'),
-                    el('div.main-checkbox.modal-watermark',
-                        this.waterMarkCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked:true, onclick: (evt) => { this.checkWatermark(evt) } },
-                            el('div.handle')
-                        )
-                    )
+            // this.waterMarkLayer = el('div.modal-layer', [
+            //     el('div.modal-text.modal-checkbox-text', 'Naker watermark'),
+            //     el('div.main-checkbox.modal-checkbox',
+            //         this.waterMarkCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked: true, onclick: () => { this.checkWatermark() } },
+            //             el('div.handle')
+            //         )
+            //     )
+            // ]),
+            // this.pushQualityLayer = el('div.modal-layer', [
+            //     el('div.modal-text.modal-checkbox-text', 'Keep HD (Hard on CPU)'),
+            //     el('div.main-checkbox.modal-checkbox',
+            //         this.pushQualityCheckBox = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off', checked: false, onclick: () => { this.checkPushQuality() } },
+            //             el('div.handle')
+            //         )
+            //     )
+            // ]),
+            el('div.modal-layer', [
+                // el('div.modal-number', '1.'),
+                el('div.modal-text', 'Link of your website'),
+                this.websiteUrlInput = el('input.modal-input', { type: 'text', onblur: (evt) => { this.addLinkRecord(evt) }, placeholder: 'https://' }),
+            ]),
+            el('div.modal-layer', [
+                // el('div.modal-number', '2.'),
+                el('div.modal-text', 'ID or the Class of the destination container'),
+                this.idInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedId(evt) }, placeholder: 'ID' }),
+                el('div.modal-or', 'OR'),
+                this.classInput = el('input.modal-input.modal-small-input', { type: 'text', oninput: (evt) => { this.setEmbedClass(evt) }, placeholder: 'Class' }),
+            ]),
+            el('div.modal-layer', [
+                // el('div.modal-number', '3.'),
+                el('div.modal-text', 'Copy/paste this snippet in the head or body tag of your website. Check the tutorial above if needed.'),
+                el('div.modal-code', { onclick: () => { this.setCodeToCopy() } }, [
+                    this.copiedCode = el('div.modal-copied-text.editor-scroll'),
+                    this.copiedEffect = el('div.modal-copied', 'Copied to Clipboard 👌'),
+                    // el('div.icon-copypaste.modal-copyicon',
+                    //     [el('span.path1'), el('span.path2'), el('span.path3')]
+                    // )
                 ]),
             ]),
-            // el('div.modal-right', [
-            //     el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
-            //         this.helpImage = el('img'),
-            //         this.helpLink = el('div')
-            //     ),
-            //     // this.helpLink = el('div.input-button', "Go to *** help", { onclick: () => { this.goToHelp(); } }),
-            // ])
+            el('div.input-button.cms-button.cms-help-button', { onclick: () => { this.goToHelp(); } },
+                this.helpImage = el('img'),
+                this.helpLink = el('div')
+            ),
         ]);
+    }
+
+    addCheckBox(layer: HTMLElement, label: string, value: boolean, callback: Function): CheckboxInput {
+        // let checked = value;
+        // let checkboxButton: HTMLElement;
+        // let checkbox = el('div.modal-checkbox-container', [
+        //     el('div.modal-text.modal-checkbox-text', label),
+        //     el('div.main-checkbox.modal-checkbox',
+        //         checkboxButton = el('button.btn.btn-sm.btn-toggle', {
+        //             type: 'button', 
+        //             'aria-pressed': 'false', 
+        //             autocomplete: 'off',
+        //             checked: value,
+        //             onclick: (evt) => {
+        //                 checked = !checkboxButton.getAttribute('checked');
+        //                 console.log(checkboxButton.getAttribute('checked'));
+                        
+        //                 setAttr(checkboxButton, { checked: checked }); 
+        //                 console.log(checkboxButton.getAttribute('checked'));
+        //                 callback(checked);
+        //             } 
+        //             },
+        //             el('div.handle')
+        //         )
+        //     )
+        // ]);
+        // mount(layer, checkbox);
+
+        let checkboxInput = new CheckboxInput(layer, label, value);
+        checkboxInput.on('change', (checked) => {
+            callback(checked);
+            this.undo.pushState();
+        });
+        return checkboxInput;
+        // return checkboxButton;
+    }
+
+    addLayer(children: Array<HTMLElement> | HTMLElement, index?: number): HTMLElement {
+        let newLayer = el('div.modal-layer', children);
+        if (index !== undefined) {
+            let beforChild = this.exportContent.childNodes[index];
+            this.exportContent.insertBefore(newLayer, beforChild);
+        } else {
+            mount(this.exportContent, newLayer)
+        }
+        return newLayer;
     }
 
     shareContent: HTMLElement;
@@ -206,12 +258,18 @@ export class ExportModal extends Modal {
         let cms = find(this.CMSList, (cms) => { return cms.name == 'Custom script' });
         this.showExport(cms);
     }
+
+    showMainExport() {
+        let cms = find(this.CMSList, (cms) => { return cms.name == 'Embed' });
+        this.showExport(cms);
+        unmount(this.control, this.footer);
+    }
     
     currentCMS: cms;
-    showExport(cms: cms) {
+    showExport(cms?: cms) {
         this.currentCMS = cms;
-        this.title.textContent = 'Embed your Design!';
         this.helpLink.innerText = 'Show ' + cms.name + ' tutorial';
+        this.title.textContent = 'Embed your Design!';
         setAttr(this.helpImage, { src: cms.logo });
         unmount(this.control, this.shareContent);
         unmount(this.control, this.cmsContent);
@@ -222,19 +280,33 @@ export class ExportModal extends Modal {
     }
 
     checkWatermark() {
-        let checked = !this.session.getProject().waterMark;
-        this.session.setWaterMark(checked);
+        let checked = !this.undo.getProjectOptions().waterMark;
+        this.undo.setProjectOption('waterMark', checked);
         setAttr(this.waterMarkCheckBox, { checked: checked });
         this.setEmbedCode();
-        if (!checked) {
-            let shareUrl = 'https://app.naker.io/' + this.session.engine;
-            let shareTitle = "Want to remove the waterMark? Please share Naker with your friends and let's make the web cool again:";
-            this.showShare(shareUrl, shareTitle);
-        }
+        if (!checked) this.showShareAfterWatermark();
+    }
+
+    showShareAfterWatermark() {
+        let shareUrl = 'https://app.naker.io/' + this.session.engine;
+        let shareTitle = "Want to remove the waterMark? Please share Naker with your friends and let's make the web cool again:";
+        this.showShare(shareUrl, shareTitle);
     }
     
     setWaterMark(waterMark: boolean) {
         if (waterMark !== undefined) setAttr(this.waterMarkCheckBox, { checked: waterMark });
+        this.setEmbedCode();
+    }
+
+    checkPushQuality() {
+        let checked = !this.undo.getProjectOptions().pushQuality;
+        this.undo.setProjectOption('pushQuality', checked);
+        setAttr(this.pushQualityCheckBox, { checked: checked });
+        this.setEmbedCode();
+    }
+
+    setPushQuality(pushQuality: boolean) {
+        if (pushQuality !== undefined) setAttr(this.pushQualityCheckBox, { checked: pushQuality });
         this.setEmbedCode();
     }
 
@@ -298,11 +370,11 @@ export class ExportModal extends Modal {
 
     addLinkRecord(evt) {
         let url = evt.target.value;
-        if (!url || url == this.session.getProject().websiteUrl) return;
-        this.session.setWebsiteUrl(url);
+        if (!url || url == this.undo.getProjectOptions().websiteUrl) return;
+        this.undo.setProjectOption('websiteUrl', url);
         
         if (this.session.subDomain == 'development') return;        
-        let project = this.session.getProject();
+        let project = this.undo.getProjectOptions();
         let user = this.session.getUser();
         
         airtableBase('URL from export modal').create([
@@ -330,7 +402,7 @@ export class ExportModal extends Modal {
     footerText: HTMLElement;
     copyLink() {
         this.session.saveOnlineAndLocal(() => {
-            this.copyToClipboard('https://harbor.naker.io/' + this.engine + '/' + this.session.getProjectId());
+            this.copyToClipboard('https://harbor.naker.io/' + this.engine + '/' + this.undo.getProjectOptionsId());
             this.footerText.innerText = 'Link copied';
             setTimeout(() => {
                 this.footerText.innerText = 'Share Project';
@@ -366,7 +438,7 @@ export class ExportModal extends Modal {
 
     getEmbedCode() {
         let idText = (this.embedContainer) ? 'data-container="' + this.embedContainer + '"' : '';
-        let waterMark = this.session.getProject().waterMark;
+        let waterMark = this.undo.getProjectOptions().waterMark;
         let JsonString = this.undo.getProjectJsonString({waterMark: waterMark});
         let viewerUrl = 'https://d23jutsnau9x47.cloudfront.net/' + this.engine + '/' + this.version + '/viewer.js';
         let text = '<script data-who="💎 Made with naker.io 💎" src="' + viewerUrl + '" data-option="' + JsonString + '" ' + idText + '></script>';
@@ -403,12 +475,12 @@ export class ExportModal extends Modal {
     show() {
         if (this.currentCMS) this.showExport(this.currentCMS);
         else this.showCMSList();
-        let project = this.session.getProject();
+        let project = this.undo.getProjectOptions();
         this.setWaterMark(project.waterMark);
+        this.setPushQuality(project.pushQuality);
         this.setWebsiteUrl(project.websiteUrl);
         
-        this._show(() => {
-            this.session.saveThumbnail();
-        });
+        this._show();
+        this.session.saveThumbnail();
     }
 }

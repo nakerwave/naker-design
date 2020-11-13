@@ -20,7 +20,7 @@ export interface numberoption {
     decimal?: number
 }
 
-export class NumberInput extends ChangeEffectInput {
+export class NumberInput extends ChangeEffectInput<number> {
 
     value: number;
     max: number;
@@ -147,12 +147,13 @@ export class NumberInput extends ChangeEffectInput {
   +------------------------------------------------------------------------+
 */
 
-interface vectorvalue {
+interface VectorInterface {
     x?: number;
     y?: number;
     z?: number;
 }
-export class VectorInput extends Input {
+
+export class VectorInput extends Input<VectorInterface> {
 
     x: NumberInput;
     y: NumberInput;
@@ -192,7 +193,7 @@ export class VectorInput extends Input {
         this.z.changedEffect();
     }
 
-    setValue(value: vectorvalue) {
+    setValue(value: VectorInterface) {
         if (value.x !== undefined) this.x.setValue(value.x);
         if (value.y !== undefined) this.y.setValue(value.y);
         if (value.z !== undefined) this.z.setValue(value.z);

@@ -66,12 +66,13 @@ label
 
 .input-paragraph
     position: relative
-    top: 0px
+    top: 5px
     height: 250px
     right: - $rightinput 
     font-size: $fontsizeinput
     line-height: 20px
     padding: 5px
+    margin-bottom: 5px
     color: $colortext
     background: $colorinputbackground
     border: 0px
@@ -83,7 +84,7 @@ label
 .input-count
     position: absolute
     bottom: 5px
-    right: $rightinput
+    right: $rightinput + 10px
     z-index: 10
 
 .input-label
@@ -130,11 +131,13 @@ input
         border: 2px solid $colormain
 
 .input-text
-    right: $rightinput
-    width: $widthinputcontainer
+    right: 15px
+    width: $widthinputcontainer !important
+
 textarea
     resize: none
     outline: none
+
 input
     &[type="number"]
         -moz-appearance: textfield
@@ -160,7 +163,6 @@ input
     text-align: center
     color: $colorlightgrey
 
-
 /***************************************** VECTOR ****************************************/
     
 .vector-container
@@ -177,7 +179,7 @@ input
 
 .vector-title
     height: 20px
-    margin-top: 8px
+    margin-top: 10px
     padding-left: 33px
     letter-spacing: 29px
     font-size: $fontsizeinput
@@ -200,3 +202,13 @@ input
         .z-axe
             transform: rotate(-45deg)
             left: 14px
+
+.copy-icon
+    left: 5px
+    position: absolute !important
+    top: 15px
+    padding: 0px
+    font-size: 24px
+    width: 35px
+    height: 25px
+    line-height: 25px !important

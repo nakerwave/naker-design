@@ -15,10 +15,13 @@ export interface inputEvents extends elementEvents {
     blur: string,
 }
 
-export class Input extends UI {
+export abstract class Input<T> extends UI {
+
+    abstract setValue(value: T);
+    abstract on(event: string, funct: (value: T) => void);
 
     label: HTMLElement;
-    labelString: string;
+    name: string;
     parent: HTMLElement;
     el: any;
     inputEvent: inputEvents;
@@ -27,7 +30,7 @@ export class Input extends UI {
     constructor(container: HTMLElement, label: string) {
         super();
         this.parent = el('div');
-        this.labelString = label;
+        this.name = label;
         this.setClass('input-container');
         mount(container, this.parent);
         this.label = el('div.input-label', label);
@@ -35,13 +38,17 @@ export class Input extends UI {
     }
     
     setClass(clas: string) {
-        if (this.labelString) {
+        if (this.name) {
             // Add input class in order to be able to set HEAP events
-            let inputName = this.labelString.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+            let inputName = this.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
             setAttr(this.parent, { class: clas + ' ' + inputName + '_input' });
         } else {
             setAttr(this.parent, { class: clas });
         }
+    }
+
+    setBoldLabel() {
+        setStyle(this.label, {'font-weight': 600 });
     }
 
     hideLabel() {

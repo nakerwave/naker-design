@@ -1,5 +1,5 @@
 
-import { Input } from './input';
+import { Input, inputEvents } from './input';
 
 import { el, mount, setChildren } from 'redom';
 
@@ -14,7 +14,7 @@ export interface textnode {
     text: string;
 }
 
-export class Button extends Input {
+export class Button extends Input<any> {
     textnode: textnode;
 
     constructor(parent: HTMLElement, textnode: textnode, className?: string) {
@@ -36,6 +36,20 @@ export class Button extends Input {
         }
     }
 
+    setValue() {
+
+    }
+
+    inputEvent: inputEvents = {
+        click: 'click',
+    };
+    on(event: string, funct: Function) {
+        this.el.addEventListener(this.inputEvent[event], (evt) => {
+            funct(evt.target.value, this, evt);
+        });
+        return this;
+    }
+
     setText(text: string) {
         this.el.textContent = text;
     }
@@ -47,7 +61,7 @@ export class Button extends Input {
   +------------------------------------------------------------------------+
 */
 
-export class ImageButton extends Input {
+export class ImageButton extends Input<any> {
     image: HTMLElement;
 
     constructor(parent: HTMLElement, label:string, imageurl: string, className?: string) {
@@ -59,8 +73,22 @@ export class ImageButton extends Input {
         this.setImage(imageurl);
     }
 
-    setImage(imageurl: string) {
-        this.image = el('img', { src: imageurl, style: { width: '100%', height: '100%', 'object-fit': 'contain' } });
+    setValue(url: string) {
+        this.setImage(url)
+    }
+
+    inputEvent: inputEvents = {
+        click: 'click',
+    };
+    on(event: string, funct: Function) {
+        this.el.addEventListener(this.inputEvent[event], (evt) => {
+            funct(evt.target.value, this, evt);
+        });
+        return this;
+    }
+
+    setImage(url: string) {
+        this.image = el('img', { src: url, style: { width: '100%', height: '100%', 'object-fit': 'contain' } });
         setChildren(this.el, [this.image]);
     }
 }

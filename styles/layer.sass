@@ -17,7 +17,7 @@ body
 .doublebold
     font-weight: 800
 
-.layer-right-with-tag
+.action-panel
     position: fixed
     right: 0px
     width: 250px
@@ -26,7 +26,7 @@ body
     border-radius: $layerradius 0px 0px 0px
     overflow-y: auto
     overflow-x: hidden
-    .layer-right
+    .sub-action-panel
         margin-block-end: 0em
         position: relative
         top: 0px
@@ -41,7 +41,7 @@ body
     border-radius: 0px $layerradius 0px 0px
     background: $colorgrey
 
-.layer-right
+.sub-action-panel
     position: fixed
     top: 0px
     right: 0px
@@ -50,6 +50,7 @@ body
     transition: all 100ms ease
     background: $colorgrey
     border-radius: $layerradius 0px 0px 0px
+    transition: all ease 200ms
 
 .layer-center-height
     position: absolute
@@ -100,11 +101,11 @@ body
     
 .parameter-title
     position: relative
-    font-size: 18px
+    font-size: 16px
     font-weight: 600
     width: 100%
-    padding: 10px
-    color: $colormain
+    padding: 10px 5px
+    color: $colortext
     height: 20px
 
 .parameter-title::first-letter
@@ -128,7 +129,7 @@ body
     font-weight: 600
     width: 100%
     padding: 10px
-    color: $colormain
+    color: $colortext
     height: 20px
     border-top: 2px solid $colordarkgrey
 

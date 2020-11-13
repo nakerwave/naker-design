@@ -20,7 +20,9 @@ export interface slideroption {
     curve?: 'logarithmic' | 'exponential' | 'linear';
 }
 
-export class Slider extends Input {
+export abstract class Slider extends Input<number> {
+
+    abstract on(event: string, funct: (value: number) => void);
 
     defaultValue: number;
     min: number = 0;

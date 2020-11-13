@@ -2,51 +2,35 @@
 import { Input, inputEvents } from './input';
 
 import { el, mount, setAttr, setStyle } from 'redom';
+import { ChangeEffectInput, textoption } from './text';
 
 /*
   +------------------------------------------------------------------------+
-  | CHANGE EFFECT INPUT                                                    |
+  | PARAGRAPH INPUT                                                        |
   +------------------------------------------------------------------------+
 */
 
-export abstract class ChangeEffectInput<T> extends Input<T> {
-
-    valueChangedTimeout;
-    changedEffect() {
-        if (this.valueChangedTimeout) clearTimeout(this.valueChangedTimeout);
-        setAttr(this.el, { changed: true });
-        this.valueChangedTimeout = setTimeout(() => { setAttr(this.el, { changed: false }) }, 100);
-    }
-}
-
-/*
-  +------------------------------------------------------------------------+
-  | TEXT INPUT                                                             |
-  +------------------------------------------------------------------------+
-*/
-
-export interface textoption {
-    value: string,
-    placeholder?:string,
-    size?: number,
-}
-
-export class TextInput extends ChangeEffectInput<string> {
-
+export class ParagraphInput extends ChangeEffectInput<string> {
     value: string;
+    max = 300;
 
     constructor(parent: HTMLElement, label: string, textoptions: textoption, className?: string) {
-        super(parent, label)
-        if (!className) className = 'input-parameter input-text';
+        super(parent, label);
+        if (this.label) setAttr(this.label, { class: 'input-label input-label-paragraph' });
+        if (!className) className = 'input-paragraph input-large-width editor-scroll';
         if (!textoptions.placeholder) textoptions.placeholder = '';
-        if (!textoptions.value) textoptions.value = '';
-        
-        this.el = el('input', { class: className });
+        this.el = el('textarea', { class: className, maxlength: this.max });
         mount(this.parent, this.el);
-        setAttr(this.el, { type: 'text', placeholder: textoptions.placeholder.toString(), onfocus: () => { this.el.select() } });
+        setAttr(this.el, { placeholder: textoptions.value.toString() });
         this.value = textoptions.value.toString();
         this.setEvents();
-        if (textoptions.size) this.setSize(textoptions.size);
+        this.setCount();
+    }
+
+    count: any;
+    setCount() {
+        this.count = el('div', { class: 'input-count' });
+        mount(this.el.parentNode, this.count);
     }
 
     setValue(value: string) {
@@ -55,11 +39,8 @@ export class TextInput extends ChangeEffectInput<string> {
         this.value = value.toString();
         setAttr(this.el, { value: value });
         this.changedEffect();
+        this.count.textContent = this.value.length + '/' + this.max;
         return this;
-    }
-
-    setSize(size: number) {
-        setStyle(this.el, { width: size + 'px' });
     }
 
     setPlaceholder(text: string) {
@@ -70,6 +51,7 @@ export class TextInput extends ChangeEffectInput<string> {
     setEvents() {
         this.el.addEventListener('input', (evt) => {
             this.value = evt.target.value;
+            this.count.textContent = this.value.length + '/' + this.max;
         });
         this.el.addEventListener("keyup", (evt) => {
             event.preventDefault();

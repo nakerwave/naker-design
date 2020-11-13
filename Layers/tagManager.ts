@@ -1,4 +1,3 @@
-
 import { actionPanel } from './panels';
 import { Button } from '../Inputs/button';
 import { TextInput } from '../Inputs/text';
@@ -12,9 +11,6 @@ import { el, setAttr, setChildren, mount } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-export let actionPanelWithTag = el('div.layer-right-with-tag.editor-scroll');
-mount(document.body, actionPanelWithTag);
-
 export interface tagableObject {
     tag: string;
 }
@@ -26,9 +22,9 @@ export class TagManager {
     deletebutton: HTMLElement;
     duplicatebutton: HTMLElement;
     tagInput: TextInput;
-    undo: Undo;
+    undo: Undo<any>;
 
-    constructor(undo?: Undo) {
+    constructor(undo?: Undo<any>) {
         this.el = el('div.tag-container',
             el('div.tag-option-container',
                 [
@@ -118,7 +114,7 @@ export class TagManager {
     }
     
     unSelect () {
-        setChildren(actionPanelWithTag, []);
+        setChildren(actionPanel, []);
         // Do not set content to null as some listeners needs it like in duplicate
         // this.content = null;
     }
@@ -128,6 +124,5 @@ export class TagManager {
         this.content = content;
         if (content.tag) this.tagInput.setValue(content.tag);
         else this.tagInput.setPlaceholder('Enter tag');
-        setChildren(actionPanelWithTag, [this.el, actionPanel]);
     }
 }
