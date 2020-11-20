@@ -1,4 +1,3 @@
-
 import { el, mount, unmount, setAttr, setStyle } from 'redom';
 import { Undo } from '../Services/undo';
 
