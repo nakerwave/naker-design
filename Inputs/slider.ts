@@ -17,6 +17,7 @@ export interface slideroption {
     unit?: string,
     step?: number;
     power?: number;
+    secondlabel?: string;
     curve?: 'logarithmic' | 'exponential' | 'linear';
 }
 
@@ -51,7 +52,6 @@ export abstract class Slider extends Input<number> {
 
     createSlider(parent: HTMLElement, value: number) {
         // Need to recalculate slider min when logarithmic curve
-        this.setClass('input-container input-container-big');
         let min = this.checkNumberCurve(this.min);
         let max = this.max;
         this.noUiSlider = noUiSlider.create(parent, {
@@ -140,6 +140,41 @@ export abstract class Slider extends Input<number> {
         return this;
     }
 }
+
+export class SimpleSliderInput extends Slider {
+
+    constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
+        super(parent, label, slideroption);
+        this.setClass('input-container simple-slider');
+        let value = this.checkAccuracy(slideroption.value);
+        this.createSlider(this.parent, value);
+        if (slideroption.secondlabel) {
+            let secondlabel = el('div.input-label.right-label', slideroption.secondlabel);
+            mount(this.parent, secondlabel);
+        }
+        return this;
+    }
+
+    setValue(value: number) {
+        this.setSliderValue(value);
+    }
+
+    // See page https://refreshless.com/nouislider/events-callbacks/ to understand nouislider events
+    // Be careful because event are very sensitive and it can break a lot of things like undo
+    numberInputEvent: inputEvents = {
+        change: 'input',
+        focus: 'focus',
+        blur: 'blur',
+    };
+    lastSliderValue: number;
+    on(event: string, funct: Function) {
+        this.onSlider(event, (value) => {
+            funct(value, this);
+        });
+        return this;
+    }
+}
+
 
 export class SliderInput extends Slider {
 

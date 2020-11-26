@@ -7,7 +7,7 @@ import { ParagraphInput } from '../Inputs/paragraph';
 import { LinkInput } from '../Inputs/link';
 import { NumberInput, numberoption, VectorInput } from '../Inputs/number';
 import { CheckboxInput } from '../Inputs/checkbox';
-import { SliderInput, slideroption } from '../Inputs/slider';
+import { SliderInput, SimpleSliderInput, slideroption } from '../Inputs/slider';
 import { RadioInput, radiooption, RadioIconInput, radioiconoption } from '../Inputs/radio';
 import { SelectInput, selectoption } from '../Inputs/select';
 import { ColorButton, coloroption } from '../Pickers/colorPicker';
@@ -167,6 +167,17 @@ export class InputGroup extends UI {
 
     addSlider(label: string, slideroption: slideroption, callback: Function) {
         let sliderInput = new SliderInput(this.el, label, slideroption);
+        sliderInput.on('change', (value) => {
+            callback(value);
+        });
+        sliderInput.on('blur', (value) => {
+            this.undo.pushState();
+        });
+        return sliderInput;
+    }
+
+    addSimpleSlider(label: string, slideroption: slideroption, callback: Function) {
+        let sliderInput = new SimpleSliderInput(this.el, label, slideroption);
         sliderInput.on('change', (value) => {
             callback(value);
         });
