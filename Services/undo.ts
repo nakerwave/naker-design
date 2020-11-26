@@ -128,10 +128,11 @@ export abstract class Undo<T> {
             this.futureChange.unshift(this.pastChange.pop());
             let newState = merge(cloneDeep(past.back), this.presentState);
             this.presentState = this.getDifference(newState, past.forward);
-            this.sendToObserver(UndoEvent.Undo, past.back, this.presentState)
-            this.sendToObserver(UndoEvent.Change, past.back, this.presentState)
+            this.sendToObserver(UndoEvent.Undo, past.back, this.presentState);
+            this.sendToObserver(UndoEvent.Change, past.back, this.presentState);
             return true;
         } else {
+            this.sendToObserver(UndoEvent.Undo, null, this.presentState);
             return false;
         }
     }
@@ -147,6 +148,7 @@ export abstract class Undo<T> {
             this.sendToObserver(UndoEvent.Change, future.forward, this.presentState)
             return true;
         } else {
+            this.sendToObserver(UndoEvent.Redo, null, this.presentState);
             return false;
         }
     }

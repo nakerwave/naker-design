@@ -75,7 +75,7 @@ export class LoginModal extends Modal {
                 }),
             ),
             this.errorEl = el('div.form-group.error-message.colorerror'),
-            this.loaderEl = el('div.loader', { opacity: 0 }),
+            this.loaderEl = el('div.loader.loader-animation', { opacity: 0 }),
             el('div.button.colormainbg', { onclick: () => this.tryLogin() }, 'Log In'),
             el('a.colormain.bold', { href: '/signup' }, 'Sign Up'),
         ]);

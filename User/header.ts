@@ -57,7 +57,7 @@ export class Header {
             this.logoEl = el('div.dashboard-button', { 
                 onclick: (evt) => { this.goToDashboard(); },
             }),
-            this.loaderEl = el('div.loader'),
+            this.loaderEl = el('div.loader.loader-animation'),
             this.formname = el('form.form-name', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
                 this.projectname = el('input.project-name', {
                     type: 'text',

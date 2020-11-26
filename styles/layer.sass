@@ -99,12 +99,13 @@ body
     border-bottom: 2px solid $colordarkgrey
     padding-bottom: 10px
     
+$titlePadding: 5px
 .parameter-title
     position: relative
     font-size: 16px
     font-weight: 600
-    width: 100%
-    padding: 10px 5px
+    width: calc(100% - #{$titlePadding * 2})
+    padding: 10px $titlePadding
     color: $colortext
     height: 20px
 
