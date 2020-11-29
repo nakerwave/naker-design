@@ -1,4 +1,3 @@
-
 import { Input } from '../Inputs/input';
 import { UI } from '../Layers/common';
 
@@ -18,6 +17,7 @@ export interface LabelData {
 
 export interface asset {
     type: string,
+    name?: string,
     url?: string,
     thumbnail?: string,
     label?: LabelData,
@@ -35,7 +35,7 @@ export interface assetEvents {
 export class BaseAssetButton extends Input<string> {
     url: string;
     type: string;
-    removable = true;
+    removable = false;
 
     constructor(parent: HTMLElement, label: string, assetoption: asset) {
         super(parent, label);
@@ -362,6 +362,7 @@ export class AssetPicker extends UI {
             )
         );
         mount(this.assetlist, this.removeAssetButton);
+        this.hideRemoveAssetButton();
     }
     
     showRemoveAssetButton() {
@@ -518,21 +519,38 @@ export class AssetPicker extends UI {
         this.eraseWaiting();
     }
 
-    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean) {        
+    addAsset(type: string, url: string, thumbnail: string, saved?: boolean, removable?: boolean): asset {        
         if (!url) return console.error('Missing asset '+type+' url');
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
-        let asset = find(this.thumbnails, (a) => { return a.type == type && a.url == url });
+        let asset = this.getAssetByUrl(type, url);
         if (!asset) {
-            if (assetTypes.indexOf(type) != -1 && url.indexOf('http') != -1) {
+            if (assetTypes.indexOf(type) != -1 && this.isImageString(url)) {
                 let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
-                if (this.shown) {
+                // if (this.shown) {
                     let button = this.addButton(newAsset);
                     newAsset.button = button;
-                }
+                // }
                 this.thumbnails.push(newAsset);
+                return newAsset;
             }
+        } else {
+            return asset;
         }
+    }
+
+    addImage(fileName: string, url: string, saved?: boolean, removable?: boolean): asset {
+        let asset = this.addAsset('image', url, url, saved, removable)
+        asset.name = fileName;
+        return asset;
+    }
+
+    getAssetByUrl(type: string, url: string) {
+        return find(this.thumbnails, (a) => { return a.type == type && a.url == url });
+    }
+
+    getAssetByName(type: string, name: string) {
+        return find(this.thumbnails, (a) => { return a.type == type && a.name == name });
     }
 
     addAssetMode = false;
@@ -542,22 +560,24 @@ export class AssetPicker extends UI {
         let button = this.buildButton(asset, () => {
             this.selectAsset(asset.url);
         });
-        mount(this.assetlist, button);
+        this.assetlist.prepend(button);
+        // mount(this.assetlist, button);
         return button;
     }
 
     buildButton(asset: asset, callback: Function) {
         let button: HTMLElement;
         let thumbnail = asset.thumbnail;
-        let extension = this.getExtension(thumbnail);
-        let isImageUrl = (thumbnail.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
-        let isFrommPoly = (thumbnail.indexOf('googleusercontent') != -1);
-        let isFrommClara = (thumbnail.indexOf('resources.clara.io') != -1);
+        let isImageString = this.isImageString(thumbnail);
+        let isFromPoly = (thumbnail.indexOf('googleusercontent') != -1);
+        let isFromClara = (thumbnail.indexOf('resources.clara.io') != -1);
         // Google content soesn't have extension
-        if (isImageUrl || isFrommPoly || isFrommClara) {
+        if (isImageString || isFromPoly || isFromClara) {
             button = el('div.asset-button', { onclick: () => { callback() } },
                 // Draggable set to false or it can show drag zone
                 el('img', { draggable: false, src: thumbnail }),
+                el('div.loader-layer', { onclick: (e) => { e.stopPropagation(); e.preventDefault(); }}),
+                el('div.loader-animation')
             );
         } else {
             let isUrl = (thumbnail.indexOf('http') != -1);
@@ -574,6 +594,13 @@ export class AssetPicker extends UI {
         if (asset.removable) this.addHoverLayer(button, logo, asset);
         else this.addHoverLayer(button, logo);
         return button;
+    }
+
+    isImageString(s: string): boolean {
+        let extension = this.getExtension(s);
+        let isImageUrl = (s.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
+        let isBase64 = (s.indexOf('base64') != -1);
+        return isImageUrl || isBase64;
     }
 
     addHoverLayer(button: HTMLElement, labelData: LabelData, removableAsset?: asset) {

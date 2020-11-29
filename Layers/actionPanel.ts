@@ -11,9 +11,8 @@ import { SliderInput, SimpleSliderInput, slideroption } from '../Inputs/slider';
 import { RadioInput, radiooption, RadioIconInput, radioiconoption } from '../Inputs/radio';
 import { SelectInput, selectoption } from '../Inputs/select';
 import { ColorButton, coloroption } from '../Pickers/colorPicker';
-import { AssetButton, ImageAssetButton, TextAssetButton } from '../Pickers/assetPicker';
+import { asset, AssetButton, ImageAssetButton, TextAssetButton } from '../Pickers/assetPicker';
 import { ColorAssetInput } from '../Pickers/colorassetInput';
-import { asset } from '../Pickers/assetPicker';
 import { UI } from './common';
 import { actionPanel } from './panels';
 

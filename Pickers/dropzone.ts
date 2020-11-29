@@ -1,4 +1,4 @@
-import { assetPicker } from './assetPicker';
+import { AssetPicker, assetPicker } from './assetPicker';
 
 import toastr from 'toastr';
 import Dropzone from 'dropzone';
@@ -92,10 +92,18 @@ export class DropLogic extends Dropzone {
         toastr.error(error);
     }
 
+    headers = {};
+    addHeader(key: string, value: string) {
+        this.headers[key] = value;
+    }
+
     sending(file, xhr, formData) {
         // Add naker key for cloudinary
         formData.append('timestamp', Date.now() / 1000 | 0);
-        formData.append('upload_preset', 'hdtmkzvn');
+        for (const key in this.headers) {
+            const value = this.headers[key];
+            formData.append(key, value);
+        }
     }
 
     success(file, response) {
@@ -198,7 +206,7 @@ export class DropUi {
         mount(this.container, title);
     }
 
-    setinPicker() {
+    setInAssetPicker() {
         this.setParent(assetPicker.el);
         setAttr(assetPicker.el, { class: 'picker-with-dropzone asset-picker' });
     }
@@ -228,6 +236,40 @@ export class SimpleDropzone extends DropLogic {
     constructor(type: string, uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
         super(type, uploadUrl, formats, maxWeight, callback);
         this.dropUi = new DropUi((evt) => { this.drop(evt) });
+    }
+
+}
+
+export class DropzoneAndAsset extends SimpleDropzone {
+
+    constructor(type: string, uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
+        super(type, uploadUrl, formats, maxWeight, callback);
+        // this.dropUi.setInAssetPicker();
+
+        this.on("sending", (file, xhr, formData) => {
+            assetPicker.show();
+            let fileName = file.name;
+            this.toBase64(file, (base64) => {
+                let asset = assetPicker.addImage(fileName, base64);
+                setAttr(asset.button, { loading: true });
+            });
+        });
+
+        this.on("success", (file, response) => {
+            let fileName = file.name;
+            let asset = assetPicker.getAssetByName(type, fileName);
+            setAttr(asset.button, { loading: false });
+        });
+
+        let uploadButton = el('div.upload', { onclick: () => {this.element.click()} }, 'Upload');
+        assetPicker.el.prepend(uploadButton);
+    }
+
+    toBase64(file, callback: Function) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {callback(reader.result);};
+        // reader.onerror = error => reject(error);
     }
 
 }
