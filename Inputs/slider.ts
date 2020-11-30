@@ -38,14 +38,19 @@ export abstract class Slider extends Input<number> {
         this.el = this.parent;
         if (slideroption) this.initSliderVar(slideroption);
     }
+
+    setMinMax(min: number, max: number) {
+        this.max = max;
+        this.min = min;
+        if (this.noUiSlider) this.noUiSlider.updateOptions({ range: { 'min': min, 'max': max } });
+    }
     
     initSliderVar(slideroption: slideroption) {
         this.defaultValue = slideroption.value;
         if (slideroption.step) this.step = slideroption.step;
         if (slideroption.curve) this.curve = slideroption.curve;
         if (slideroption.power) this.power = slideroption.power;
-        this.max = slideroption.max;
-        this.min = slideroption.min;
+        this.setMinMax(slideroption.min, slideroption.max);
         let value = this.checkAccuracy(slideroption.value);
         this.lastSliderValue = value;
     }
@@ -143,14 +148,15 @@ export abstract class Slider extends Input<number> {
 
 export class SimpleSliderInput extends Slider {
 
+    secondlabel: HTMLElement;
     constructor(parent: HTMLElement, label: string, slideroption: slideroption) {
         super(parent, label, slideroption);
         this.setClass('input-container simple-slider');
         let value = this.checkAccuracy(slideroption.value);
         this.createSlider(this.parent, value);
         if (slideroption.secondlabel) {
-            let secondlabel = el('div.input-label.right-label', slideroption.secondlabel);
-            mount(this.parent, secondlabel);
+            this.secondlabel = el('div.input-label.right-label', slideroption.secondlabel);
+            mount(this.parent, this.secondlabel);
         }
         return this;
     }
