@@ -18,12 +18,11 @@ body
     font-weight: 800
 
 .action-panel
-    position: fixed
     right: 0px
-    width: 250px
+    width: #{$actionpanelwidth - 2 * $actionmargin}
+    padding: $actionmargin
     transition: all 100ms ease
     background: $colorgrey
-    border-radius: $layerradius 0px 0px 0px
     overflow-y: auto
     overflow-x: hidden
     .sub-action-panel
