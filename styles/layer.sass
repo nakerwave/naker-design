@@ -3,7 +3,7 @@
 @import '_variables'
 
 body
-    font-family: 'Noto Sans', sans-serif
+    font-family: 'Syne', sans-serif
     font-size: 15px
     margin: auto
     overflow: hidden
@@ -94,6 +94,9 @@ body
     overflow: initial
     overflow-x: hidden
 
+    .parameter-title
+        text-transform: uppercase
+
 .parameter-border
     border-bottom: 2px solid $colordarkgrey
     padding-bottom: 10px
@@ -107,9 +110,8 @@ $titlePadding: 5px
     padding: 10px $titlePadding
     color: $colortext
     height: 20px
-
-.parameter-title::first-letter
-    text-transform: uppercase
+    &::first-letter
+        text-transform: uppercase
 
 .switch-title
     padding-left: 16px

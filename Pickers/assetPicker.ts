@@ -584,9 +584,8 @@ export class AssetPicker extends UI {
             if (isUrl) thumbnail = this.getFileName(thumbnail);
             button = el('div.asset-button', { onclick: () => { callback() } }, [
                 el('div.asset-text', thumbnail),
-                el('div.backicon.icon-' + asset.type,
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
-                )
+                el('div.loader-layer', { onclick: (e) => { e.stopPropagation(); e.preventDefault(); } }),
+                el('div.loader-animation')
             ]);
         }
 

@@ -74,10 +74,10 @@ export class LoginModal extends Modal {
                     onkeypress: (e) => this.keypressInput(e)
                 }),
             ),
-            this.errorEl = el('div.form-group.error-message.colorerror'),
+            this.errorEl = el('div.form-group.error-message'),
             this.loaderEl = el('div.loader.loader-animation', { opacity: 0 }),
-            el('div.button.colormainbg', { onclick: () => this.tryLogin() }, 'Log In'),
-            el('a.colormain.bold', { href: '/signup' }, 'Sign Up'),
+            el('div.button', { onclick: () => this.tryLogin() }, 'Log In'),
+            el('a.bold', { href: '/signup' }, 'Sign Up'),
         ]);
         mount(this.control, modalContent);
     }
