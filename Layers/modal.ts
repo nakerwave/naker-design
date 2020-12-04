@@ -21,8 +21,10 @@ export class Modal {
         // We use a form to make sure we have no autocompletion
         this.control = el('form.modal.' + modalclass, { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } },
             [
-                el('div.modal-close.icon-close', { onclick: () => { this.backgroundClick(); } },
-                    [el('span.path1'), el('span.path2'), el('span.path3')]
+                el('div.modal-close.button-neumorphisme', { onclick: (() => { this.backgroundClick() }) },
+                    el('div.button-shadow',
+                        el('div.icon', 'x')
+                    )
                 ),
                 this.title = el('div.modal-title'),
                 this.description = el('div.modal-description', description),
@@ -45,6 +47,7 @@ export class Modal {
         this.hide();
     }
 
+    shown = false;
     show() {
         this._show();
     }
@@ -53,6 +56,7 @@ export class Modal {
         for (let i = 0; i < modalList.length; i++) {
             if (modalList[i] != this) modalList[i]._hide();
         }
+        this.shown = true;
         setAttr(this.back, { visible: true });
         setAttr(this.control, { visible: true });
     }
@@ -63,10 +67,10 @@ export class Modal {
     _hide() {
         setAttr(this.back, { visible: false });
         setAttr(this.control, { visible: false });
-        // ! Otherwise some element in the modal can still be clickable
-        // Opcity 0 is not enough
+        //! Otherwise some element are still clickable above the rest
+        this.shown = false;
         setTimeout(() => {
-            setStyle(this.control, { display: 'none' });
+            if (!this.shown) setStyle(this.control, { display: 'none' });
         }, 300);
     }
 }

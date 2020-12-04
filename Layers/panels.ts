@@ -16,7 +16,7 @@ export let subActionPanel = el('form.sub-action-panel.parameter-container.editor
   +------------------------------------------------------------------------+
 */
 // We use a form to make sure we have no autocompletion
-export let actionPanel = el('form.action-panel.editor-scroll', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
+export let actionPanel = el('form.asset-panel.action-panel.editor-scroll', { autocomplete: "off", onsubmit: (evt) => { evt.preventDefault(); } });
 mount(document.body, actionPanel);
 
 /*

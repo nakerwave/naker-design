@@ -4,12 +4,12 @@
 
 /***************************************** MODAL ****************************************/
 $modalZindex: 1000
-$modalRadius: 10px
+$modalRadius: 30px
 
 .modal
     position: absolute
-    width: 550px
-    height: auto
+    width: calc(100% - 260px)
+    height: calc(100% - 110px)
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
@@ -20,6 +20,7 @@ $modalRadius: 10px
     opacity: 0
     transition: all 200ms ease
     pointer-events: none
+    padding: 30px
 
     &[visible="true"]
         pointer-events: visible
@@ -31,7 +32,7 @@ $modalRadius: 10px
     left: 0px
     width: 100%
     height: 100%
-    background-color: $colordarkgrey
+    background-color: $colorlightgrey
     z-index: $modalZindex
     cursor: auto
     opacity: 0
@@ -44,21 +45,20 @@ $modalRadius: 10px
 
 .modal-title
     position: relative
-    padding: 10px 20px
     top: 0px
     left: 0px
-    font-size: 22px
-    font-weight: 600
-    width: calc(100% - 40px)
-    text-align: left
+    font-size: 20px
+    margin-bottom: 20px
+    font-weight: 800
+    width: 100%
+    text-align: center
     height: auto
-    padding-bottom: 10px
-    background-color: darken($colormain, 20%)
     filter: contrast(1.4)
     background-size: 100% 100%
-    background-image: url(https://asset.naker.io/image/main/Fond_Light.png)
     background-size: cover
     border-radius: $modalRadius $modalRadius 0px 0px 
+    &::first-letter
+        text-transform: uppercase
 
 .modal-content
     padding: 20px 40px 20px 20px
@@ -75,7 +75,7 @@ $modalRadius: 10px
     margin-top: 10px
     font-size: 16px
     height: auto
-    text-align: left
+    text-align: center
     line-height: 1.5
 
 .modal-explanation
@@ -90,7 +90,7 @@ $modalRadius: 10px
     width: 40px
     height: 40px
     border: 0px
-    z-index: 100
+    z-index: 10
     color: $colormain
     float: center
     border-radius: $radiusinput
@@ -141,7 +141,6 @@ $modalRadius: 10px
     left: 50%
     transform: translate(-50%, 0px)
 
-
 .modal-share-copied-text
     white-space: nowrap
     overflow: hidden
@@ -151,13 +150,19 @@ $modalRadius: 10px
     bottom: 10px
     right: 10px
     font-size: 20px
-    
-// .modal-close
-//     position: absolute
-//     top: 20px
-//     right: 20px
-//     font-size: 30px
-//     cursor: pointer
+
+.modal-close
+    position: absolute
+    width: $buttonHeight
+    top: 20px
+    right: 20px
+    z-index: 10
+
+    .icon
+        font-size: 24px
+        font-family: cursive
+        top: 5px !important
+
 
 .modal-input
     left: 0px
@@ -218,8 +223,6 @@ $modalRadius: 10px
     left: 0px
 
 /***************************************** EXPORT MODAL ****************************************/
-.modal-export
-    width: 460px
 
 .modal-layer
     position: relative

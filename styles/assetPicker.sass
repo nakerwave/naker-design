@@ -3,18 +3,6 @@
 @import '_variables'
 @import 'sharedPickerStyle'
 
-.modal-close
-    position: absolute
-    color: $colordarkgrey
-    z-index: 1000
-    top: 10px
-    height: 0px
-    text-align: right
-    font-size: 30px
-    cursor: pointer
-    width: calc(100% - 10px)
-    pointer-events: visible
-
 /***************************************** ASSET PICKERS ****************************************/
 
 .asset-picker
@@ -28,6 +16,10 @@
     color: $colormain
     overflow: hidden
     z-index: 5
+        
+    .asset-button
+        width: 125px
+        height: 75px
 
     .fixed-asset-part
         position: absolute
@@ -50,11 +42,10 @@
         cursor: pointer
         border-radius: 3px
 
+$buttonradius: 10px
 .asset-button
     position: relative
-    width: 125px
-    height: 75px
-    background: $colorsecondgrey
+    background: #ffffff
     color: $colortext
     margin: 4px
     display: inline-block
@@ -62,6 +53,7 @@
     cursor: pointer
     background-size: cover
     transition: all ease 200ms
+    border-radius: $buttonradius
 
     .loader-layer
         opacity: 0
@@ -89,14 +81,19 @@
             opacity: 1
 
     &:hover
-        background: $colorgrey
-        .hover-button-layer
-            opacity: 1
+        background: $colorsecondgrey
 
     img
         width: 100%
+        position: absolute
+        top: 30px
         height: 100%
-        object-fit: cover
+        object-fit: contain
+        left: 10px
+        width: calc(100% - 20px)
+        height: calc(100% - 40px)
+        border-radius: 6px
+        background: $colordarkgrey
 
     .asset-text
         position: relative
@@ -113,33 +110,30 @@
         left: 0px
         width: 100%
         height: 100%
-        opacity: 0
         transition: all 100ms ease
         z-index: 10
 
         .add-text
             position: absolute
-            max-width: calc(100% - 20px)
+            max-width: calc(100% - 35px)
             height: 18px
-            top: 5px
-            right: 5px
+            top: 3px
+            left: 25px
             border-radius: 5px
-            font-size: 12px
+            font-size: 13px
+            font-weight: 700
             padding: 3px 5px
             text-overflow: ellipsis
             white-space: nowrap
             overflow: hidden
-            background: rgba($colordarkgrey, 0.7)
-            &:hover
-                background: $colordarkgrey
         
         .add-text::first-letter
             text-transform: uppercase
 
         img
             position: absolute
-            bottom: 5px
-            right: 5px
+            top: 5px
+            left: 5px
             width: 20px
             height: 20px
             object-fit: cover

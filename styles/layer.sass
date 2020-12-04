@@ -139,3 +139,53 @@ $titlePadding: 5px
     position: relative
     width: 200px
     height: 100px
+
+/***************************************** BUTTONS ****************************************/
+
+.button-neumorphisme
+    border-radius: $buttonHeight
+    overflow: hidden
+    height: $buttonHeight
+
+    .button-shadow
+        position: relative
+        display: grid
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        height: calc(100% - 6px)
+        width: calc(100% - 6px)
+        border-radius: $buttonHeight
+        color: $colormain
+        cursor: pointer
+        // background: linear-gradient(145deg, $colorgrey, darken($colorgrey, 5))
+        background: #ffffff
+        box-shadow:  1px 1px 7px lighten($colormain, 10), -1px -1px 7px $colorgrey
+        transition: all ease 200ms
+        &:hover
+            box-shadow:  2px 2px 10px $colormain, -2px -2px 10px $colorgrey
+
+        .icon
+            position: relative
+            top: 50%
+            left: 50%
+            transform: translate(-50%, -50%)
+            width: 12px
+            height: 12px
+            position: relative
+            font-weight: 600
+
+$bordersize: 6px
+.horizontal-border-neumorphisme
+    position: absolute
+    height: $bordersize
+    border-radius: 5px
+    background: linear-gradient(180deg, $colorgrey, darken($colorgrey, 5))
+    box-shadow: 1px 1px 1px darken($colorgrey, 5), -1px -1px 1px #ffffff
+
+.vertical-border-neumorphisme
+    position: absolute
+    width: $bordersize !important
+    border-radius: 5px
+    background: linear-gradient(90deg, $colorgrey, darken($colorgrey, 5))
+    box-shadow: 1px 1px 1px darken($colorgrey, 5), -1px -1px 1px #ffffff
