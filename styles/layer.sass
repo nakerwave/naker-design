@@ -59,6 +59,7 @@ body
 .editor-scroll
     overflow-y: auto
     overflow-x: hidden
+    scroll-behavior: smooth
     &::-webkit-scrollbar
         width: 5px
         height: 5px
@@ -146,6 +147,8 @@ $titlePadding: 5px
     border-radius: $buttonHeight
     overflow: hidden
     height: $buttonHeight
+    background: lighten($colormain, 50)
+    box-shadow: inset -2px -2px 10px rgba(0, 0, 0, 0.1), inset 2px 2px 10px rgba(255, 255, 255, 0.5)
 
     .button-shadow
         position: relative
@@ -158,12 +161,13 @@ $titlePadding: 5px
         border-radius: $buttonHeight
         color: $colormain
         cursor: pointer
+        background: linear-gradient(180deg, $colorgrey 0%, #FFFFFF 100%)
         // background: linear-gradient(145deg, $colorgrey, darken($colorgrey, 5))
-        background: #ffffff
-        box-shadow:  1px 1px 7px lighten($colormain, 10), -1px -1px 7px $colorgrey
+        // background: #ffffff
+        box-shadow:  3px 3px 10px lighten($colormain, 10), -3px -3px 10px $colorgrey
         transition: all ease 200ms
         &:hover
-            box-shadow:  2px 2px 10px $colormain, -2px -2px 10px $colorgrey
+            box-shadow:  3px 3px 10px $colormain, -3px -3px 10px $colorgrey
 
         .icon
             position: relative
@@ -175,17 +179,30 @@ $titlePadding: 5px
             position: relative
             font-weight: 600
 
+.button-link
+    width: 100%
+    text-align: center
+    
+    .button-link-text
+        position: relative
+        display: inline-block
+        width: auto
+        font-size: 15px
+        font-weight: 600
+        cursor: pointer
+        border-bottom: 3px solid $colortext
+
 $bordersize: 6px
 .horizontal-border-neumorphisme
     position: absolute
     height: $bordersize
     border-radius: 5px
     background: linear-gradient(180deg, $colorgrey, darken($colorgrey, 5))
-    box-shadow: 1px 1px 1px darken($colorgrey, 5), -1px -1px 1px #ffffff
+    box-shadow: 1px 1px 2px darken($colorgrey, 15), -1px -1px 2px #ffffff
 
 .vertical-border-neumorphisme
     position: absolute
     width: $bordersize !important
     border-radius: 5px
     background: linear-gradient(90deg, $colorgrey, darken($colorgrey, 5))
-    box-shadow: 1px 1px 1px darken($colorgrey, 5), -1px -1px 1px #ffffff
+    box-shadow: 1px 1px 2px darken($colorgrey, 15), -1px -1px 2px #ffffff

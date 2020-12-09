@@ -135,18 +135,26 @@
 
 /***************************************** MICRO TOOLTIP ****************************************/
 
-[aria-label][role~="tooltip"]::before
-    background: none
-    pointer-events: none
+// [aria-label][role~="tooltip"]::before
+//     background: none
+//     pointer-events: none
 [aria-label][role~="tooltip"]::after
-    background: $colorsecondgrey
-    max-height: 15px
-    line-height: 15px
+    background: $colortext
+    color: $colorsecondgrey
+    max-height: 20px
+    line-height: 20px
+    border-radius: 20px
     pointer-events: none
     font-family: 'Syne', sans-serif
 [role~="tooltip"]
-    --microtip-font-size: 14px
-[role~="tooltip"][data-microtip-position|="bottom"]::after
-    margin-top: 4px
+    --microtip-font-size: 16px
+
+// Change margin so that the tooltip is closer 
 [role~="tooltip"][data-microtip-position|="top"]::after
     margin-bottom: 4px
+[role~="tooltip"][data-microtip-position|="top"]::before
+    margin-bottom: 0px
+// [role~="tooltip"][data-microtip-position|="bottom"]::after
+//     margin-top: 4px
+[role~="tooltip"][data-microtip-position|="bottom"]::before
+    margin-top: 6px

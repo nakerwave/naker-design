@@ -6,13 +6,12 @@
 /***************************************** ASSET PICKERS ****************************************/
 
 .asset-picker
-    position: absolute
+    position: relative
     top: 0px
     left: 0px
     width: 100%
     height: auto
     display: block
-    background: $colorgrey
     color: $colormain
     overflow: hidden
     z-index: 5
@@ -30,8 +29,9 @@
         z-index: 2
 
     .asset-scroll
-        height: 100%
+        height: calc(100% - 120px)
         overflow: hidden auto
+        position: relative
 
     .upload
         margin: 8px
@@ -45,6 +45,7 @@
 $buttonradius: 10px
 .asset-button
     position: relative
+    display: inline-block
     background: #ffffff
     color: $colortext
     margin: 4px
@@ -81,30 +82,22 @@ $buttonradius: 10px
             opacity: 1
 
     &:hover
-        background: $colorsecondgrey
-
-    img
-        width: 100%
-        position: absolute
-        top: 30px
-        height: 100%
-        object-fit: contain
-        left: 10px
-        width: calc(100% - 20px)
-        height: calc(100% - 40px)
-        border-radius: 6px
         background: $colordarkgrey
 
-    .asset-text
-        position: relative
-        font-size: 16px
-        z-index: 2
-        text-overflow: ellipsis
-        height: calc(100% - 10px)
-        overflow: hidden
-        margin: 5px
+    img
+        position: absolute
+        top: 10px
+        left: 10px
+        width: calc(100% - 20px)
+        height: calc(100% - 20px)
+        border-radius: 6px
+        background: $colordarkgrey
+        object-fit: contain
+    .small-image
+        top: 30px
+        height: calc(100% - 40px)
 
-    .hover-button-layer
+    .asset-button-title
         position: absolute
         top: 0px
         left: 0px
@@ -113,12 +106,12 @@ $buttonradius: 10px
         transition: all 100ms ease
         z-index: 10
 
-        .add-text
-            position: absolute
-            max-width: calc(100% - 35px)
+        .asset-text
+            position: relative
+            max-width: calc(100% - 20px)
             height: 18px
             top: 3px
-            left: 25px
+            left: 5px
             border-radius: 5px
             font-size: 13px
             font-weight: 700
@@ -131,7 +124,7 @@ $buttonradius: 10px
             text-transform: uppercase
 
         img
-            position: absolute
+            position: relative
             top: 5px
             left: 5px
             width: 20px

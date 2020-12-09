@@ -1,4 +1,4 @@
-import { AssetPicker, assetPicker } from './assetPicker';
+import { asset, assetPicker } from './assetPicker';
 
 import toastr from 'toastr';
 import Dropzone from 'dropzone';
@@ -177,14 +177,6 @@ export class DropUi {
             this.hide();
         }, false);
 
-        // assetPicker.on('blur', (type: string) => {
-        //     this.hide();
-        // });
-
-        // assetPicker.on('focus', (type: string) => {
-        //     if (type == this.type) this.show();
-        // });
-
         this.parent.addEventListener('drop', (evt) => {
             this.noPropagation(evt);
             this.manageDrop(evt);
@@ -242,7 +234,7 @@ export class SimpleDropzone extends DropLogic {
 
 export class DropzoneAndAsset extends SimpleDropzone {
 
-    constructor(type: string, uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
+    constructor(type: asset['type'], uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
         super(type, uploadUrl, formats, maxWeight, callback);
         // this.dropUi.setInAssetPicker();
 
