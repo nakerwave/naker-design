@@ -25,7 +25,7 @@
     line-height: 18px
     font-family: 'Syne', sans-serif
     font-size: 16px
-    font-weight: 600
+    font-weight: 700
     text-overflow: ellipsis
     white-space: nowrap
     overflow: hidden
@@ -61,20 +61,22 @@
     box-sizing: border-box
     left: 0px
     top: 0px
-    width: 100%
+    width: calc(100% - 40px)
     line-height: $heightinput+2px !important
     height: $heightinput+2px
+    border-radius: $heightinput
     font-size: 18px
-    padding-left: 5px
-    padding-top: 1px
+    margin: 5px 20px
     float: left
     color: $colortext
+    background: #FFFFFF
     cursor: pointer
+    border: 2px solid #FFFFFF
     &:hover
-        background: rgba($colormain, 0.5) !important
+        border: 2px solid $colormain
 
     &[selected="true"]
-        background: rgba($colormain, 0.5) !important
+        border: 2px solid $colormain
 
 
 .sortable-option-button
