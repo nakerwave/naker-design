@@ -3,6 +3,18 @@
 @import '_variables'
 
 /***************************************** MODAL ****************************************/
+.visible-switch
+    pointer-events: none
+    opacity: 0
+
+    &[visible="false"]
+        pointer-events: none
+        opacity: 0
+
+    &[visible="true"]
+        pointer-events: visible
+        opacity: 1
+    
 $modalZindex: 1000
 $modalRadius: 30px
 
@@ -60,6 +72,14 @@ $modalRadius: 30px
     &::first-letter
         text-transform: uppercase
 
+.modal-sub-title
+    font-weight: 700
+    font-size: 15px
+    padding-left: 18px
+    height: 50px
+    line-height: 50px
+    text-transform: uppercase
+
 .modal-content
     padding: 20px 40px 20px 20px
     position: relative
@@ -107,7 +127,7 @@ $modalRadius: 30px
 .modal-code
     position: relative
     width: auto
-    height: 50px
+    height: 60px
     padding: 10px
     margin-top: 10px
     font-size: 14px
@@ -181,8 +201,8 @@ $modalRadius: 30px
     padding: 10px 30px
     background: $colorgrey
     left: 0px
-    bottom: -20px
-    height: 20px
+    bottom: 0px
+    height: 50px
     border-radius: 0px 0px 10px 10px
 
 .modal-footer-icon
@@ -226,7 +246,7 @@ $modalRadius: 30px
 
 .modal-layer
     position: relative
-    width: calc(100% - 20px)
+    width: calc(100% - 40px)
     left: 20px
     margin-bottom: 10px
 
@@ -248,10 +268,12 @@ $modalRadius: 30px
     position: relative
     width: 100%
     margin-bottom: 5px
+    font-size: $fontsizeinput
+    font-weight: 600
 
 .modal-small-input
     position: relative
-    width: 165px !important
+    width: 154px !important
     display: inline-block
 
 .modal-or

@@ -26,7 +26,7 @@ $checkbox-height: 25px
     &.btn-sm
         &:before, &:after
             line-height: -0.5rem
-            color: $colortext
+            color: #ffffff
             letter-spacing: 0.75px
             left: 0.4125rem
             width: 2.325rem
@@ -93,11 +93,11 @@ $checkbox-height: 25px
             height: $checkbox-height - (2 * $border)
             border-radius: $radiusinput
             background: $colortext
-            // transition: all 0.1s
 
         &[checked='true']
             > .handle
                 left: 2.5rem
+                background: #ffffff
 
             &:before
                 opacity: 0.5
@@ -108,16 +108,17 @@ $checkbox-height: 25px
         &.btn-sm
             &:before, &:after
                 line-height: -0.5rem
-                color: $colortext
                 letter-spacing: 0.75px
                 width: 2.325rem
 
             &:before
                 text-align: right
+                color: $colortext
 
             &:after
                 text-align: left
                 opacity: 0
+                color: #ffffff
 
             &[checked='true']
                 &:before
