@@ -20,7 +20,7 @@ export class ExportModal extends Modal {
     exportContent: HTMLElement;
     
     constructor(session: Session, undo: Undo<any>, engine: 'back' | 'form' | 'story' | 'studio', version:string) {
-        super('Embed your Design!', "", 'modal-export');
+        super('Embed your Design', "", 'modal-export');
         this.session = session;
         this.undo = undo;
         this.engine = engine;

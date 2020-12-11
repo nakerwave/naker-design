@@ -51,7 +51,7 @@ export class NumberInput extends ChangeEffectInput<number> {
 
     unit: HTMLElement;
     setUnit(number: numberoption) {
-        this.unit = el('div', { class: 'input-unit' });
+        this.unit = el('div.input-unit');
         this.unit.textContent = number.unit;
         mount(this.parent, this.unit);
 
