@@ -483,8 +483,9 @@ export class Session {
         this.getThumbnailImage = getImage;
     }
 
-    lastTimeThumbnailSaved = new Date().getTime();
+    lastTimeThumbnailSaved = 0;
     saveThumbnail(callback?: Function) {
+        if (this.subDomain == 'development') return;
         let now = new Date().getTime();
         // We save the thumbnail maximum every minute
         if (now - this.lastTimeThumbnailSaved < 60000) {
@@ -492,7 +493,6 @@ export class Session {
             return;
         }
         this.lastTimeThumbnailSaved = now;
-
         if (this.getThumbnailImage) {
             this.getThumbnailImage((image) => {
                 this.uploadImage(image);

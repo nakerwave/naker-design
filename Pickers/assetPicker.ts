@@ -569,7 +569,7 @@ export class AssetPicker extends UI {
             (text) ? el('div.asset-text', text) : null,
         ]);
         if (removableAsset) {
-            let removebutton = el('div.delete-asset-button', {
+            let removebutton = el('div.delete-asset-button.icon-delete', {
                 onclick: (e) => {
                     e.stopPropagation();
                     this.deleteAsset(removableAsset.type, removableAsset.url);
@@ -577,7 +577,7 @@ export class AssetPicker extends UI {
                 onmouseover: (e) => {
                     e.stopPropagation(); // Not working
                 }
-            }, 'Delete')
+            }, [el('span.path1'), el('span.path2'), el('span.path3')])
             mount(hover, removebutton);
         }
         mount(button, hover);
