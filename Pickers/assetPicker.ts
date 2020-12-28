@@ -233,7 +233,7 @@ export class TextAssetButton extends BaseAssetButton {
         super(parent, label, assetoption);
         this.el = el('div.input-button.input-asset-text', { onclick: () => { this.focus() } },
             [
-                this.hover = el('div.text-hover', 
+                this.hover = el('div.text-hover',
                     el('div.icon-add', [el('span.path1'), el('span.path2'), el('span.path3')]),
                 ),
                 this.text = el('div.text-asset-name', '')
@@ -265,6 +265,11 @@ export class TextAssetButton extends BaseAssetButton {
   +------------------------------------------------------------------------+
 */
 
+interface AssetEvent {
+    event: 'show' | 'hide' | 'select',
+    funct: Function,
+}
+
 // export let assetTypes: Array<string> = ['image', 'particle', 'albedo', 'ambient', 'specular', 'emissive', 'reflectivity', 'reflection', 'refraction', 'heightmap', 'cubetexture', 'bump', 'opacity', 'model', 'video', 'sound'];
 // export let overlayAlpha = {'albedo':false, 'ambient':false, 'specular':false, 'emissive':false, 'bump':false, 'opacity':true, 'reflectivity':false, 'reflection':false, 'particle':false, 'image':true, 'heightmap':false};
 // export let assetTypes: Array<string> = ['image', 'cubetexture', 'model', 'video', 'sound'];
@@ -280,13 +285,13 @@ export class AssetPicker extends UI {
     constructor() {
         super();
         this.el = el('div.asset-picker', [
-            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker' }, 
+            this.assetlist = el('div.editor-scroll.asset-scroll', { id: 'assetpicker' },
             ),
-            this.fixedel = el('div.fixed-asset-part', 
+            this.fixedel = el('div.fixed-asset-part',
                 el('div.modal-close.icon-close', { onclick: () => { this.hidePicker(true); } },
                     [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
-            ) 
+            )
         ]);
 
         this.addRemoveAssetButton();
@@ -300,7 +305,7 @@ export class AssetPicker extends UI {
     getFileName(url: string) {
         return url.substr(url.lastIndexOf('/') + 1);
     }
-    
+
     setClickOutside() {
         // Click outside asset picker will always hide it
         window.addEventListener("click", (e) => {
@@ -311,7 +316,7 @@ export class AssetPicker extends UI {
         });
     }
 
-    addIconButton(type:asset['type'], icon:string, callback: Function) {
+    addIconButton(type: asset['type'], icon: string, callback: Function) {
         let button = el('div.no-asset-button.asset-button', { onclick: () => { callback() } },
             el('div.no-asset-icon.icon-' + icon,
                 [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -330,13 +335,13 @@ export class AssetPicker extends UI {
         let newAsset = { type: type, url: image, button: button, saved: false };
         this.thumbnails.push(newAsset);
     }
-    
+
     setParent(parent: HTMLElement) {
         mount(parent, this.el);
     }
 
     removeAssetButton: HTMLElement;
-    addRemoveAssetButton () {
+    addRemoveAssetButton() {
         this.removeAssetButton = el('div.no-asset-button.asset-button', { onclick: () => { this.selectAsset(null) } },
             el('div.no-asset-icon.icon-none',
                 [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -345,7 +350,7 @@ export class AssetPicker extends UI {
         mount(this.assetlist, this.removeAssetButton);
         this.hideRemoveAssetButton();
     }
-    
+
     showRemoveAssetButton() {
         setStyle(this.removeAssetButton, { display: 'inline-block' });
     }
@@ -356,7 +361,7 @@ export class AssetPicker extends UI {
 
     currentInput: BaseAssetButton;
     setCurrentInput(input: BaseAssetButton) {
-        this.currentInput = input;        
+        this.currentInput = input;
         this.setAssetList(input.type);
         this.addAssetMode = false;
         this.type = input.type;
@@ -401,13 +406,13 @@ export class AssetPicker extends UI {
     }
 
     getSavedAssets() {
-        let exportAssetKeys:asset = {
+        let exportAssetKeys: asset = {
             type: null,
             url: null,
             thumbnail: null
         };
 
-        let savedAssets: Array < asset > = [];
+        let savedAssets: Array<asset> = [];
         for (let i = 0; i < this.thumbnails.length; i++) {
             let asset = this.thumbnails[i];
             if (asset.saved) {
@@ -474,17 +479,17 @@ export class AssetPicker extends UI {
         this.eraseWaiting();
     }
 
-    addAsset(type: asset['type'], url: string, thumbnail: string, saved?: boolean, removable?: boolean): asset {        
-        if (!url) return console.error('Missing asset '+type+' url');
+    addAsset(type: asset['type'], url: string, thumbnail: string, saved?: boolean, removable?: boolean): asset {
+        if (!url) return console.error('Missing asset ' + type + ' url');
         if (saved === undefined) saved = true;
         if (removable === undefined) removable = true;
         let asset = this.getAssetByUrl(type, url);
         if (!asset) {
             if (this.isImageString(url)) {
-                let newAsset:asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
+                let newAsset: asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
                 // if (this.shown) {
-                    let button = this.addButton(newAsset);
-                    newAsset.button = button;
+                let button = this.addButton(newAsset);
+                newAsset.button = button;
                 // }
                 this.thumbnails.push(newAsset);
                 return newAsset;
@@ -525,7 +530,7 @@ export class AssetPicker extends UI {
         let button = el('div.asset-button', { onclick: () => { callback() } },
             // Draggable set to false or it can show drag zone
             image = el('img', { draggable: false }),
-            el('div.loader-layer', { onclick: (e) => { e.stopPropagation(); e.preventDefault(); }}),
+            el('div.loader-layer', { onclick: (e) => { e.stopPropagation(); e.preventDefault(); } }),
             el('div.loader-animation')
         );
 
@@ -534,7 +539,7 @@ export class AssetPicker extends UI {
         let isFromClara = (thumbnail.indexOf('resources.clara.io') != -1);
         // Google content soesn't have extension
         if (isImageString || isFromPoly || isFromClara) {
-            setAttr(image, {src: thumbnail});
+            setAttr(image, { src: thumbnail });
         } else {
             let isUrl = (thumbnail.indexOf('http') != -1);
             if (isUrl) thumbnail = this.getFileName(thumbnail);
@@ -560,12 +565,14 @@ export class AssetPicker extends UI {
         let text = labelData.text;
         let image = labelData.image;
         let hover = el('div.asset-button-title', [
-            (image)? el('img', { src: image, onclick: (e) => {
-                if (labelData.link) {
-                    e.stopPropagation();
-                    window.open(labelData.link, '_blank');
-                }
-            }, }) : null,
+            (image) ? el('img', {
+                src: image, onclick: (e) => {
+                    if (labelData.link) {
+                        e.stopPropagation();
+                        window.open(labelData.link, '_blank');
+                    }
+                },
+            }) : null,
             (text) ? el('div.asset-text', text) : null,
         ]);
         if (removableAsset) {
@@ -586,8 +593,9 @@ export class AssetPicker extends UI {
     selectAsset(asset: asset) {
         if (this.addAssetMode) this.addAssetFunction(asset.url);
         else if (this.currentInput) this.currentInput.setValue(asset.url, true);
-        this.sendSelect(asset);
+        this.send('select', asset);
         this.eraseWaiting();
+        this.hidePicker();
     }
 
     onAssetDeleted: Function;
@@ -619,31 +627,35 @@ export class AssetPicker extends UI {
             this.shown = true;
             this.show();
         }, 10);
+        this.send('show');
+
     }
 
-    hidePicker(erase?:boolean) {
+    hidePicker(erase?: boolean) {
         this.shown = false;
         this.hide();
         this.currentInput = undefined;
         // Depending on where hidding comes from, we must erase waiting input or not
         // For instance if loading an asset and waiting for the success, we should not erase it
         if (erase) this.eraseWaiting();
+        this.send('hide');
     }
 
-    observers: Array<Function> = [];
-    onSelect(funct: (change: asset) => void, first?: boolean) {
-        if (first) {
-            this.observers.unshift(funct);
-        } else {
-            this.observers.push(funct);
-        }
-    }
-
-    sendSelect(asset: asset) {
+    observers: Array<AssetEvent> = [];
+    send(event: AssetEvent['event'], asset?: asset) {
         for (let i = 0; i < this.observers.length; i++) {
             let observer = this.observers[i];
-            observer(asset);
+            if (observer.event == event) observer.funct(asset);
         }
+    }
+
+    on(event: AssetEvent['event'], funct: Function) {
+        let assetEvent = {
+            event: event,
+            funct: funct,
+        }
+        this.observers.push(assetEvent);
+        return this;
     }
 }
 

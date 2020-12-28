@@ -85,14 +85,14 @@ export class Session {
     admin: boolean;
     debug: boolean;
 
-    constructor(engine: 'studio' | 'story' | 'back' | 'form', api: Api, spy: Spy, undo:Undo<any>) {
+    constructor(engine: 'studio' | 'story' | 'back' | 'form', api: Api, spy: Spy, undo: Undo<any>) {
         this.setEngine(engine);
-        
+
         this.api = api;
         this.spy = spy;
         this.undo = undo;
         this.spy.setEngine(this.spyPrefix[this.engine]);
-        
+
         // getSubDomain allows testing on localhost
         let subDomain = api.getSubdomain();
         if (!subDomain) this.subDomain = 'development';
@@ -203,7 +203,7 @@ export class Session {
     disconnectListeners: Array<Function> = [];
     saveListeners: Array<Function> = [];
     projectListeners: Array<Function> = [];
-    on(event: 'connect'|'disconnect'|'save'|'project', funct: Function) {
+    on(event: 'connect' | 'disconnect' | 'save' | 'project', funct: Function) {
         if (event == 'connect') this.connectListeners.push(funct);
         if (event == 'disconnect') this.disconnectListeners.push(funct);
         if (event == 'save') this.saveListeners.push(funct);
@@ -245,7 +245,7 @@ export class Session {
                 this.projectId = next;
             }
         }
-        
+
         if (this.engine) {
             // If new project asked, remove stored data
             let query = this.api.getAllUrlParams();
@@ -263,14 +263,14 @@ export class Session {
         }
     }
 
-    setProjectId(projectId:string) {
+    setProjectId(projectId: string) {
         this.projectId = projectId;
         history.pushState({}, null, '/' + this.engine + '/' + this.projectId);
     }
 
     loadProject(callback: Function) {
         let cookie = Cookies.get('naker_' + this.engine);
-        let cookieParsed:any = {};
+        let cookieParsed: any = {};
         if (cookie) cookieParsed = JSON.parse(cookie);
 
         // If no id in url but one in cookie saved, we take it
@@ -278,7 +278,7 @@ export class Session {
             if (cookieParsed && cookieParsed.id) {
                 this.setProjectId(cookieParsed.id);
             }
-        // If id in url but do not match with cookie saved, we ignore bad cookie
+            // If id in url but do not match with cookie saved, we ignore bad cookie
         } else if (cookieParsed && (this.engine != cookieParsed.engine || this.projectId != cookieParsed.id)) {
             cookieParsed = null;
         }
@@ -306,7 +306,7 @@ export class Session {
     projectId: string;
     projectFound(project: ProjectSavedOptions, callback?: Function) {
         let clonedProject = cloneDeep(project);
-        
+
         this.lastProjectChange = clonedProject;
         this.undo.setProjectOptions(clonedProject);
         this.sendProjectToListeners(clonedProject);
@@ -319,11 +319,11 @@ export class Session {
 
     createNew(callback?: Function) {
         if (!this.saving) return;
-        this.api.post(this.engine + '/new', {name:'New '+ this.engine}, {}, (data) => {
+        this.api.post(this.engine + '/new', { name: 'New ' + this.engine }, {}, (data) => {
             if (data.success) {
                 this.setProjectId(data.id);
                 this.sendConnectToListeners(this.user);
-                this.startOnlineSaving(30); 
+                this.startOnlineSaving(30);
                 this.projectFound(data, callback);
             } else {
                 toastr.error('🤷 Oups, there was an error while saving your project');
@@ -411,14 +411,14 @@ export class Session {
         if (isEqual(projectJson, this.lastexport) && this.saved) {
             return callback(true);
         }
-        
+
         this.saveLocal(projectJson);
         this.saveOnline(projectJson, callback);
         this.checkProjectDataUpdate();
-        
+
         this.lastexport = cloneDeep(projectJson);
     }
-    
+
     lastProjectChange: ProjectSavedOptions = {};
     keytoCheck = ['name', 'waterMark', 'websiteUrl', 'pushQuality'];
     checkProjectDataUpdate() {
@@ -431,7 +431,7 @@ export class Session {
         }
         if (Object.keys(change).length != 0) this.updateProjectData(change);
     }
-    
+
     setSavingLocal(savingLocal: boolean) {
         this.savingLocal = savingLocal;
     }
@@ -439,7 +439,7 @@ export class Session {
     setSavingOnline(saving: boolean) {
         this.saving = saving;
     }
-    
+
     saveLocal(json) {
         if (!this.savingLocal) return;
         let project: any = {};
@@ -468,7 +468,7 @@ export class Session {
     }
 
     requestSaveOnline(json: any, callback: Function) {
-        this.sendSaveToListeners();        
+        this.sendSaveToListeners();
         this.api.post(this.engine + '/save', { id: this.projectId }, { body: json }, (data) => {
             if (data.success) console.log('project successfully saved online');
             else console.log('project not successfully saved online');
@@ -485,7 +485,7 @@ export class Session {
 
     lastTimeThumbnailSaved = 0;
     saveThumbnail(callback?: Function) {
-        if (this.subDomain == 'development') return;
+        // if (this.subDomain == 'development') return;
         let now = new Date().getTime();
         // We save the thumbnail maximum every minute
         if (now - this.lastTimeThumbnailSaved < 60000) {
@@ -551,8 +551,8 @@ export class Session {
         return this.sentry;
     }
 
-    isProjectSaved () {
-        return (this.projectId)? true : false;
+    isProjectSaved() {
+        return (this.projectId) ? true : false;
     }
 
     getProjectId() {

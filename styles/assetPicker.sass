@@ -15,7 +15,7 @@
     color: $colormain
     overflow: hidden
     z-index: 5
-        
+
     .asset-button
         width: 125px
         height: 75px
@@ -70,6 +70,7 @@ $buttonradius: 10px
         height: 100%
         background: $colordarkgrey
         transition: all ease 200ms
+        pointer-events: none
 
     .loader-animation
         opacity: 0
@@ -82,6 +83,7 @@ $buttonradius: 10px
 
     &[loading="true"]
         .loader-layer
+            pointer-events: visible
             opacity: 0.5
         .loader-animation
             opacity: 1
@@ -124,7 +126,7 @@ $buttonradius: 10px
             text-overflow: ellipsis
             white-space: nowrap
             overflow: hidden
-        
+
         .add-text::first-letter
             text-transform: uppercase
 
@@ -174,7 +176,7 @@ $buttonradius: 10px
     &:hover
         .image-text-container
             opacity: 0
-            
+
     img
         width: $widthinputcontainer
         border-radius: $radiusinput

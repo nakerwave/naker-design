@@ -234,6 +234,7 @@ export class SimpleDropzone extends DropLogic {
 
 export class DropzoneAndAsset extends SimpleDropzone {
 
+    uploadButton: HTMLElement;
     constructor(type: asset['type'], uploadUrl: string, formats: Array<string>, maxWeight: number, callback?: Function) {
         super(type, uploadUrl, formats, maxWeight, callback);
         // this.dropUi.setInAssetPicker();
@@ -253,14 +254,14 @@ export class DropzoneAndAsset extends SimpleDropzone {
             setAttr(asset.button, { loading: false });
         });
 
-        let uploadButton = el('div.upload', { onclick: () => {this.element.click()} }, 'Upload');
-        assetPicker.el.prepend(uploadButton);
+        this.uploadButton = el('div.upload', { onclick: (e) => { e.stopPropagation(); e.preventDefault(); this.element.click(); } }, 'Upload (' + formats.join(', ') + ')');
+        assetPicker.el.prepend(this.uploadButton);
     }
 
     toBase64(file, callback: Function) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => {callback(reader.result);};
+        reader.onload = () => { callback(reader.result); };
         // reader.onerror = error => reject(error);
     }
 
