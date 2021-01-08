@@ -371,7 +371,7 @@ export class Session {
     startOnlineSaving(frequency: number) {
         this.onlineFrequency = frequency;
         this.lastsave = new Date().getTime();
-        this.lastTimeThumbnailSaved = new Date().getTime();
+        // this.lastTimeThumbnailSaved = new Date().getTime();
 
         this.stopOnlineSaving();
         this.savingInterval = setInterval(() => {
@@ -483,20 +483,21 @@ export class Session {
         this.getThumbnailImage = getImage;
     }
 
-    lastTimeThumbnailSaved = 0;
+    // lastTimeThumbnailSaved = 0;
     saveThumbnail(callback?: Function) {
         // if (this.subDomain == 'development') return;
-        let now = new Date().getTime();
-        // We save the thumbnail maximum every minute
-        if (now - this.lastTimeThumbnailSaved < 60000) {
-            if (callback) callback();
-            return;
-        }
-        this.lastTimeThumbnailSaved = now;
+        // let now = new Date().getTime();
+        // // We save the thumbnail maximum every minute
+        // if (now - this.lastTimeThumbnailSaved < 60000) {
+        //     if (callback) callback();
+        //     return;
+        // }
+        // this.lastTimeThumbnailSaved = now;
         if (this.getThumbnailImage) {
             this.getThumbnailImage((image) => {
-                this.uploadImage(image);
-                if (callback) callback();
+                this.uploadImage(image, (res, image) => {
+                    if (callback) callback(image);
+                });
             });
         }
     }

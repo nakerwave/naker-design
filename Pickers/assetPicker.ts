@@ -595,7 +595,6 @@ export class AssetPicker extends UI {
         else if (this.currentInput) this.currentInput.setValue(asset.url, true);
         this.send('select', asset);
         this.eraseWaiting();
-        this.hidePicker();
     }
 
     onAssetDeleted: Function;

@@ -64,7 +64,7 @@ export class Button extends Input<any> {
 export class ImageButton extends Input<any> {
     image: HTMLElement;
 
-    constructor(parent: HTMLElement, label:string, imageurl: string, className?: string) {
+    constructor(parent: HTMLElement, label: string, imageurl: string, className?: string) {
         super(parent, label);
         this.hideLabel();
         if (!className) className = 'input-button';
