@@ -51,7 +51,6 @@
         background-color: $colorgrey
         border-radius: $layerradius
 
-
     .pcr-app
         position: absolute !important
         padding: 12px 9px !important
@@ -64,22 +63,27 @@
         input[type='text']
             position: relative !important
             box-shadow: none !important
-            width: 125px
+            width: 175px
 
-        input[type='button']
-            background: $colormain !important
-            color: $colortext !important
-            padding: 5px 10px
-            border-radius: 2px
-            cursor: pointer  
-            margin-left: 2px
+        button
+            padding: 5px 10px !important
+            border-radius: 2px !important
+            cursor: pointer !important
+            margin-left: 2px !important
             box-shadow: none !important
+            top: -14px !important
+
+            &::before
+                border-radius: 2px !important
+            &::after
+                border-radius: 2px !important
 
         .pcr-interaction-naker
             margin: 10px 10px 0px 10px
 
             .valid-button
-                background: #FF0872
+                background: $colormain
+                color: $colortext
                 top: 1px
                 width: 65px
                 text-align: center
@@ -91,7 +95,7 @@
         .pcr-current-color
             border: 1px solid $colorgrey !important
 
-        .pcr-swatches 
+        .pcr-swatches
             display: block !important
 
             .add-in-palette
@@ -119,4 +123,3 @@
                     margin: 1px
                     width: calc(100% - 2px)
                     height: calc(100% - 2px)
-                    
