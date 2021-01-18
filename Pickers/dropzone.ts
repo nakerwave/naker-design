@@ -130,9 +130,9 @@ export class DropUi {
 
     container: HTMLElement;
     text: HTMLElement;
-    manageDrop: Function;
+    manageDrop: (project: DragEvent) => void;
 
-    constructor(callback: Function) {
+    constructor(callback: (project: DragEvent) => void) {
         this.createElements();
         this.addTitle();
         this.hide();

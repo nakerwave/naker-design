@@ -266,7 +266,7 @@ export class TextAssetButton extends BaseAssetButton {
 */
 
 interface AssetEvent {
-    event: 'show' | 'hide' | 'select',
+    event: 'show' | 'hide' | 'select' | 'delete',
     funct: Function,
 }
 
@@ -610,6 +610,7 @@ export class AssetPicker extends UI {
         }
         remove(this.thumbnails, (n) => { return n.type == type && n.url == url; });
         this.setAssetList(type);
+        this.send('delete', asset);
     }
 
     eraseWaiting() {

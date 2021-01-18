@@ -14,7 +14,7 @@
     &[visible="true"]
         pointer-events: visible
         opacity: 1
-    
+
 $modalZindex: 1000
 $modalRadius: 30px
 
@@ -68,7 +68,7 @@ $modalRadius: 30px
     filter: contrast(1.4)
     background-size: 100% 100%
     background-size: cover
-    border-radius: $modalRadius $modalRadius 0px 0px 
+    border-radius: $modalRadius $modalRadius 0px 0px
     &::first-letter
         text-transform: uppercase
 
@@ -183,7 +183,6 @@ $modalRadius: 30px
         font-family: cursive
         top: 5px !important
 
-
 .modal-input
     left: 0px
     position: relative !important
@@ -203,7 +202,7 @@ $modalRadius: 30px
     left: 0px
     bottom: 0px
     height: 50px
-    border-radius: 0px 0px 10px 10px
+    border-radius: 0px 0px $modalRadius $modalRadius
 
 .modal-footer-icon
     position: relative
@@ -329,10 +328,9 @@ $modalRadius: 30px
     margin: 5px
     cursor: pointer
 
-
 // .modal-checkbox-container
 //     position: relative
-        
+
 //     .modal-checkbox-text
 //         top: 6px
 //         left: 0px
