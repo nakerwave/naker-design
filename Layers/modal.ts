@@ -23,7 +23,7 @@ export class Modal {
             [
                 el('div.modal-close.button-neumorphisme', { onclick: (() => { this.backgroundClick() }) },
                     el('div.button-shadow',
-                        el('div.icon', 'x')
+                        el('div.close', 'x')
                     )
                 ),
                 this.title = el('div.modal-title'),

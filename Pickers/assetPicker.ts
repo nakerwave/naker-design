@@ -485,15 +485,16 @@ export class AssetPicker extends UI {
         if (removable === undefined) removable = true;
         let asset = this.getAssetByUrl(type, url);
         if (!asset) {
-            if (this.isImageString(url)) {
-                let newAsset: asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
-                // if (this.shown) {
-                let button = this.addButton(newAsset);
-                newAsset.button = button;
-                // }
-                this.thumbnails.push(newAsset);
-                return newAsset;
-            }
+            //! Do not add only images or model asset won't be added for instance
+            // if (this.isImageString(url)) {
+            let newAsset: asset = { type: type, url: url, thumbnail: thumbnail, saved: saved, removable: removable };
+            // if (this.shown) {
+            let button = this.addButton(newAsset);
+            newAsset.button = button;
+            // }
+            this.thumbnails.push(newAsset);
+            return newAsset;
+            // }
         } else {
             return asset;
         }
