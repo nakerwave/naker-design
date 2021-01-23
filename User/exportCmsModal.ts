@@ -19,13 +19,13 @@ interface cms {
 var airtableBase = new Airtable({ apiKey: 'keyvYd17RuctTa2Ln' }).base('appTmDsoaK3FtuiTU');
 
 export class ExportModal extends Modal {
-    
+
     session: Session;
     undo: Undo<any>;
     engine: 'back' | 'form' | 'story' | 'studio';
     version: string
-    
-    constructor(session: Session, undo: Undo<any>, engine: 'back' | 'form' | 'story' | 'studio', version:string) {
+
+    constructor(session: Session, undo: Undo<any>, engine: 'back' | 'form' | 'story' | 'studio', version: string) {
         super('Embed your Design!', "", 'modal-export');
         this.session = session;
         this.undo = undo;
@@ -90,7 +90,7 @@ export class ExportModal extends Modal {
         this.cmsContent = el('div.cms-list', [
             el('div.modal-text', 'First what is the CMS you use?'),
             this.CMSList.map(p =>
-                el('div.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); }},
+                el('div.input-button.cms-button.button-' + p.name, { onclick: () => { this.showExport(p); } },
                     el('img', { src: p.logo }),
                     el('div', p.name)
                 )
@@ -164,7 +164,6 @@ export class ExportModal extends Modal {
             this.undo.pushState();
         });
         return checkboxInput;
-        // return checkboxButton;
     }
 
     addLayer(children: Array<HTMLElement> | HTMLElement, index?: number): HTMLElement {
@@ -230,7 +229,7 @@ export class ExportModal extends Modal {
     cmsNavButton: HTMLElement;
     exportNavButton: HTMLElement;
     setFooter() {
-        this.footer = el('div.modal-footer', 
+        this.footer = el('div.modal-footer',
             el('div.modal-footer-center', [
                 this.cmsNavButton = el('div.export-button-nav.export-button-nav-left', { onclick: () => { this.showCMSList(); } }),
                 this.exportNavButton = el('div.export-button-nav.export-button-nav-right', { onclick: () => { this.showScriptExport(); } }),
@@ -249,7 +248,7 @@ export class ExportModal extends Modal {
         this.showExport(cms);
         unmount(this.control, this.footer);
     }
-    
+
     currentCMS: cms;
     showExport(cms?: cms) {
         this.currentCMS = cms;
@@ -277,7 +276,7 @@ export class ExportModal extends Modal {
         let shareTitle = "Want to remove the waterMark? Please share Naker with your friends and let's make the web cool again:";
         this.showShare(shareUrl, shareTitle);
     }
-    
+
     setWaterMark(waterMark: boolean) {
         if (waterMark !== undefined) setAttr(this.waterMarkCheckBox, { checked: waterMark });
         this.setEmbedCode();
@@ -297,7 +296,7 @@ export class ExportModal extends Modal {
 
     websiteUrl = '';
     setWebsiteUrl(url: string) {
-        if (url !== undefined) setAttr(this.websiteUrlInput, {value: url});
+        if (url !== undefined) setAttr(this.websiteUrlInput, { value: url });
     }
 
     goToHelp() {
@@ -331,18 +330,18 @@ export class ExportModal extends Modal {
             this.pearl = nakerpearl.render({ container: this.sharePearl, model: 'https://d2uret4ukwmuoe.cloudfront.net/qe2qvy7gsehehim68v88t/scene.glb', waterMark: false, hdr: true, material: { metallic: 1, albedocolor: this.session.engineColor } });
     }
 
-    
+
     shareFacebook() {
-        this.session.spy.track('Sharing_Social Click', {network: 'facebook'});
+        this.session.spy.track('Sharing_Social Click', { network: 'facebook' });
         let url = encodeURIComponent(this.shareUrl)
         window.open("https://www.facebook.com/sharer.php?u=" + url + "&t=" + this.shareText);
         this.showExport(this.currentCMS);
     }
 
     shareTwitter() {
-        this.session.spy.track('Sharing_Social Click', {network: 'twitter'});
+        this.session.spy.track('Sharing_Social Click', { network: 'twitter' });
         let url = encodeURIComponent(this.shareUrl)
-        window.open("http://www.twitter.com/share?url=" + url + "&text="+this.shareText);
+        window.open("http://www.twitter.com/share?url=" + url + "&text=" + this.shareText);
         this.showExport(this.currentCMS);
     }
 
@@ -357,11 +356,11 @@ export class ExportModal extends Modal {
         let url = evt.target.value;
         if (!url || url == this.undo.getProjectOptions().websiteUrl) return;
         this.undo.setProjectOption('websiteUrl', url);
-        
-        if (this.session.subDomain == 'development') return;        
+
+        if (this.session.subDomain == 'development') return;
         let project = this.undo.getProjectOptions();
         let user = this.session.getUser();
-        
+
         airtableBase('URL from export modal').create([
             {
                 "fields": {
@@ -398,12 +397,12 @@ export class ExportModal extends Modal {
     embedContainer: string;
     setEmbedId(evt: Event) {
         this.embedContainer = evt.target.value;
-        setAttr(this.classInput, {value : ''});
+        setAttr(this.classInput, { value: '' });
         this.setEmbedCode();
     }
 
     setEmbedClass(evt: Event) {
-        this.embedContainer = '.'+evt.target.value;
+        this.embedContainer = '.' + evt.target.value;
         setAttr(this.idInput, { value: '' });
         this.setEmbedCode();
     }
@@ -424,7 +423,7 @@ export class ExportModal extends Modal {
     getEmbedCode() {
         let idText = (this.embedContainer) ? 'data-container="' + this.embedContainer + '"' : '';
         let waterMark = this.undo.getProjectOptions().waterMark;
-        let JsonString = this.undo.getProjectJsonString({waterMark: waterMark});
+        let JsonString = this.undo.getProjectJsonString({ waterMark: waterMark });
         let viewerUrl = 'https://d23jutsnau9x47.cloudfront.net/' + this.engine + '/' + this.version + '/viewer.js';
         let text = '<script data-who="💎 Made with naker.io 💎" src="' + viewerUrl + '" data-option="' + JsonString + '" ' + idText + '></script>';
         return text;
@@ -464,7 +463,7 @@ export class ExportModal extends Modal {
         this.setWaterMark(project.waterMark);
         this.setPushQuality(project.pushQuality);
         this.setWebsiteUrl(project.websiteUrl);
-        
+
         this._show();
         this.session.saveThumbnail();
     }

@@ -33,10 +33,10 @@ export abstract class Input<T> extends UI {
         this.name = label;
         this.setClass('input-container');
         mount(container, this.parent);
-        this.label = el('div.input-label', label);
+        this.label = el('span.input-label', label, { 'title': label });
         if (label) this.showLabel();
     }
-    
+
     setClass(clas: string) {
         if (this.name) {
             // Add input class in order to be able to set HEAP events
@@ -48,7 +48,7 @@ export abstract class Input<T> extends UI {
     }
 
     setBoldLabel() {
-        setStyle(this.label, {'font-weight': 600 });
+        setStyle(this.label, { 'font-weight': 600 });
     }
 
     hideLabel() {
@@ -60,7 +60,7 @@ export abstract class Input<T> extends UI {
     }
 
     setLabelIcon(icon: string) {
-        setAttr(this.label, {class : 'input-label input-label-icon icon-' + icon});
+        setAttr(this.label, { class: 'input-label input-label-icon icon-' + icon });
         setChildren(this.label, [el('span.path1'), el('span.path2'), el('span.path3')]);
     }
 

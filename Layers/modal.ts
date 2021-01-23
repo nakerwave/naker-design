@@ -40,6 +40,17 @@ export class Modal {
         this._hide();
     }
 
+    addLayer(children: Array<HTMLElement> | HTMLElement, index?: number): HTMLElement {
+        let newLayer = el('div.modal-layer', children);
+        if (index !== undefined) {
+            let beforChild = this.control.childNodes[index];
+            this.control.insertBefore(newLayer, beforChild);
+        } else {
+            mount(this.control, newLayer);
+        }
+        return newLayer;
+    }
+
     back: HTMLElement;
     onModalClose: Function;
 

@@ -68,7 +68,7 @@ label
     position: relative
     top: 5px
     height: 250px
-    right: - $rightinput 
+    right: - $rightinput
     font-size: $fontsizeinput
     line-height: 20px
     padding: 5px
@@ -96,7 +96,10 @@ label
     color: $colortext
     font-size: $fontsizeinput
     font-weight: 600
-    width: 230px
+    width: 180px
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
     &::first-letter
         text-transform: uppercase
 
@@ -110,7 +113,7 @@ label
     text-align: right
 
 /***************************************** TEXT/NUMBER ****************************************/
-    
+
 input
     &[type="text"], &[type="number"]
         color: $colortext
@@ -168,7 +171,7 @@ input
     color: $colortext
 
 /***************************************** VECTOR ****************************************/
-    
+
 .vector-container
     position: absolute
     width: 210px

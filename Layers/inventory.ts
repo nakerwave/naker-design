@@ -11,6 +11,11 @@ export interface assetOptions {
     name?: string;
 }
 
+export interface InventoryOptions {
+    save?: boolean,
+    reset?: boolean,
+}
+
 export class Inventory {
 
     assetName: string;
@@ -24,14 +29,18 @@ export class Inventory {
     inventoryContainer: HTMLElement;
     placeholder: string;
 
-    constructor(assetName: string, parent: HTMLElement) {
+    constructor(assetName: string, parent: HTMLElement, inventoryOptions: InventoryOptions) {
         this.assetName = assetName;
         this.setSaveInputs(this.assetName, parent);
+        if (inventoryOptions.save === false) unmount(this.inventoryContainer, this.saveButton);
+        if (inventoryOptions.reset === false) unmount(this.inventoryContainer, this.resetButton);
     }
 
     el: HTMLElement;
     nameinput: HTMLInputElement;
     nameContainer: HTMLElement;
+    saveButton: HTMLElement;
+    resetButton: HTMLElement;
     setSaveInputs(placeholder: string, parent: HTMLElement) {
         this.placeholder = placeholder + ' name';
         this.el = el('div.parameter-gorup',
@@ -47,12 +56,12 @@ export class Inventory {
                         }),
                         // el('div.input-button.inventory-button.inventory-add-button', 'OK'),
                     ]),
-                    el('div.input-button.inventory-button.inventory-add-button.icon-save', {
+                    this.saveButton = el('div.input-button.inventory-button.inventory-add-button.icon-save', {
                         onclick: () => { this.showInput(); this.addNewValueFromInput(); },
-                    }, 
+                    },
                         [el('span.path1'), el('span.path2'), el('span.path3')]
                     ),
-                    el('div.input-button.inventory-button.inventory-add-button.icon-none', {
+                    this.resetButton = el('div.input-button.inventory-button.inventory-add-button.icon-none', {
                         onclick: () => { this.resetValues(); },
                     },
                         [el('span.path1'), el('span.path2'), el('span.path3')]
@@ -64,7 +73,7 @@ export class Inventory {
     }
 
     showInput() {
-        setStyle(this.nameContainer, {display: 'block'});
+        setStyle(this.nameContainer, { display: 'block' });
         this.nameinput.focus();
     }
 
@@ -91,7 +100,7 @@ export class Inventory {
     }
 
     checkName(name: string, step: number): string {
-        return (name == '' || name == undefined)? this.assetName + ' ' + (this.namelist.length + step).toString() : name;
+        return (name == '' || name == undefined) ? this.assetName + ' ' + (this.namelist.length + step).toString() : name;
     }
 
     onReset: Function;
@@ -115,32 +124,37 @@ export class Inventory {
     }
 
     lastButton: HTMLElement;
-    addButtonInInventory(name: string) {        
+    addButtonInInventory(name: string) {
         this.namelist.push(name);
         let deleteButton: HTMLElement;
-        let button = el('div.input-button.inventory-button', { 
-                onclick: () => { this.manageClick(name); },
-                onmouseenter: () => { setStyle(deleteButton, { display: 'inline-block'}) },
-                onmouseleave: () => { setStyle(deleteButton, { display: 'none'}) },
-            }, [
-                el('div', name),
-                deleteButton = el('div.inventory-button-delete.right-icon', 'X', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } }),
-            ]
+        let button = el('div.input-button.inventory-button', {
+            onclick: () => { this.manageClick(name); },
+            onmouseenter: () => { setStyle(deleteButton, { display: 'inline-block' }) },
+            onmouseleave: () => { setStyle(deleteButton, { display: 'none' }) },
+        }, [
+            el('div', name),
+            deleteButton = el('div.inventory-button-delete.right-icon', 'X', { onclick: (evt) => { evt.stopPropagation(); this.removeValue(button, name); } }),
+        ]
         );
         mount(this.inventoryContainer, button);
         this.buttonList[name] = button;
         this.lastButton = button;
     }
 
+    onDelete: Function;
     removeValue(button: HTMLElement, name: string) {
         let index = this.namelist.indexOf(name);
         if (index != -1) this.namelist.splice(index, 1);
         delete this.buttonList[name];
         this.setInputValue();
         unmount(this.inventoryContainer, button);
+        let deletedAsset;
         for (let i = 0; i < this.assetList.length; i++) {
-            if (this.assetList[i].name == name) this.assetList.splice(i, 1);
+            if (this.assetList[i].name == name) {
+                deletedAsset = this.assetList.splice(i, 1);
+            }
         }
+        if (this.onDelete != undefined) this.onDelete(deletedAsset);
     }
 
     getAssetFromName(name: string) {
