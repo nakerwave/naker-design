@@ -193,9 +193,11 @@ export class DropUi {
         }
     }
 
-    addTitle() {
-        let title = el('div.upload_title.upload_title', 'Upload');
-        mount(this.container, title);
+    title: HTMLElement;
+    addTitle(titleText?: string) {
+        titleText = (titleText) ? titleText : 'Upload';
+        this.title = el('div.upload_title.upload_title', titleText);
+        mount(this.container, this.title);
     }
 
     setInAssetPicker() {

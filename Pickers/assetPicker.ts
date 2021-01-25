@@ -548,8 +548,10 @@ export class AssetPicker extends UI {
         }
 
         if (asset.label) {
-            if (asset.removable) this.addAssetTitle(button, image, asset.label, asset);
-            else this.addAssetTitle(button, image, asset.label);
+            this.addAssetTitle(button, image, asset.label);
+        }
+        if (asset.removable) {
+            this.addRemoveButton(button, asset);
         }
         return button;
     }
@@ -557,11 +559,12 @@ export class AssetPicker extends UI {
     isImageString(s: string): boolean {
         let extension = this.getExtension(s);
         let isImageUrl = (s.indexOf('http') != -1 && ['png', 'jpg', 'jpeg'].indexOf(extension) != -1);
-        let isBase64 = (s.indexOf('base64') != -1);
-        return isImageUrl || isBase64;
+        let isImageBase64 = (s.indexOf('base64') != -1);
+        let isImageBlob = (s.indexOf('blob:') != -1);
+        return isImageUrl || isImageBase64 || isImageBlob;
     }
 
-    addAssetTitle(button: HTMLElement, imageEl: HTMLElement, labelData: LabelData, removableAsset?: asset) {
+    addAssetTitle(button: HTMLElement, imageEl: HTMLElement, labelData: LabelData) {
         if (imageEl) setAttr(imageEl, { class: 'small-image' });
         let text = labelData.text;
         let image = labelData.image;
@@ -576,19 +579,21 @@ export class AssetPicker extends UI {
             }) : null,
             (text) ? el('div.asset-text', text) : null,
         ]);
-        if (removableAsset) {
-            let removebutton = el('div.delete-asset-button.icon-delete', {
-                onclick: (e) => {
-                    e.stopPropagation();
-                    this.deleteAsset(removableAsset.type, removableAsset.url);
-                },
-                onmouseover: (e) => {
-                    e.stopPropagation(); // Not working
-                }
-            }, [el('span.path1'), el('span.path2'), el('span.path3')])
-            mount(hover, removebutton);
-        }
         mount(button, hover);
+    }
+
+    addRemoveButton(button: HTMLElement, asset) {
+        let removebutton = el('div.delete-asset-button.icon-delete', {
+            onclick: (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.deleteAsset(asset.type, asset.url);
+            },
+            onmouseover: (e) => {
+                e.stopPropagation(); // Not working
+            }
+        }, [el('span.path1'), el('span.path2'), el('span.path3')])
+        mount(button, removebutton);
     }
 
     selectAsset(asset: asset) {

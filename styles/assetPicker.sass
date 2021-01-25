@@ -92,6 +92,9 @@ $buttonradius: 10px
     &:hover
         border: 2px solid $colormain
 
+        .delete-asset-button
+            opacity: 1
+
     img
         position: absolute
         top: 10px
@@ -101,6 +104,7 @@ $buttonradius: 10px
         border-radius: 6px
         background: $colordarkgrey
         object-fit: contain
+
     .small-image
         top: 30px
         height: calc(100% - 40px)
@@ -139,17 +143,20 @@ $buttonradius: 10px
             height: 20px
             object-fit: cover
 
-        .delete-asset-button
-            position: absolute
-            top: 5px
-            right: 5px
-            border-radius: 5px
-            font-size: 12px
-            padding: 3px 5px
-            color: $colortext
-            background: #ffffff
-            &:hover
-                color: $colorerror
+    .delete-asset-button
+        position: absolute
+        top: 5px
+        right: 5px
+        border-radius: 5px
+        font-size: 12px
+        padding: 3px 5px
+        color: $colortext
+        background: #ffffff
+        opacity: 0
+        transition: all ease 200ms
+
+        &:hover
+            color: $colorerror
 
 .no-asset-button
     font-size: 60px
