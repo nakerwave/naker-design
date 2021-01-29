@@ -29,11 +29,13 @@ export class Inventory {
     inventoryContainer: HTMLElement;
     placeholder: string;
 
-    constructor(assetName: string, parent: HTMLElement, inventoryOptions: InventoryOptions) {
+    constructor(assetName: string, parent: HTMLElement, inventoryOptions?: InventoryOptions) {
         this.assetName = assetName;
         this.setSaveInputs(this.assetName, parent);
-        if (inventoryOptions.save === false) unmount(this.inventoryContainer, this.saveButton);
-        if (inventoryOptions.reset === false) unmount(this.inventoryContainer, this.resetButton);
+        if (inventoryOptions) {
+            if (inventoryOptions.save === false) unmount(this.inventoryContainer, this.saveButton);
+            if (inventoryOptions.reset === false) unmount(this.inventoryContainer, this.resetButton);
+        }
     }
 
     el: HTMLElement;
@@ -106,6 +108,24 @@ export class Inventory {
     onReset: Function;
     resetValues() {
         if (this.onReset) this.onReset();
+    }
+
+    removeAllValues() {
+        for (const key in this.buttonList) {
+            const button = this.buttonList[key];
+            unmount(this.inventoryContainer, button);
+        }
+        this.buttonList = {};
+        this.namelist = [];
+        this.assetList = [];
+    }
+
+    setAllValues(assets: assetOptions[], remove?: boolean) {
+        if (remove) this.removeAllValues();
+        for (let i = 0; i < assets.length; i++) {
+            const asset = assets[i];
+            this._addNewValue(asset);
+        }
     }
 
     _addNewValue(asset: assetOptions) {
