@@ -8,12 +8,12 @@ body
     margin: auto
     overflow: hidden
     background: $colordarkgrey
-    
+
 /***************************************** LAYER ****************************************/
 
 .bold
     font-weight: 600
-   
+
 .doublebold
     font-weight: 800
 
@@ -69,8 +69,8 @@ body
         border-radius: $radiusinput
         background: $colormain
     // Firefox
-    scrollbar-color: $colormain $colorgrey
-    scrollbar-width: thin
+        scrollbar-color: $colormain $colorgrey
+        scrollbar-width: thin
 
 .parameter-container
     z-index: 10
@@ -99,7 +99,7 @@ body
 .parameter-border
     border-bottom: 2px solid $colordarkgrey
     padding-bottom: 10px
-    
+
 $titlePadding: 5px
 .parameter-title
     position: relative
@@ -163,10 +163,10 @@ $titlePadding: 5px
         background: linear-gradient(180deg, $colorgrey 0%, #FFFFFF 100%)
         // background: linear-gradient(145deg, $colorgrey, darken($colorgrey, 5))
         // background: #ffffff
-        box-shadow:  3px 3px 10px lighten($colormain, 10), -3px -3px 10px $colorgrey
+        box-shadow: 3px 3px 10px lighten($colormain, 10), -3px -3px 10px $colorgrey
         transition: all ease 200ms
         &:hover
-            box-shadow:  3px 3px 10px $colormain, -3px -3px 10px $colorgrey
+            box-shadow: 3px 3px 10px $colormain, -3px -3px 10px $colorgrey
 
         .icon
             position: relative
@@ -178,10 +178,21 @@ $titlePadding: 5px
             position: relative
             font-weight: 600
 
+    &[disable="true"]
+        background: $colorlightgrey
+        box-shadow: inset -2px -2px 10px rgba(0, 0, 0, 0.1), inset 2px 2px 10px rgba(255, 255, 255, 0.5)
+
+        .button-shadow
+            background: $colorlightgrey !important
+            box-shadow: 3px 3px 10px lighten($colorlightgrey, 10), -3px -3px 10px $colorgrey
+            cursor: not-allowed !important
+            &:hover
+                box-shadow: 3px 3px 10px lighten($colorlightgrey, 10), -3px -3px 10px $colorgrey
+
 .button-link
     width: 100%
     text-align: center
-    
+
     .button-link-text
         position: relative
         display: inline-block
