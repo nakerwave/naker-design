@@ -171,7 +171,8 @@ export class Inventory {
         let deletedAsset;
         for (let i = 0; i < this.assetList.length; i++) {
             if (this.assetList[i].name == name) {
-                deletedAsset = this.assetList.splice(i, 1);
+                let deletedAssets = this.assetList.splice(i, 1);
+                deletedAsset = deletedAssets[0];
             }
         }
         if (this.onDelete != undefined) this.onDelete(deletedAsset);
