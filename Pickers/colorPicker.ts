@@ -42,30 +42,27 @@ export class ColorButton extends Slider {
     rgba: Array<number>;
     removedValue: Array<number>;
     opacity: boolean;
+    removable: boolean;
     callback: Function;
     colorel: HTMLElement;
-    coloricon: HTMLElement;
     colorbutton: HTMLElement;
 
     constructor(parent: HTMLElement, label: string, coloroption: coloroption) {
         super(parent, label);
         this.el = el('div.input-parameter',
-        [
+            [
                 this.colorbutton = el('div.picker-button', { onclick: () => { this.focus() } },
-                [
-                    this.colorel = el('div.color-background'),
+                    [
+                        this.colorel = el('div.color-background'),
                         el('div.color-default-background')
                     ]
-                    ),
-                this.coloricon = el('div.icon-color.erase-icon', { onclick: () => { this.checkErase() }, onmouseenter: () => { this.mouseEnter() }, onmouseleave: () => { this.mouseLeave() } },
-                [el('span.path1'), el('span.path2'), el('span.path3')]
                 )
             ]
         );
         mount(this.parent, this.el);
         this.opacity = coloroption.opacity;
+        this.removable = coloroption.removable;
         if (coloroption.slider) this.addOpacitySlider(coloroption.slider);
-        if (coloroption.removable === false) setStyle(this.coloricon, { display: 'none' });
         if (coloroption.color) this.setValue(coloroption.color);
         if (coloroption.removedValue) this.removedValue = coloroption.removedValue;
     }
@@ -91,18 +88,6 @@ export class ColorButton extends Slider {
         this.setClass('input-container input-container-big');
     }
 
-    mouseEnter() {
-        if (this.rgba !== undefined) this.setIcon('delete');
-    }
-
-    mouseLeave() {
-        this.setIcon('color');
-    }
-
-    setIcon(icon: string) {
-        setAttr(this.coloricon, { class: 'icon-' + icon + ' erase-icon' });
-    }
-
     setValue(rgba: Array<number>, fromPicker?: boolean) {
         if (rgba == undefined) return this.erase(fromPicker);
         if (rgba[0] == null) return this.erase(fromPicker); // history change
@@ -111,7 +96,7 @@ export class ColorButton extends Slider {
         if (this.events.change && fromPicker) this.events.change(this.rgba);
         return this;
     }
-    
+
     setInputValue(rgba: Array<number>, fromPicker?: boolean) {
         this.rgba = clone(rgba);
         let stringRgba = clone(rgba);
@@ -119,7 +104,6 @@ export class ColorButton extends Slider {
         if (!this.opacity || this.slider) stringRgba[3] = 1;
         let color = 'rgba(' + stringRgba[0] + ', ' + stringRgba[1] + ', ' + stringRgba[2] + ', ' + stringRgba[3] + ')';
         setStyle(this.colorel, { 'background-color': color });
-        setAttr(this.coloricon, { active: true });
 
         if (this.slider) {
             if (fromPicker) {
@@ -139,7 +123,6 @@ export class ColorButton extends Slider {
             this.setInputValue([0, 0, 0, 1]);
             setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
         }
-        setAttr(this.coloricon, { active: false });
         if (this.events.change && fromPicker) this.events.change(this.removedValue);
         if (this.events.blur && fromPicker) this.events.blur(this.removedValue);
     }
@@ -202,7 +185,9 @@ export class ColorPicker extends UI {
         // Need it to be mounted in order to be able to create the picker
         mount(document.body, this.el);
 
-        let fakeEl = el('div', { id: 'fakeEl', style: { display: 'none' } });
+        let fakeEl = el('div', { id: 'fakeEl', style: { display: 'none' } },
+            el('div', 'delete')
+        );
         mount(document.body, fakeEl);
 
         this.picker = Pickr.create({
@@ -262,6 +247,7 @@ export class ColorPicker extends UI {
         mount(parent, this.back);
     }
 
+    removeButton: HTMLElement
     addPickerActions() {
         let swatches = document.querySelector('.pcr-swatches');
         let addSwatchButon = el('div.input-button.add-in-palette.icon-add', {
@@ -278,9 +264,14 @@ export class ColorPicker extends UI {
             onclick: () => { this.picker.hide(); }
         }, 'Confirm');
         mount(pickerInputs, leaveButton);
+
+        this.removeButton = el('div.button.valid-button', {
+            onclick: () => { this.currentInput.checkErase(); this.picker.hide(); }
+        }, 'Delete');
+        mount(pickerInputs, this.removeButton);
     }
 
-    setPalette (palette?: Array<Array<number>>) {
+    setPalette(palette?: Array<Array<number>>) {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
             // it happened that color saved is 'null'
@@ -320,12 +311,12 @@ export class ColorPicker extends UI {
         return test;
     }
 
-    getRgbaString(rgba:Array<number>) {
+    getRgbaString(rgba: Array<number>) {
         if (rgba[3] == undefined) rgba[3] = 1;
         return 'rgba(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')';
     }
 
-    getPalette () {
+    getPalette() {
         let palette = [];
         let swatches = this.picker._swatchColors;
         for (const key in swatches) {
@@ -387,7 +378,7 @@ export class ColorPicker extends UI {
         if (input.rgba == undefined) input.rgba = [0, 0, 0, 1];
         let rgba = clone(input.rgba);
         if (!input.opacity) rgba[3] = 1;
-        
+
         // if (input.label) this.title.textContent = input.label.textContent;
         // else this.title.textContent = 'Color';
         this.checkOpacity(input);
@@ -401,7 +392,7 @@ export class ColorPicker extends UI {
         }, 1);
         this.show();
         this.showBack();
-        
+
     }
 
     checkOpacity(input: ColorButton) {
@@ -414,17 +405,25 @@ export class ColorPicker extends UI {
         }
     }
 
+    checkRemovable(input: ColorButton) {
+        if (input.removable) {
+            setStyle(this.removeButton, { display: 'flex' });
+        } else {
+            setStyle(this.removeButton, { display: 'none' });
+        }
+    }
+
     componentToHex(c: number) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     }
 
     rgbToHex(rgb: Array<number>): string {
-        return "#" + 
-        this.componentToHex(rgb[0]) + 
-        this.componentToHex(rgb[1]) + 
-        this.componentToHex(rgb[2]) + 
-        this.componentToHex(Math.round(rgb[3] * 255));
+        return "#" +
+            this.componentToHex(rgb[0]) +
+            this.componentToHex(rgb[1]) +
+            this.componentToHex(rgb[2]) +
+            this.componentToHex(Math.round(rgb[3] * 255));
     }
 }
 
