@@ -59,7 +59,7 @@ export class Inventory {
                         // el('div.input-button.inventory-button.inventory-add-button', 'OK'),
                     ]),
                     this.saveButton = el('div.input-button.inventory-button.inventory-add-button.icon-save', {
-                        onclick: () => { this.showInput(); this.addNewValueFromInput(); },
+                        onclick: () => { this.saveNewValue(); },
                     },
                         [el('span.path1'), el('span.path2'), el('span.path3')]
                     ),
@@ -72,6 +72,11 @@ export class Inventory {
             ]
         );
         mount(parent, this.el);
+    }
+
+    saveNewValue() {
+        this.showInput();
+        this.addNewValueFromInput();
     }
 
     showInput() {
@@ -99,6 +104,7 @@ export class Inventory {
     setName(name: string) {
         this.currentname = this.checkName(name, 0);
         this.lastButton.childNodes[0].textContent = this.currentname;
+        if (this.currentAsset) this.currentAsset.name = this.currentname
     }
 
     checkName(name: string, step: number): string {
@@ -188,6 +194,7 @@ export class Inventory {
     manageClick(name: string) {
         let savedAsset = this.getAssetFromName(name);
         if (savedAsset == null) return;
+        this.setCurrentAsset(savedAsset)
         // Keep loop and don't replace currentAnimation entirely or content animation will be replace and it won't save changes
         // CloneDeep important or contents will share the saved parameters
         let newAsset = {};
@@ -195,6 +202,11 @@ export class Inventory {
             newAsset[key] = cloneDeep(savedAsset[key]);
         }
         if (this.onClick != undefined) this.onClick(newAsset);
+    }
+
+    currentAsset: assetOptions
+    setCurrentAsset(asset: assetOptions) {
+        this.currentAsset = asset
     }
 
     show() {

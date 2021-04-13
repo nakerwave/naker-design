@@ -4,6 +4,7 @@
 
 /***************************************** INVENTORY ****************************************/
 
+$inventoryMargin: 7px
 .inventory
     position: relative
     height: 180px
@@ -16,27 +17,24 @@
     position: relative !important
     left: 0px
     top: 0px !important
-    width: 100% !important
+    width: calc(100% - #{$inventoryMargin}) !important
+    margin-bottom: $inventoryMargin
 
 .inventory-container-list
     position: relative
-    right: -10px
-    width: 231px
-    height: 84px
+    // height: 84px
     background: $colorinputbackground
     overflow-x: hidden
     overflow-y: auto
-    border-radius: $radiusinput
+    border-radius: $layerradius
+    padding: $inventoryMargin 0px 0px $inventoryMargin
     margin-bottom: 5px
 
 .inventory-button
     display: inline-block
     position: relative
-    margin-top: 7px
-    margin-left: 7px
+    margin: 0px $inventoryMargin $inventoryMargin 0px
     padding: 0px 5px
-    width: calc(100% - 30px)
-    min-width: $presetsize - 10px
     height: $presetsize
     line-height: $presetsize !important
     font-size: 15px
