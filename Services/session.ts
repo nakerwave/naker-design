@@ -67,7 +67,7 @@ export class Session {
         },
         development: {
             apiurl: 'http://localhost:3000/',
-            saving: false,
+            saving: true,
             redirect: true,
             intercom: false,
             sentry: false,
@@ -557,7 +557,7 @@ export class Session {
     }
 
     getProjectId() {
-        return this.projectId;
+        return this.projectId || '5f60cbaefababc0004cda453';
     }
 
     getUser(): User {

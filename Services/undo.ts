@@ -27,6 +27,7 @@ interface undoObserver {
 
 export interface ProjectSavedOptions {
     id?: string,
+    template_id?: string;
     name?: string,
     waterMark?: boolean,
     pushQuality?: boolean,
@@ -83,7 +84,7 @@ export abstract class Undo<T> {
     }
 
     saveState() {
-        let json:T = this.getSceneWithAssetRoundedJson();
+        let json: T = this.getSceneWithAssetRoundedJson();
         this.presentState = cloneDeep(json);
     }
 
@@ -94,7 +95,7 @@ export abstract class Undo<T> {
 
         let backChange = this.getDifference(this.presentState, projectJson);
         let forwardChange = this.getDifference(projectJson, this.presentState);
-        
+
         // Set default value to null in case new values added so that we can go back to null/undefined value
         let backDefault = this.setNullValues(backChange);
         let forwardDefault = this.setNullValues(forwardChange);
@@ -109,7 +110,7 @@ export abstract class Undo<T> {
         this.sendToObserver(UndoEvent.Save, forwardChange, this.presentState)
     }
 
-    getSceneWithAssetRoundedJson():T {
+    getSceneWithAssetRoundedJson(): T {
         return this.limitObjectAccuracy(this.getSceneWithAssetJson());
     }
 
