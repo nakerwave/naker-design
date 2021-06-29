@@ -9,10 +9,6 @@ import { el, mount, setAttr } from 'redom';
   +------------------------------------------------------------------------+
 */
 
-// <button type="button" class="btn btn-sm btn-toggle" data - toggle="button" aria - pressed="false" autocomplete = "off" >
-//     <div class="handle" > </div>
-//         < /button>
-
 export class CheckboxInput extends Input<boolean> {
 
     constructor(parent: HTMLElement, label: string, checked: boolean) {
@@ -21,7 +17,7 @@ export class CheckboxInput extends Input<boolean> {
         let key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
         let div = el('div.main-checkbox.input-parameter',
-            this.el = el('button.btn.btn-sm.btn-toggle', {type:'button', 'aria-pressed':'false', autocomplete:'off'}, 
+            this.el = el('button.btn.btn-sm.btn-toggle', { type: 'button', 'aria-pressed': 'false', autocomplete: 'off' },
                 el('div.handle')
             )
         );

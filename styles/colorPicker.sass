@@ -2,7 +2,8 @@
 @import '_colors'
 @import '_variables'
 @import 'sharedPickerStyle'
-@import '../node_modules/@simonwep/pickr/src/scss/themes/nano.scss'
+// @import '../node_modules/@simonwep/pickr/src/scss/themes/nano.scss'
+@import '../node_modules/@simonwep/pickr/src/scss/themes/classic.scss'
 
 /***************************************** COLOR BUTTON ****************************************/
 
@@ -55,7 +56,7 @@
 
     .pcr-app
         position: absolute !important
-        padding: 12px 9px !important
+        padding: 15px 15px !important
         top: 0px !important
         left: 0px !important
         width: calc(100% - 18px) !important
@@ -63,11 +64,33 @@
         box-shadow: none !important
         border-radius: 0px !important
 
+        .pcr-selection
+            padding-bottom: 40px !important
+
+        .pcr-last-color
+            display: none !important
+
+        .pcr-current-color
+            dwidth: 30px !important
+            height: 30px !important
+            display: inline-block !important
+            border-radius: 30px !important
+
+        .pcr-color-preview
+            position: absolute !important
+            height: 20px !important
+            width: 100% !important
+            top: 140px !important
+            display: inline-block !important
+            &::before
+                display: none !important
+
         input[type='text']
             position: relative !important
             box-shadow: none !important
             width: 80px
             padding-left: 8px
+            top: -10px
 
         button
             padding: 10px !important
@@ -83,7 +106,7 @@
                 border-radius: 2px !important
 
         .pcr-interaction-naker
-            margin: 10px 10px 0px 10px
+            margin: 10px 0px 0px 0px
 
             .valid-button
                 background: $colormain
@@ -94,7 +117,7 @@
                 height: auto
                 font-size: 15px
                 margin: 0px
-                margin-left: 10px
+                margin-right: 10px
                 padding: 3px 10px
 
         .pcr-current-color

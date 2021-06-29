@@ -6,17 +6,11 @@ import { Slider, slideroption } from '../Inputs/slider';
 import { el, mount, setAttr, setStyle } from 'redom';
 import clone from 'lodash/clone';
 
-// import '@simonwep/pickr/dist/themes/classic.min.css';   // 'classic' theme
-// import '@simonwep/pickr/dist/themes/monolith.min.css';  // 'monolith' theme
-// import '@simonwep/pickr/dist/themes/nano.min.css';      // 'nano' theme
-
 // Modern or es5 bundle
 import Pickr from '@simonwep/pickr';
-// import noUiSlider from 'nouislider';
 // import { parseToHSVA } from '@simonwep/pickr/src/js/utils/color';
 // import { HSVaColor } from '@simonwep/pickr/src/js/utils/hsvacolor';
 // let test = parseToHSVA([1, 1, 1, 1]);
-// console.log(test);
 
 /*
   +------------------------------------------------------------------------+
@@ -27,6 +21,7 @@ import Pickr from '@simonwep/pickr';
 export interface coloroption {
     opacity: boolean,
     removable?: boolean,
+    material?: boolean,
     color?: Array<number>,
     slider?: colorslider,
     removedValue?: Array<number>,
@@ -193,7 +188,7 @@ export class ColorPicker extends UI {
         this.picker = Pickr.create({
             el: '#fakeEl',
             container: '#colorpicker',
-            theme: 'nano', // or 'monolith', or 'nano'
+            theme: 'classic', // or 'monolith', or 'nano'
             autoReposition: false,
             defaultRepresentation: 'HEXA',
             swatches: [],
@@ -249,6 +244,10 @@ export class ColorPicker extends UI {
 
     removeButton: HTMLElement
     addPickerActions() {
+        let colorPreview = document.querySelector('.pcr-color-preview');
+        let result = document.querySelector('.pcr-result');
+        mount(colorPreview, result)
+        // let hexLayer = el('div.hex-layer')
         let swatches = document.querySelector('.pcr-swatches');
         let addSwatchButon = el('div.input-button.add-in-palette.icon-add', {
             onclick: () => { this.addNewInPicker(); }
@@ -398,10 +397,8 @@ export class ColorPicker extends UI {
     checkOpacity(input: ColorButton) {
         if (input.opacity && !input.slider) {
             setStyle(this.opacityPicker, { display: 'flex' });
-            setStyle(this.chooserPicker, { top: '0px' });
         } else {
             setStyle(this.opacityPicker, { display: 'none' });
-            setStyle(this.chooserPicker, { top: '12px' });
         }
     }
 
