@@ -44,7 +44,7 @@ export abstract class Slider extends Input<number> {
         this.min = min;
         if (this.noUiSlider) this.noUiSlider.updateOptions({ range: { 'min': min, 'max': max } });
     }
-    
+
     initSliderVar(slideroption: slideroption) {
         this.defaultValue = slideroption.value;
         if (slideroption.step) this.step = slideroption.step;
@@ -67,19 +67,23 @@ export abstract class Slider extends Input<number> {
         });
     }
 
+    getValue(): number {
+        return this.lastSliderValue
+    }
+
     setSliderValue(value: number) {
         if (value == undefined) {
             this.lastSliderValue = value; // To avoid slider to send new value in change callback
             this.noUiSlider.set([this.defaultValue]);
         } else {
             value = this.checkAccuracy(value);
-            
+
             let slidervalue = this.checkNumberCurve(value);
             this.noUiSlider.set([slidervalue], false);
         }
         this.lastSliderValue = value;
     }
-    
+
     power = 2;
     checkSliderCurve(value: number): number {
         if (this.curve == 'linear') {
@@ -94,7 +98,7 @@ export abstract class Slider extends Input<number> {
             return newvalue;
         }
     }
-    
+
     checkNumberCurve(value: number): number {
         if (this.curve == 'linear') {
             return value;

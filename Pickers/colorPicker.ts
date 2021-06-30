@@ -19,7 +19,7 @@ import Pickr from '@simonwep/pickr';
 */
 
 export interface coloroption {
-    opacity: boolean,
+    opacity?: boolean,
     removable?: boolean,
     material?: boolean,
     color?: Array<number>,
@@ -173,8 +173,12 @@ export class ColorPicker extends UI {
         this.hide();
     }
 
+    id: string
     createPicker() {
-        this.el = el('div', { id: 'colorpicker', class: 'color-picker' },
+        // In case several colorpicker
+        let randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        this.id = 'colorpicker' + randomString
+        this.el = el('div', { id: this.id, class: 'color-picker' },
             el('div.color-picker-background')
         );
         // Need it to be mounted in order to be able to create the picker
@@ -187,7 +191,7 @@ export class ColorPicker extends UI {
 
         this.picker = Pickr.create({
             el: '#fakeEl',
-            container: '#colorpicker',
+            container: '#' + this.id,
             theme: 'classic', // or 'monolith', or 'nano'
             autoReposition: false,
             defaultRepresentation: 'HEXA',
@@ -233,8 +237,8 @@ export class ColorPicker extends UI {
             });
         });
 
-        this.opacityPicker = document.querySelector('.pcr-color-opacity');
-        this.chooserPicker = document.querySelector('.pcr-color-chooser');
+        this.opacityPicker = document.querySelector('#' + this.id + ' .pcr-color-opacity');
+        this.chooserPicker = document.querySelector('#' + this.id + ' .pcr-color-chooser');
     }
 
     setParent(parent: HTMLElement) {
@@ -243,34 +247,38 @@ export class ColorPicker extends UI {
     }
 
     removeButton: HTMLElement
+    buttonsEl: HTMLElement
+    paletteEl: HTMLElement
+    appEl: HTMLElement
     addPickerActions() {
-        let colorPreview = document.querySelector('.pcr-color-preview');
-        let result = document.querySelector('.pcr-result');
+        this.appEl = document.querySelector('#' + this.id + ' .pcr-app');
+        let colorPreview = document.querySelector('#' + this.id + ' .pcr-color-preview');
+        let result = document.querySelector('#' + this.id + ' .pcr-result');
         mount(colorPreview, result)
         // let hexLayer = el('div.hex-layer')
-        let swatches = document.querySelector('.pcr-swatches');
+        this.paletteEl = document.querySelector('#' + this.id + ' .pcr-swatches');
         let addSwatchButon = el('div.input-button.add-in-palette.icon-add', {
             onclick: () => { this.addNewInPicker(); }
         },
             [el('span.path1'), el('span.path2'), el('span.path3')]
         );
-        mount(swatches, addSwatchButon);
+        mount(this.paletteEl, addSwatchButon);
 
-        let pickerInputs = document.querySelector('.pcr-interaction');
-        setAttr(pickerInputs, { class: 'pcr-interaction-naker' });
+        this.buttonsEl = document.querySelector('#' + this.id + ' .pcr-interaction');
+        setAttr(this.buttonsEl, { class: 'pcr-interaction-naker' });
 
         let leaveButton = el('div.button.valid-button', {
             onclick: () => { this.picker.hide(); }
         }, 'Confirm');
-        mount(pickerInputs, leaveButton);
+        mount(this.buttonsEl, leaveButton);
 
         this.removeButton = el('div.button.valid-button', {
             onclick: () => { this.currentInput.checkErase(); this.picker.hide(); }
         }, 'Delete');
-        mount(pickerInputs, this.removeButton);
+        mount(this.buttonsEl, this.removeButton);
     }
 
-    setPalette(palette?: Array<Array<number>>) {
+    setPalette(palette?: number[][]) {
         for (let i = 0; i < palette.length; i++) {
             const rgba = palette[i];
             // it happened that color saved is 'null'
@@ -279,6 +287,17 @@ export class ColorPicker extends UI {
                 if (!test) this.picker.addSwatch(this.getRgbaString(rgba));
             }
         }
+    }
+
+    getPalette(): number[][] {
+        let palette = [];
+        let swatches = this.picker._swatchColors;
+        for (const key in swatches) {
+            const color = swatches[key].color.toRGBA();
+            let savedColor = color.slice(0, 4);
+            palette.push(savedColor);
+        }
+        return palette;
     }
 
     addNewInPicker() {
@@ -315,17 +334,6 @@ export class ColorPicker extends UI {
         return 'rgba(' + rgba[0] + ', ' + rgba[1] + ', ' + rgba[2] + ', ' + rgba[3] + ')';
     }
 
-    getPalette() {
-        let palette = [];
-        let swatches = this.picker._swatchColors;
-        for (const key in swatches) {
-            const color = swatches[key].color.toRGBA();
-            let savedColor = color.slice(0, 4);
-            palette.push(savedColor);
-        }
-        return palette;
-    }
-
     setBack() {
         this.back = el('div.color-picker-background-opacity', { onclick: () => { this.picker.hide(); } });
         setStyle(this.back, { cursor: 'auto', 'z-index': 199, display: 'none' });
@@ -347,8 +355,6 @@ export class ColorPicker extends UI {
         }).on('change', (color, instance) => {
             let colorAccurate = this.getAccuracy(color.toRGBA());
             if (this.currentInput) this.currentInput.setValue(colorAccurate, true);
-        }).on('save', (color, instance) => {
-            if (this.currentInput) this.picker.addSwatch(color.toRGBA().toString());
         }).on('clear', (color, instance) => {
             if (this.currentInput) this.currentInput.setValue(undefined, true);
         });

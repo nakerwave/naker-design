@@ -255,7 +255,7 @@ export class InputGroup extends UI {
 
     addSwitchButton(callback: Function) {
         let test = false;
-        let switchButton = this.addButton({ui: 'text', text:'Less Options'}, () => {
+        let switchButton = this.addButton({ ui: 'text', text: 'Less Options' }, () => {
             if (test) switchButton.el.textContent = 'Less Options';
             else switchButton.el.textContent = 'More Options';
             callback(test);
