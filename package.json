@@ -36,6 +36,11 @@
     "toastr": "^2.1.4"
   },
   "devDependencies": {
+    "@babel/code-frame": "^7.12.13",
+    "@babel/core": "^7.14.0",
+    "@babel/generator": "^7.14.1",
+    "@babel/helper-annotate-as-pure": "^7.12.13",
+    "@babel/helper-builder-binary-assignment-operator-visitor": "^7.12.13",
     "sass": "^1.22.10",
     "typescript": "^3.4.5"
   }
