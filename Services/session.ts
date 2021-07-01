@@ -67,7 +67,7 @@ export class Session {
         },
         development: {
             apiurl: 'http://localhost:3000/',
-            saving: true,
+            saving: false,
             redirect: true,
             intercom: false,
             sentry: false,
