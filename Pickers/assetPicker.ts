@@ -506,12 +506,6 @@ export class AssetPicker extends UI {
         return asset;
     }
 
-    getHdrTemplateByUrl(url: string) {
-        return find(this.thumbnails, (a) => {
-            return a.type == 'cubetexture' && a.option && a.option.skydiffuse == url
-        });
-    }
-
     getAssetByUrl(type: asset['type'], url: string) {
         return find(this.thumbnails, (a) => {
             return a.type == type && a.url == url

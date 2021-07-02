@@ -27,7 +27,6 @@ interface undoObserver {
 
 export interface ProjectSavedOptions {
     id?: string,
-    template_id?: string;
     name?: string,
     waterMark?: boolean,
     pushQuality?: boolean,
