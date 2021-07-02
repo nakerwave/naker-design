@@ -423,17 +423,6 @@ export class AssetPicker extends UI {
         return savedAssets;
     }
 
-    showStars() {
-        const children: HTMLCollection = this.assetlist.children;
-        const childArray = Array.from(children)
-        childArray.forEach((child) => {
-            const star = child.children.namedItem('star');
-            if (star) {
-                setStyle(star, { display: 'block' });
-            }
-        });
-    }
-
     assetperline = 2;
     type: asset['type'];
     setAssetList(type: asset['type']) {
@@ -445,9 +434,6 @@ export class AssetPicker extends UI {
         for (let i = 0; i < assetsType.length; i++) {
             let button = assetsType[i].button;
             setStyle(button, { display: 'inline-block' });
-        }
-        if (type === 'cubetexture') {
-            this.showStars();
         }
         return this;
     }
@@ -520,15 +506,6 @@ export class AssetPicker extends UI {
         return asset;
     }
 
-    clickedStarFunction: Function;
-    setClickedStarFunction(fn: Function) {
-        this.clickedStarFunction = fn;
-    }
-
-    clickStar(asset: asset) {
-        this.clickedStarFunction('environment', '', asset);
-    }
-
     getHdrTemplateByUrl(url: string) {
         return find(this.thumbnails, (a) => {
             return a.type == 'cubetexture' && a.option && a.option.skydiffuse == url
@@ -559,12 +536,9 @@ export class AssetPicker extends UI {
     buildButton(asset: asset, callback: Function) {
         let image: HTMLElement;
         let thumbnail = asset.thumbnail;
-        let templateType;
-        if (asset.type === 'cubetexture') templateType = true;
         let button = el('div.asset-button', { onclick: () => { callback() } },
             // Draggable set to false or it can show drag zone
             image = el('img', { draggable: false }),
-            templateType ? el('div.asset-template-star-black', { onclick: () => this.clickStar(asset) }, { name: "star" }, '☆') : null,
             el('div.loader-layer', { onclick: (e) => { e.stopPropagation(); e.preventDefault(); } }),
             el('div.loader-animation'),
         );
