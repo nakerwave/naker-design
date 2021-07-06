@@ -93,10 +93,10 @@ export class ColorButton extends Slider {
     }
 
     setInputValue(rgba: Array<number>, fromPicker?: boolean) {
+        if (!rgba) rgba = [0, 0, 0, 0]
         this.rgba = clone(rgba);
         let stringRgba = clone(rgba);
-        if (rgba[3] == undefined) stringRgba[3] = 1;
-        if (!this.opacity || this.slider) stringRgba[3] = 1;
+        if (rgba[3] === undefined) stringRgba[3] = 1;
         let color = 'rgba(' + stringRgba[0] + ', ' + stringRgba[1] + ', ' + stringRgba[2] + ', ' + stringRgba[3] + ')';
         setStyle(this.colorel, { 'background-color': color });
 
@@ -114,9 +114,7 @@ export class ColorButton extends Slider {
         if (this.removedValue !== undefined) {
             this.setInputValue(this.removedValue);
         } else {
-            // Keep opacity so that we have a result when a color is back
-            this.setInputValue([0, 0, 0, 1]);
-            setStyle(this.colorel, { 'background-color': 'rgba(0,0,0,0)' });
+            this.setInputValue([0, 0, 0, 0]);
         }
         if (this.events.change && fromPicker) this.events.change(this.removedValue);
         if (this.events.blur && fromPicker) this.events.blur(this.removedValue);
