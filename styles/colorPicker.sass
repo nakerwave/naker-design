@@ -13,7 +13,7 @@
     right: 0px
     height: 100%
     width: 100%
-    background-color: rgba($colorlightgrey, 0.9)
+    background-color: rgba(black, 0.4)
 
 .color-background
     width: 100%
@@ -54,15 +54,18 @@
         background-color: $colorgrey
         border-radius: $layerradius
 
+    .noUi-base
+        left: 0px !important
+
     .pcr-app
         position: absolute !important
         padding: 15px 15px !important
         top: 0px !important
-        left: 0px !important
-        width: calc(100% - 30px) !important
+        left: 20px !important
+        width: calc(100% - 70px) !important
         background-color: $colorgrey !important
         box-shadow: none !important
-        border-radius: 0px !important
+        border-radius: $layerradius !important
 
         .pcr-selection
             padding-bottom: 40px !important
