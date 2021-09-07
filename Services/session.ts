@@ -505,6 +505,7 @@ export class Session {
     // For stoy the url is different
     uploadImageUrl: string;
     uploadImage(image: string, callback?: Function) {
+        if (!this.getSave()) return;
         var fd = new FormData();
         fd.append("image", image);
         const header = { "X-Requested-With": "XMLHttpRequest", "Content-Type": "multipart/form-data" };

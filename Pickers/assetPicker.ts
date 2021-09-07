@@ -521,11 +521,19 @@ export class AssetPicker extends UI {
     addButton(asset: asset) {
         if (asset.removable === undefined) asset.removable = true;
         let button = this.buildButton(asset, () => {
+            // this.focusButton(button)
             this.selectAsset(asset);
         });
         this.assetlist.prepend(button);
         return button;
     }
+
+    // focusButton(button: HTMLElement) {
+    //     let buttons = this.assetlist.childNodes
+    //     for (const button of buttons) {
+
+    //     }
+    // }
 
     buildButton(asset: asset, callback: Function) {
         let image: HTMLElement;
